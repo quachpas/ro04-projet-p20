@@ -1,0 +1,87 @@
+% Dépendences : 
+% pip install pygments
+% Python3
+
+% Installation de pip : (Windows)
+% wget https://bootstrap.pypa.io/get-pip.py
+% python3 get-pip.py
+% Rajout dans le PATH, cf. message
+
+% Compilation : pdflatex --shell-escape rapport.tex
+
+\documentclass[12pt,a4paper, twocolumn]{report}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
+\usepackage[french]{babel}
+\usepackage[backend=bibtex,bibencoding=ascii,style=authoryear,sorting=none]{biblatex}
+\usepackage{fancyhdr}
+\usepackage{titling}
+\usepackage{titlesec} % titlespacing %
+\usepackage{listings} % lstnewenvironment %
+\usepackage{textcomp}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{pdfpages}
+\usepackage[top=2.5cm,bottom=3cm,right=2.5cm,left=2.5cm]{geometry}
+\usepackage{caption}
+\usepackage{titletoc}
+\usepackage[table]{xcolor}
+\usepackage{minted}
+\usepackage[]{algorithm2e}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+
+
+\newcounter{linecounter}
+\newcommand{\linenumbering}{\ifthenelse{\value{linecounter}<10}{(0\arabic{linecounter})}{(\arabic{linecounter})}}
+\renewcommand{\line}[1]{\refstepcounter{linecounter}\label{#1}\linenumbering}
+\newcommand{\resetline}[1]{\setcounter{linecounter}{0}#1}
+\renewcommand{\thelinecounter}{\ifnum \value{linecounter} > 9\else 0\fi \arabic{linecounter}}
+
+
+\title{Un titre}
+\author{L'auteur}
+\date{May 2020}
+
+\begin{document}
+
+\maketitle
+
+\section*{Introduction}
+Une intro
+
+\begin{algorithm*}[ht]
+\centering{
+\fbox{
+\begin{minipage}[t]{150mm}
+\footnotesize
+\renewcommand{\baselinestretch}{2.5}
+\resetline
+\begin{tabbing}
+aaaA\=aaaA\=aaA\=aaA\=aaA\=aaA\kill
+
+{\bf  Initialisation:}
+\\
+\line{P2-01} \> {\bf Si} 1ère ligne
+\\
+\line{P2-02} \>\> 2ème ligne si condition en \ref{P2-01}
+%------------------
+
+
+\end{tabbing}
+\normalsize
+\end{minipage}
+}
+\medbreak 
+\caption{Le titre}
+\label{fig:label_algo}
+}
+\end{algorithm*}
+
+
+
+\end{document}
