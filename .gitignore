@@ -6,4 +6,8 @@
 *.fls
 *.bib
 *.xml
+*.out
+*.spl
+*.toc
 __latexindent_temp.tex
+_minted-rapport/
