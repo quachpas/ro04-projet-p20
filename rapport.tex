@@ -9,7 +9,12 @@
 
 % Compilation : pdflatex --shell-escape rapport.tex
 
-\documentclass[review, 1p]{elsarticle}
+% Citations de sources bibliographiques
+% http://merkel.texture.rocks/Latex/natbib.php?lang=fr
+
+% Documentation classe 
+% https://www.elsevier.com/__data/assets/pdf_file/0009/56844/elsdoc2.pdf
+\documentclass[1p]{elsarticle}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{csquotes}
@@ -27,7 +32,7 @@
 \usepackage{titletoc}
 \usepackage[table]{xcolor}
 \usepackage{minted}
-\usepackage[]{algorithm2e}
+\usepackage[french]{algorithm2e}% http://tug.ctan.org/macros/latex/contrib/algorithm2e/doc/algorithm2e.pdf
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
 \usepackage{textcomp}
@@ -86,14 +91,12 @@
     \author{Félix Poullet-Pagès}
 
     \begin{abstract}
-        La méthode de Newton est une méthode itérative de recherche d'un zéro du second ordre. Elle se repose sur la méthode du point fixe.
+        La méthode de Newton est une méthode itérative de recherche d'un zéro d'une fonction $g$, qui se repose sur la méthode du point fixe. Elle requiert cependant le calcul coûteux de la dérivée ou matrice jacobienne de $g$ dans le cas d'une fonction à plusieurs variables, et également son inversion. On parle de méthodes de quasi-Newton lorsque la matrice jacobienne - et généralement son inverse - sont remplacées par une approximation. Appliquée à un problème d'optimisation, où l'on cherche l'optimum d'une fonction $f$, la méthode de Newton force le calcul de la matrice hessienne de $f$, car on cherche les zéros du gradient de $f$. La méthode de Broyden-Fletcher-Goldfarb-Shanno (BFGS) est une méthode quasi-Newton qui se repose sur l'approximation de la matrice hessienne par analyse des gradients successifs. La matrice hessienne n'est pas calculée à chaque itération de la méthode, mais mise à jour itérativement en prenant une estimation de la matrice hessienne initiale.
     \end{abstract}
 \end{frontmatter}
+\clearpage
 \tableofcontents
-
-\section*{Introduction}
-Une intro
-
+\clearpage
 \begin{algorithm*}[ht]
     \centering{
         \fbox{
@@ -110,18 +113,67 @@ Une intro
                     \\
                     \line{P2-02} \>\> 2ème ligne si condition en \ref{P2-01}
                     %------------------
-
-
                 \end{tabbing}
                 \normalsize
             \end{minipage}
         }
         \medbreak
-        \caption{Le titre}
+        \caption{Exemple d'algorithme}
         \label{fig:label_algo}
     }
 \end{algorithm*}
+\section{Méthode de Newton}
+\subsection{Origines}
+\subsection{Principe}
+\subsection{Résultats connus}
+\subsection{Qualités et faiblesses}
+\section{Méthode de BFGS}
+\subsection{Origines}
+\subsection{Principe}
+\subsection{Résultats connus}
+\subsection{Qualités et faiblesses}
+\section{Implémentation sur SCILAB}
+\subsection{Recherche linéaire : condition de Wolfe}
+\subsubsection{Algorithme}
+\subsubsection{Programme}
+\subsubsection{Conditions d'arrêts et précision}
+\subsubsection{Difficultées techniques}
+\subsection{Méthode de Newton}
+\subsubsection{Algorithme}
+\subsubsection{Programme}
+\subsubsection{Conditions d'arrêts et précision}
+\subsubsection{Difficultées techniques}
+\subsection{Méthode de BFGS}
+\subsubsection{Algorithme}
+\subsubsection{Programme}
+\subsubsection{Conditions d'arrêts et précision}
+\subsubsection{Difficultées techniques}
+\subsection{Affichage des résultats}
+\subsubsection{Indicateurs possibles}
+\subsection{Exemples d'optimisation}
+\subsubsection{Méthode de Newton}
+\subsubsection{Exemple convergent}
+\subsubsection{Exemple divergent}
+\subsubsection{Exemple de convergence difficile}
+\subsubsection{Méthode de BFGS}
+\subsubsection{Exemple convergent}
+\subsubsection{Exemple divergent}
+\subsubsection{Exemple de convergence difficile}
+\subsection{Critiques et alternatives}
+\subsubsection{Critiques}
+% \paragraph{Prise en main du langage}
+% \paragraph{Temps de calcul}
+\subsubsection{Alternatives}
+\section{Applications}
+\subsection{Problème 1 : ...}
+% \paragraph{Indicateur 1 : courbe de convergence (exemple)}
 
+
+
+% Bibliographie
+% http://merkel.texture.rocks/Latex/natbib.php?lang=fr
+\bibliographystyle{elsarticle-num}
+\bibliography{bibliographie}
 
 
 \end{document}

@@ -4,9 +4,9 @@
 *.synctex
 *.pdf
 *.fls
-*.bib
 *.xml
 *.out
+*-blx.bib
 *.spl
 *.toc
 __latexindent_temp.tex
