@@ -8,6 +8,8 @@
 *.out
 *-blx.bib
 *.spl
+*.bbl
+*.blg
 *.toc
 __latexindent_temp.tex
 _minted-rapport/

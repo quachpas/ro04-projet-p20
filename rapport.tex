@@ -7,7 +7,11 @@
 % python3 get-pip.py
 % Rajout dans le PATH, cf. message
 
-% Compilation : pdflatex --shell-escape rapport.tex
+% Compilation : 
+% 1 - pdflatex --shell-escape rapport.tex
+% 2 - bibtex --shell-escape rapport.aux
+% 3 - pdflatex --shell-escape rapport.tex
+
 
 % Citations de sources bibliographiques
 % http://merkel.texture.rocks/Latex/natbib.php?lang=fr
@@ -37,16 +41,17 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \hypersetup{
-  colorlinks,
+  colorlinks = false,
   citecolor=black,
   filecolor=black,
   linkcolor=black,
   urlcolor=black
 }
-\newtheorem{thm}{Théorèle}
+\newtheorem{thm}{Théorème}
 \newtheorem{lem}[thm]{Lemme}
+\newtheorem{definition}{Définition}[section]
 \newdefinition{rmk}{Remarque}
 \newproof{pf}{Preuve}
 
@@ -96,35 +101,42 @@
 \end{frontmatter}
 \clearpage
 \tableofcontents
-\clearpage
-\begin{algorithm*}[ht]
-    \centering{
-        \fbox{
-            \begin{minipage}[t]{150mm}
-                \footnotesize
-                \renewcommand{\baselinestretch}{2.5}
-                \resetline
-                \begin{tabbing}
-                    aaaA\=aaaA\=aaA\=aaA\=aaA\=aaA\kill
 
-                    {\bf  Initialisation:}
-                    \\
-                    \line{P2-01} \> {\bf Si} 1ère ligne
-                    \\
-                    \line{P2-02} \>\> 2ème ligne si condition en \ref{P2-01}
-                    %------------------
-                \end{tabbing}
-                \normalsize
-            \end{minipage}
-        }
-        \medbreak
-        \caption{Exemple d'algorithme}
-        \label{fig:label_algo}
-    }
-\end{algorithm*}
+\clearpage
+\section{Notations}
+\begin{enumerate}
+    \item $\nabla f(x)$ désigne le gradient de la fonction $f$ au point $x$, c'est-à-dire la matrice jacobienne de $f$ évaluée en $x$.
+    \item $\nabla ^2 f(x)$ désigne le hessien de la fonction $f$ au point $x$, c'est-à-dire la matrice hessienne de $f$ évaluée en $x$.
+\end{enumerate}
 \section{Méthode de Newton}
 \subsection{Origines}
+La méthode de Newton apparaît pour la première fois dans l'ouvrage \emph{De analysi per aequationes numero terminorum infinitas} (1669), puis une seconde fois dans \textit{La méthode des fluxions\footnote{Les fluxions représentent des dérivées}, et les suites infinies}\footnote{Voir \cite{book:newton_fluxions}}, tous deux écrits par Isaac Newton. Elle est à l'époque appliquée au cas particulier des recherches des racines d'un polynôme. Ses travaux ne seront malheureusement publiés que de façon posthume à partir de 1736. Cette méthode est simplifiée par Joseph Raphson dans \textit{Analysis aequationum universalis} (1690), et c'est généralement la version de Raphson qui est utilisée aujourd'hui. Pour ces raisons, on a tendance à parler de la méthode de Newton-Raphson.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width = 0.5\textwidth]{La_méthode_des_fluxions_et_[...]Newton_Isaac_bpt6k62411f_40.jpg}
+    \caption{Extrait de l'ouvrage \textit{La méthode
+    des fluxions, et les suites infinies} expliquant la méthode de Newton}
+    \label{fig:fluxion_newton_method}
+\end{figure}
+
 \subsection{Principe}
+La méthode de Newton-Raphson est une méthode de recherche des racines d'une fonction à valeurs réelles.
+\begin{definition}{Principe}
+    Étant donné une fonction $g: \mathbb{R}^n\longrightarrow \mathbb{R}$, $g\in C^2$ et une valeur initiale $x_0\in \mathbb{R}^n$, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par 
+    \begin{equation}
+        x_{k+1} = x_k - \nabla g(x_k)^{-1}\cdot g(x_k)
+    \end{equation}
+    converge vers la racine $x_*$ de $g$ la plus proche de $x_0$, à condition que $x_0$ soit suffisamment proche de $x_*$.     
+\end{definition}
+Si on prend l'exemple 
+
+\begin{figure}[htbp]
+    \centering
+    \input{iterations-newton-raphson.tex}
+    \caption{Itérations de l'algorithme de Newton-Raphson pour une $g(x)=x^2-3$}
+    \label{fig:nr-iterations}
+\end{figure}
+
 \subsection{Résultats connus}
 \subsection{Qualités et faiblesses}
 \section{Méthode de BFGS}
@@ -140,6 +152,38 @@
 \subsubsection{Difficultées techniques}
 \subsection{Méthode de Newton}
 \subsubsection{Algorithme}
+\begin{algorithm}[ht]
+    \centering{
+        \fbox{
+            \begin{minipage}[t]{150mm}
+                \footnotesize
+                \renewcommand{\baselinestretch}{2.5}
+                \resetline
+                \begin{tabbing}
+                    aaaA\=aaaA\=aaA\=aaA\=aaA\=aaA\kill
+
+                    {\bf  Initialisation :}\\
+                    \line{NR-01} \> $g$ := la fonction dont on cherche les racines\\
+                    \line{NR-02} \> $\nabla g$ := l'expression analytique du gradient de $g$\\
+                    \line{NR-03} \> $k = 0$ := le nombre d'itérations actuels\\
+                    \line{NR-04} \> $x_0 \in \mathbb{R}^n$ := la valeur initiale de recherche\\
+                    \line{NR-05} \> $\varepsilon \in \mathbb{R}^+_*$ := la marge d'erreur acceptable, le critère d'arrêt\\
+                    \line{NR-06} \> $N\in \mathbb{N}$ := le nombre d'itérations maximales\\
+                    {\bf Itérations :}\\
+                    \line{NR-07} \> {\bf Tant que} $g(x_k) > \varepsilon$ {\bf ET} $k < N$ {\bf faire :}\\
+                    \line{NR-08} \>\> $x_{k+1} = x_k - \nabla g^{-1}(x_k)\cdot g(x_k)$\\
+                    \line{NR-09} \>\> $N = N+1$\\
+                    \line{NR-10} \>\> $k = k+1$\\
+                    %------------------
+                \end{tabbing}
+                \normalsize
+            \end{minipage}
+        }
+        \medbreak
+        \caption{Algorithme de la méthode de Newton-Raphson}
+        \label{algo:newton_raphson}
+    }
+\end{algorithm}
 \subsubsection{Programme}
 \subsubsection{Conditions d'arrêts et précision}
 \subsubsection{Difficultées techniques}
@@ -152,13 +196,13 @@
 \subsubsection{Indicateurs possibles}
 \subsection{Exemples d'optimisation}
 \subsubsection{Méthode de Newton}
-\subsubsection{Exemple convergent}
-\subsubsection{Exemple divergent}
-\subsubsection{Exemple de convergence difficile}
+% \paragraph{Exemple convergent}
+% \paragraph{Exemple divergent}
+% \paragraph{Exemple de convergence difficile}
 \subsubsection{Méthode de BFGS}
-\subsubsection{Exemple convergent}
-\subsubsection{Exemple divergent}
-\subsubsection{Exemple de convergence difficile}
+% \paragraph{Exemple convergent}
+% \paragraph{Exemple divergent}
+% \paragraph{Exemple de convergence difficile}
 \subsection{Critiques et alternatives}
 \subsubsection{Critiques}
 % \paragraph{Prise en main du langage}
@@ -172,8 +216,10 @@
 
 % Bibliographie
 % http://merkel.texture.rocks/Latex/natbib.php?lang=fr
-\bibliographystyle{elsarticle-num}
+\bibliographystyle{elsarticle-num-names}
 \bibliography{bibliographie}
 
+\phantomsection
+\addcontentsline{toc}{section}{Références}
 
 \end{document}
