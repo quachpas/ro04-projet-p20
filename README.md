@@ -5,4 +5,4 @@ Membres du groupe :
 - Mathilde Rineau
 - Pascal Quach
 - Mathilde Le Moël
-- Félix Kimberley Poullet
+- Félix Poullet-Pagès
