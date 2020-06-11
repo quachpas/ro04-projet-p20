@@ -18,12 +18,13 @@
 
 % Documentation classe 
 % https://www.elsevier.com/__data/assets/pdf_file/0009/56844/elsdoc2.pdf
-\documentclass[1p]{elsarticle}
+\documentclass[3p, twocolumn]{elsarticle}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{csquotes}
 \usepackage[french]{babel}
 \usepackage{fancyhdr}
+\usepackage{physics}
 \usepackage{titlesec} % titlespacing %
 \usepackage{listings} % lstnewenvironment %
 \usepackage{textcomp}
@@ -42,6 +43,11 @@
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
+\usepackage[toc,page]{appendix}
+\renewcommand{\appendixtocname}{Annexes}
+\renewcommand{\appendixpagename}{Annexes}
+\DeclareMathOperator{\Hessian}{H}
+\DeclareMathOperator{\Jacobian}{J}
 \hypersetup{
   colorlinks = false,
   citecolor=black,
@@ -52,8 +58,9 @@
 \newtheorem{thm}{Théorème}
 \newtheorem{lem}[thm]{Lemme}
 \newtheorem{definition}{Définition}[section]
-\newdefinition{rmk}{Remarque}
-\newproof{pf}{Preuve}
+\newdefinition{rmk}{Remarque}[section]
+\newdefinition{exemple}{Exemple}[section]
+\newproof{pf}{Preuve}[section]
 
 \newcounter{linecounter}
 \newcommand{\linenumbering}{\ifthenelse{\value{linecounter}<10}{(0\arabic{linecounter})}{(\arabic{linecounter})}}
@@ -87,9 +94,6 @@
 \begin{document}
 \begin{frontmatter}
     \title{Méthode de Newton et de Quasi-Newton BFGS (Algorithme de BRoyden, Fletcher, Goldfarb et Shanno)}
-    \begin{center}
-        \includegraphics[width=0.5\textwidth]{logo_UTC.jpg}
-    \end{center}
     \author{Mathilde Rineau}
     \author{Mathilde Le Moel}
     \author{Pascal Quach}
@@ -99,43 +103,90 @@
         La méthode de Newton est une méthode itérative de recherche d'un zéro d'une fonction $g$, qui se repose sur la méthode du point fixe. Elle requiert cependant le calcul coûteux de la dérivée ou matrice jacobienne de $g$ dans le cas d'une fonction à plusieurs variables, et également son inversion. On parle de méthodes de quasi-Newton lorsque la matrice jacobienne - et généralement son inverse - sont remplacées par une approximation. Appliquée à un problème d'optimisation, où l'on cherche l'optimum d'une fonction $f$, la méthode de Newton force le calcul de la matrice hessienne de $f$, car on cherche les zéros du gradient de $f$. La méthode de Broyden-Fletcher-Goldfarb-Shanno (BFGS) est une méthode quasi-Newton qui se repose sur l'approximation de la matrice hessienne par analyse des gradients successifs. La matrice hessienne n'est pas calculée à chaque itération de la méthode, mais mise à jour itérativement en prenant une estimation de la matrice hessienne initiale.
     \end{abstract}
 \end{frontmatter}
-\clearpage
 \tableofcontents
 
 \clearpage
 \section{Notations}
 \begin{enumerate}
-    \item $\nabla f(x)$ désigne le gradient de la fonction $f$ au point $x$, c'est-à-dire la matrice jacobienne de $f$ évaluée en $x$.
-    \item $\nabla ^2 f(x)$ désigne le hessien de la fonction $f$ au point $x$, c'est-à-dire la matrice hessienne de $f$ évaluée en $x$.
+    \item $\Jacobian_{f}(x)$ désigne la matrice jacobienne de la fonction $f$ évaluée en $x$.
+    \item $\Hessian_{f}(x)$ désigne la matrice hessienne de la fonction $f$ évaluée en $x$.
 \end{enumerate}
 \section{Méthode de Newton}
 \subsection{Origines}
-La méthode de Newton apparaît pour la première fois dans l'ouvrage \emph{De analysi per aequationes numero terminorum infinitas} (1669), puis une seconde fois dans \textit{La méthode des fluxions\footnote{Les fluxions représentent des dérivées}, et les suites infinies}\footnote{Voir \cite{book:newton_fluxions}}, tous deux écrits par Isaac Newton. Elle est à l'époque appliquée au cas particulier des recherches des racines d'un polynôme. Ses travaux ne seront malheureusement publiés que de façon posthume à partir de 1736. Cette méthode est simplifiée par Joseph Raphson dans \textit{Analysis aequationum universalis} (1690), et c'est généralement la version de Raphson qui est utilisée aujourd'hui. Pour ces raisons, on a tendance à parler de la méthode de Newton-Raphson.
+La méthode de Newton apparaît pour la première fois au XVIIème siècle dans l'ouvrage \emph{De analysi per aequationes numero terminorum infinitas} (1669), puis une seconde fois dans \textit{La méthode des fluxions\footnote{Les fluxions représentent des dérivées}, et les suites infinies}\footnote{Voir \cite{book:newton_fluxions}}, tous deux écrits par Isaac Newton. Elle est à l'époque appliquée au cas particulier des recherches des racines d'un polynôme. Ses travaux ne seront malheureusement publiés que de façon posthume à partir de 1736. Cette méthode est simplifiée par Joseph Raphson dans \textit{Analysis aequationum universalis} (1690), et c'est généralement la version de Raphson qui est utilisée aujourd'hui. Pour ces raisons, on a tendance à parler de la méthode de Newton-Raphson. Les travaux de Thomas Simpson élargissent cette méthode itérative à la recherche de racines d'un plus grande nombre d'équations, notamment les équations non linéaires.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width = 0.5\textwidth]{La_méthode_des_fluxions_et_[...]Newton_Isaac_bpt6k62411f_40.jpg}
+    \includegraphics[width = 0.3\textwidth]{La_méthode_des_fluxions_et_[...]Newton_Isaac_bpt6k62411f_40.jpg}
     \caption{Extrait de l'ouvrage \textit{La méthode
-    des fluxions, et les suites infinies} expliquant la méthode de Newton}
+            des fluxions, et les suites infinies} expliquant la méthode de Newton}
     \label{fig:fluxion_newton_method}
 \end{figure}
 
 \subsection{Principe}
-La méthode de Newton-Raphson est une méthode de recherche des racines d'une fonction à valeurs réelles.
-\begin{definition}{Principe}
-    Étant donné une fonction $g: \mathbb{R}^n\longrightarrow \mathbb{R}$, $g\in C^2$ et une valeur initiale $x_0\in \mathbb{R}^n$, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par 
+La méthode de Newton-Raphson est une méthode de recherche des racines de fonctions à valeurs réelles.
+\begin{definition}
+    Étant donné une fonction $G: \Omega\subset\mathbb{R}^n\longrightarrow \mathbb{R}^n$, $G\in C^1$ et une valeur initiale $x_0\in \Omega$, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par
     \begin{equation}
-        x_{k+1} = x_k - \nabla g(x_k)^{-1}\cdot g(x_k)
+        x_{k+1} = x_k - \Jacobian^{-1}_G(x)\cdot G(x_k)
+        \label{eq:iteration-newton-rn}
     \end{equation}
-    converge vers la racine $x_*$ de $g$ la plus proche de $x_0$, à condition que $x_0$ soit suffisamment proche de $x_*$.     
+    converge vers la racine $x_*$ de $G$, à condition que $x_0$ soit suffisamment proche de $x_*$.
 \end{definition}
-Si on prend l'exemple 
+\begin{rmk}
+    $\Jacobian_G$ doit être inversible.
+\end{rmk}
+\begin{rmk}
+    Il est important que la fonction $G$ admette un développement de Taylor d'ordre 1 dans un voisinage des racines $x_*$. En effet, l'existence de ce développement justifie la convergence de la méthode itérative.
+    On considère le développement de Taylor d'ordre 1 au voisinage de $x_{k+1}$.
+    \begin{equation*}
+        G(x_{k+1})\simeq G(x_k)+\Jacobian_G(x_k)(x_{k+1}-x_k)
+    \end{equation*}
+    Pour s'approcher d'une racine de $G$, on considère que $G(x_{k+1})=0$, et on en déduit l'expression de l'équation \ref{eq:iteration-newton-rn}.
+\end{rmk}
+
+\subsection{Interprétation géométrique}
+Pour comprendre cette méthode itérative, il est plus simple de raisonner en deux dimensions. On considère la fonction $g :\Omega\subset\mathbb R^2 \rightarrow \mathbb R$.
+
+La formule itérative équivalente est la suivante :
+\begin{equation}
+    x_{k+1}=x_k-\frac{g(x_k)}{g'(x_k)}
+    \label{eq:iteration-newton-r2}
+\end{equation}
+En passant tous les membres à gauche dans l'équation \ref{eq:iteration-newton-r2}, on se retrouve avec $g'(x_k)(x_{k+1}-x_k)+g(x_k)=0$. On reconnaît ici l'équation de la tangente à $g$ au point $x=x_k$ évaluée au point $(x_{k+1},0)$.
+Le point $(x_{k+1},0)$ correspond à l'intersection entre la tangente à $g$ au point $x_k$ et la droite des abscisses.
+
+La figure \ref{fig:nr-iterations-1} fournit un exemple visuel des itérations de la méthode de Newton-Raphson en deux dimensions. La fonction $g$ est définie par $g(x)=\frac{1}{12}x^3+\frac18x^2-3x$, et on choisit comme valeur de recherche initiale $x_0=-3.5$. On dessine les tangentes successives, et leurs intersections, jusqu'à s'approcher raisonnablement d'une racine de $g$.
 
 \begin{figure}[htbp]
     \centering
-    \input{iterations-newton-raphson.tex}
-    \caption{Itérations de l'algorithme de Newton-Raphson pour une $g(x)=x^2-3$}
-    \label{fig:nr-iterations}
+    \includegraphics[width = 0.3\textwidth]{iteration-newton-1.png}
+    \caption{Itérations de l'algorithme de Newton-Raphson pour la fonction $g$ définie par $g(x)=\frac{1}{12}x^3+\frac18x^2-3x$ telle que $x_0=-3.5$}
+    \label{fig:nr-iterations-1}
 \end{figure}
+
+\begin{rmk}
+    Le choix de la valeur de recherche initiale est important. Si l'on choisit $x_0=-4$, la pente de la tangente de $g$ en $x_0$ est nulle, et les itérations suivantes ne donnent pas de valeurs finies car la dérivée est nulle : la méthode itérative s'arrête. Ce choix a tout autant d'importance en dimensions supérieures à 2.
+\end{rmk}
+
+\subsection{Cas de non-convergence}
+\subsubsection{Domaine de définition}
+Le calcul de $x_{k+1}$ peut mener à une valeur en dehors du domaine de définition $\Omega$ de $G$.
+\subsubsection{Différentiabilité}
+Il n'existe pas de développement de Taylor au voisinage de la racine $x_*$. C'est-à-dire que $G$ n'est pas différentiable en $x_*$          
+\begin{exemple}
+    On considère la fonction $G:\mathbb R^n\rightarrow \mathbb R^n$ définie par $G(x)=\left(\lvert x_i\rvert^{\frac12}\right)_{1\leq i\leq n}$. La méthode itérative de Newton-Raphson mène à $x_{k+1}=-x_k$. Les détails du calcul sont précisés dans l'annexe \ref{ap:calcul-exemple-nr}.
+    \label{ex:newton-raphson-non-differentiable}    
+    La méthode Newton-Raphson ne converge pas, et on oscille entre deux points. Effectivement, comme $G$ n'est pas différentiable en $x_k=\overrightarrow 0$, la matrice jacobienne n'est pas valable pour en ce point. Pour toute valeur $x_0\neq \overrightarrow 0$, l'algorithme ne convergera pas. Ci-dessous, les itérations pour la fonction $G$ lorsque $n=1$.
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width = 0.3\textwidth]{iteration-newton-2.png}
+        \caption{Itérations de la méthode de Newton-Raphson pour $g(x) = \lvert x \rvert ^{\frac12}$ telle que $x_0 = 1$}
+        \label{fig:nr-iterations-2}
+    \end{figure}
+\end{exemple}
+
+\subsubsection{Matrice jacobienne nulle}
+La matrice jacobienne peut être nulle, dans ce cas-là la méthode est "bloquée" : $x_{k+1} = x_k$. Ce cas de non-convergence correspond en deux dimensions à la pente nulle de la tangente en $x_k$.
 
 \subsection{Résultats connus}
 \subsection{Qualités et faiblesses}
@@ -212,7 +263,29 @@ Si on prend l'exemple
 \subsection{Problème 1 : ...}
 % \paragraph{Indicateur 1 : courbe de convergence (exemple)}
 
+\begin{appendices}
+    \section{Détails de calcul de l'exemple \ref{ex:newton-raphson-non-differentiable}}
+    \label{ap:calcul-exemple-nr}
+    On considère la fonction $G:\mathbb R^n\rightarrow \mathbb R^n$ définie par $G(x)=\left(\lvert x_i\rvert^{\frac12}\right)_{1\leq i\leq n}$.
+    \begin{align*}
+        \frac{\partial}{\partial x_i}\lvert x_i\rvert^{\frac12} & = \frac{\partial}{\partial x_i}\left(\sqrt{x_i^2}\right)^{\frac12}                                          \\
+                                                                & = \frac12\left(\sqrt{x_i^2}\right)^{-\frac12}\cdot\frac{\partial}{\partial x_i}\left(x_i^2\right)^{\frac12} \\
+                                                                & = \frac1{2(\lvert x_i\rvert)^{\frac12}}\frac12\cdot2x_i(x_i^2)^{-\frac12}                                   \\
+                                                                & = \frac{x_i}{2\lvert x_i\rvert^{\frac32}}                                                                   \\
+        \Jacobian_G(x)                                          & = \begin{cases}
+            \frac{x_i}{2\lvert x_i\rvert^{\frac32}} & i=j             \\
+            0                                       & \textrm{ sinon}
+        \end{cases}
+    \end{align*}
+    $\Jacobian_G$ est une matrice diagonale, son inverse est simplement $\Jacobian^{-1}_G(x)=\begin{cases}\frac{2\lvert x_i\rvert^{\frac32}}{x_i}&i=j\\0&\textrm{ sinon}\end{cases}$
 
+    \begin{align*}
+        x_{k+1} & = x_k - \left(\frac{(x_k)_i}{2\lvert (x_k)_i\rvert^{\frac32}}\right)_{1\leq i\leq n}\cdot \lvert (x_k)_i\vert ^{\frac12} \\
+                & = x_k - \left(\frac{2\lvert (x_k)_i \rvert^{2}}{(x_k)_i}\right)_{1\leq i\leq n}\\
+                & = x_k - 2x_k\\
+        x_{k+1} & = - x_k
+    \end{align*}
+\end{appendices}
 
 % Bibliographie
 % http://merkel.texture.rocks/Latex/natbib.php?lang=fr

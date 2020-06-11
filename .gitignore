@@ -10,6 +10,7 @@
 *.spl
 *.bbl
 *.blg
+*.py
 *.toc
 __latexindent_temp.tex
 _minted-rapport/
