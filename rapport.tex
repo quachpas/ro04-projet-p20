@@ -103,7 +103,9 @@
         La méthode de Newton est une méthode itérative de recherche d'un zéro d'une fonction $g$, qui se repose sur la méthode du point fixe. Elle requiert cependant le calcul coûteux de la dérivée ou matrice jacobienne de $g$ dans le cas d'une fonction à plusieurs variables, et également son inversion. On parle de méthodes de quasi-Newton lorsque la matrice jacobienne - et généralement son inverse - sont remplacées par une approximation. Appliquée à un problème d'optimisation, où l'on cherche l'optimum d'une fonction $f$, la méthode de Newton force le calcul de la matrice hessienne de $f$, car on cherche les zéros du gradient de $f$. La méthode de Broyden-Fletcher-Goldfarb-Shanno (BFGS) est une méthode quasi-Newton qui se repose sur l'approximation de la matrice hessienne par analyse des gradients successifs. La matrice hessienne n'est pas calculée à chaque itération de la méthode, mais mise à jour itérativement en prenant une estimation de la matrice hessienne initiale.
     \end{abstract}
 \end{frontmatter}
+\newpage
 \tableofcontents
+\newpage
 
 \clearpage
 \section{Notations}
@@ -189,7 +191,39 @@ Il n'existe pas de développement de Taylor au voisinage de la racine $x_*$. C'e
 La matrice jacobienne peut être nulle, dans ce cas-là la méthode est "bloquée" : $x_{k+1} = x_k$. Ce cas de non-convergence correspond en deux dimensions à la pente nulle de la tangente en $x_k$.
 
 \subsection{Résultats connus}
+
+
 \subsection{Qualités et faiblesses}
+\subsubsection{Convergence}
+La méthode de Newton-Raphson est remarquable car sa convergence est quadratique au voisinage de la solution, donc pour un $x_{0}$ suffisament proche de la solution $x^{*}$ la méthode converge très vite: 
+\newline
+$||x_{k+1}-x^{*} \leq ||x_{k}- x^{*}||^{2}, \qquad \gamma >0$ 
+\newline
+Cependant, cela n'est vrai que si $x_{0}$ est proche de $x{*}$, ce qui diminue l'interet de cette méthode.
+On peut contourner ce problème en ajoutant une phase de recherche linéaire lorsque la Hessienne de f $\nabla ^{2}f$ est définie positive, ce qui n'est pas toujours le cas. Si la Hessienne est définie positive on aura comme direction de descente:
+\newline
+$d_{k} = -\nabla ^{2}f(x_{k})^{-1} \nabla f(x_{k}) $
+\subsubsection{Cas de non convergence}
+Dans certains cas, la méthode de Newton-Raphson ne converge pas.
+\newline
+Si la dérivée première de la fonction $f$: $f'(x)$ n'a pas un comportement normal (par exemple si la fonction n'est pas différenciable au point $x^{*}$) au voisinage de la racine, la méthode ne va pas converger. 
+De même, si lors de l'utilisation de la méthode, l'algorithme arrive sur un minimum ou un maximum local, l'algorithme va s'arrêter car la dérivée sera nulle et une division par zéro est impossible.
+Toutefois, la non-convergence de la méthode de Newton-Raphson est le plus souvent dûe à une mauvaise estimation de $x_{0}$.
+
+\subsubsection{Cas de convergence lente}
+Si la racine recherchée est de multiplicité supérieure à 1, la convergence n'est plus quadratique mais presque linéaire. Cependant, si cette multiplicité est connue il est possible de modifier la méthode pour retrouver une convergence quadratique. En notant $m$ la mutiplicité, on obtient:
+\newline
+$x_{n+1}=x_{n}-m\frac{f(x_{n})}{f'(x_{n})}$
+\newline
+Enfin, s'il existe deux racines, proches l'une de l'autre, l'algorithme aura besoin de plusieurs itérations pour s'approcher de l'une d'entre elles.
+Le problème de la méthode de Newton est qu’il est obligatoire d’avoir un x0 proche de la solution, pour que l’algorithme converge. On est donc pas assurés de la convergence de la suite. 
+L’algorithme peut converger vers un point de f pour laquelle la Hessienne est inversible mais qui n’est pas un minimum local. On est incapable dans cette méthode de distinger le maximum, le minmum et le point de selle.
+On peut donc souligner la nécessité que la hessienne soit inversible, sans quoi la méthode n’est pas définie. 
+De plus, à chaque itération, il est nécessaire d’évaluer ∇f(xk) et ∇²f(xk). 
+Cependant, si la fonction est suffisamment proche d’un minmum local x*, alors la suite converge vers ce x*, et la convergence est quadratique. On peut alors noter le théorème : 
+Théorème sur la convergence de Newton si x0 est choisi assez proche de x*, si f de classe C2… 
+Donc, la convergence de Newton vers sa solution est très rapide, sous conditions.
+
 \section{Méthode de BFGS}
 \subsection{Origines}
 \subsection{Principe}
