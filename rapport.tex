@@ -103,8 +103,10 @@
         La méthode de Newton est une méthode itérative de recherche d'un zéro d'une fonction $g$, qui se repose sur la méthode du point fixe. Elle requiert cependant le calcul coûteux de la dérivée ou matrice jacobienne de $g$ dans le cas d'une fonction à plusieurs variables, et également son inversion. On parle de méthodes de quasi-Newton lorsque la matrice jacobienne - et généralement son inverse - sont remplacées par une approximation. Appliquée à un problème d'optimisation, où l'on cherche l'optimum d'une fonction $f$, la méthode de Newton force le calcul de la matrice hessienne de $f$, car on cherche les zéros du gradient de $f$. La méthode de Broyden-Fletcher-Goldfarb-Shanno (BFGS) est une méthode quasi-Newton qui se repose sur l'approximation de la matrice hessienne par analyse des gradients successifs. La matrice hessienne n'est pas calculée à chaque itération de la méthode, mais mise à jour itérativement en prenant une estimation de la matrice hessienne initiale.
     \end{abstract}
 \end{frontmatter}
+
 \newpage
 \tableofcontents
+
 \newpage
 
 \clearpage
@@ -200,9 +202,13 @@ La méthode de Newton-Raphson est remarquable car sa convergence est quadratique
 $||x_{k+1}-x^{*} \leq ||x_{k}- x^{*}||^{2}, \qquad \gamma >0$ 
 \newline
 Cependant, cela n'est vrai que si $x_{0}$ est proche de $x{*}$, ce qui diminue l'interet de cette méthode.
-On peut contourner ce problème en ajoutant une phase de recherche linéaire lorsque la Hessienne de f $\nabla ^{2}f$ est définie positive, ce qui n'est pas toujours le cas. Si la Hessienne est définie positive on aura comme direction de descente:
+On peut contourner ce problème en ajoutant une phase de recherche linéaire lorsque la Hessienne de $f$: $\nabla ^{2}f$ est définie positive, ce qui n'est pas toujours le cas. Si la Hessienne est définie positive on aura comme direction de descente:
 \newline
 $d_{k} = -\nabla ^{2}f(x_{k})^{-1} \nabla f(x_{k}) $
+
+\subsubsection{Vers les méthodes de quasi-Newton}
+Si la Hessienne de $f$ n'est pas définie positive, il n'est pas possible de faire une recherche linéaire. Cependant il est possible d'en faire une approximation $H_{k]$ ce qui permet de trouver les racines de $f$, les méthodes qui utilisent ces approximations sont des méthodes de quasi-Newton.
+
 \subsubsection{Cas de non convergence}
 Dans certains cas, la méthode de Newton-Raphson ne converge pas.
 \newline
@@ -216,13 +222,9 @@ Si la racine recherchée est de multiplicité supérieure à 1, la convergence n
 $x_{n+1}=x_{n}-m\frac{f(x_{n})}{f'(x_{n})}$
 \newline
 Enfin, s'il existe deux racines, proches l'une de l'autre, l'algorithme aura besoin de plusieurs itérations pour s'approcher de l'une d'entre elles.
-Le problème de la méthode de Newton est qu’il est obligatoire d’avoir un x0 proche de la solution, pour que l’algorithme converge. On est donc pas assurés de la convergence de la suite. 
-L’algorithme peut converger vers un point de f pour laquelle la Hessienne est inversible mais qui n’est pas un minimum local. On est incapable dans cette méthode de distinger le maximum, le minmum et le point de selle.
-On peut donc souligner la nécessité que la hessienne soit inversible, sans quoi la méthode n’est pas définie. 
-De plus, à chaque itération, il est nécessaire d’évaluer ∇f(xk) et ∇²f(xk). 
-Cependant, si la fonction est suffisamment proche d’un minmum local x*, alors la suite converge vers ce x*, et la convergence est quadratique. On peut alors noter le théorème : 
-Théorème sur la convergence de Newton si x0 est choisi assez proche de x*, si f de classe C2… 
-Donc, la convergence de Newton vers sa solution est très rapide, sous conditions.
+\subsubsection{Coût de la méthode}
+Le coût de la méthode de Newton peut être important. En effet, à chaque itération, il est nécessaire d’évaluer la dérivée de $f$ au point $x_{k}$: $\nabla f(x_{k})$ et la Hessienne de $f$ au point $x_{k}$: $\nabla ^{2}f$. Or, cette évaluation est relativement coûteuse.
+
 
 \section{Méthode de BFGS}
 \subsection{Origines}
