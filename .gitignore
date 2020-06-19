@@ -9,6 +9,7 @@
 *-blx.bib
 *.spl
 *.bbl
+*.ggb
 *.blg
 *.py
 *.toc

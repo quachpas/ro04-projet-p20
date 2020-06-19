@@ -88,10 +88,11 @@
 \xpatchcmd{\printFirstPageNotes}
   {Email address}
   {Adresse email}{}{}
-\regexpatchcmd*{\printFirstPageNotes}{:}{\cA:}{}{}
+\regexpatchcmd*{\printFirstPageNotes}{:}{\cA -}{}{}
 \makeatother
 
 \begin{document}
+\nocite{arxiv:kovalev2019stochastic}
 \begin{frontmatter}
     \title{Méthode de Newton et de Quasi-Newton BFGS (Algorithme de BRoyden, Fletcher, Goldfarb et Shanno)}
     \author{Mathilde Rineau}
@@ -100,16 +101,14 @@
     \author{Félix Poullet-Pagès}
 
     \begin{abstract}
-        La méthode de Newton est une méthode itérative de recherche d'un zéro d'une fonction $g$, qui se repose sur la méthode du point fixe. Elle requiert cependant le calcul coûteux de la dérivée ou matrice jacobienne de $g$ dans le cas d'une fonction à plusieurs variables, et également son inversion. On parle de méthodes de quasi-Newton lorsque la matrice jacobienne - et généralement son inverse - sont remplacées par une approximation. Appliquée à un problème d'optimisation, où l'on cherche l'optimum d'une fonction $f$, la méthode de Newton force le calcul de la matrice hessienne de $f$, car on cherche les zéros du gradient de $f$. La méthode de Broyden-Fletcher-Goldfarb-Shanno (BFGS) est une méthode quasi-Newton qui se repose sur l'approximation de la matrice hessienne par analyse des gradients successifs. La matrice hessienne n'est pas calculée à chaque itération de la méthode, mais mise à jour itérativement en prenant une estimation de la matrice hessienne initiale.
+        La méthode de Newton est une méthode itérative de recherche d'un zéro d'une fonction $g$, qui se repose sur la méthode du point fixe. Elle requiert cependant le calcul coûteux de la dérivée ou matrice jacobienne de $g$ dans le cas d'une fonction à plusieurs variables, et également son inversion. Les méthodes sont qualifiées de quasi-Newton lorsque la matrice jacobienne - généralement son inverse - sont remplacées par une approximation. Appliquée à un problème d'optimisation mono-objectif, où l'on cherche l'optimum d'une fonction $f:\mathbb{R}^n\rightarrow \mathbb{R}$, la méthode de Newton force le calcul de la matrice hessienne de $f$, car on cherche les zéros du gradient de $f$. La méthode de Broyden-Fletcher-Goldfarb-Shanno (BFGS) est une méthode quasi-Newton qui se repose sur l'approximation de la matrice hessienne - ou son inverse - par analyse des gradients successifs. La matrice hessienne n'est pas calculée à chaque itération de la méthode, mais mise à jour itérativement en prenant une estimation de la matrice hessienne initiale.
     \end{abstract}
 \end{frontmatter}
 
-\newpage
+\cleardoublepage
 \tableofcontents
 
-\newpage
-
-\clearpage
+\cleardoublepage
 \section{Notations}
 \begin{enumerate}
     \item $\Jacobian_{f}(x)$ désigne la matrice jacobienne de la fonction $f$ évaluée en $x$.
@@ -117,7 +116,7 @@
 \end{enumerate}
 \section{Méthode de Newton}
 \subsection{Origines}
-La méthode de Newton apparaît pour la première fois au XVIIème siècle dans l'ouvrage \emph{De analysi per aequationes numero terminorum infinitas} (1669), puis une seconde fois dans \textit{La méthode des fluxions\footnote{Les fluxions représentent des dérivées}, et les suites infinies}\footnote{Voir \cite{book:newton_fluxions}}, tous deux écrits par Isaac Newton. Elle est à l'époque appliquée au cas particulier des recherches des racines d'un polynôme. Ses travaux ne seront malheureusement publiés que de façon posthume à partir de 1736. Cette méthode est simplifiée par Joseph Raphson dans \textit{Analysis aequationum universalis} (1690), et c'est généralement la version de Raphson qui est utilisée aujourd'hui. Pour ces raisons, on a tendance à parler de la méthode de Newton-Raphson. Les travaux de Thomas Simpson élargissent cette méthode itérative à la recherche de racines d'un plus grande nombre d'équations, notamment les équations non linéaires.
+La méthode de Newton apparaît pour la première fois au XVIIème siècle dans l'ouvrage \emph{De analysi per aequationes numero terminorum infinitas} (1669), puis une seconde fois dans \textit{La méthode des fluxions\footnote{Les fluxions représentent des dérivées}, et les suites infinies}\footnote{Voir \cite{book:newtonfluxions}}, tous deux écrits par Isaac Newton. Elle est à l'époque appliquée au cas particulier des recherches des racines d'un polynôme. Ses travaux ne seront malheureusement publiés que de façon posthume à partir de 1736. Cette méthode est simplifiée par Joseph Raphson dans \textit{Analysis aequationum universalis} (1690), et c'est généralement la version de Raphson qui est utilisée aujourd'hui. Pour ces raisons, on a tendance à parler de la méthode de Newton-Raphson. Les travaux de Thomas Simpson élargissent cette méthode itérative à la recherche de racines d'un plus grande nombre d'équations, notamment les équations non linéaires.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width = 0.3\textwidth]{La_méthode_des_fluxions_et_[...]Newton_Isaac_bpt6k62411f_40.jpg}
@@ -129,35 +128,48 @@ La méthode de Newton apparaît pour la première fois au XVIIème siècle dans 
 \subsection{Principe}
 La méthode de Newton-Raphson est une méthode de recherche des racines de fonctions à valeurs réelles.
 \begin{definition}
-    Étant donné une fonction $G: \Omega\subset\mathbb{R}^n\longrightarrow \mathbb{R}^n$, $G\in C^1$ et une valeur initiale $x_0\in \Omega$, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par
+    Étant donné une fonction $G: \Omega\subset\mathbb{R}^n\longrightarrow \mathbb{R}^m$, $G\in C^1$ et une valeur initiale $x_0\in \Omega$ donnée, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par
     \begin{equation}
         x_{k+1} = x_k - \Jacobian^{-1}_G(x)\cdot G(x_k)
         \label{eq:iteration-newton-rn}
     \end{equation}
-    converge vers la racine $x_*$ de $G$, à condition que $x_0$ soit suffisamment proche de $x_*$.
+    converge vers une racine $x_*$ de $G$, à condition que $x_0$ soit suffisamment proche de $x_*$.
 \end{definition}
 \begin{rmk}
-    $\Jacobian_G$ doit être inversible.
+    $\Jacobian_G$ est préférablement inversible. Si la matrice n'est pas carrée, on peut se servir du pseudo-inverse de matrices non-carrés; à gauche s'il y a plus de contraintes que de variables; à droite s'il y a plus de variables que de contraintes. Si la matrice est carrée non inversible, on peut se servir du pseudo-inverse de Moore-Penrose. 
+    \begin{exemple}
+        Trouver les racines de $F
+        \begin{pmatrix}
+            x\\y
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+            x^2+y^2-1\\
+            y+x
+        \end{pmatrix}$ est un problème "bien contraint", la matrice jacobienne est inversible. Si l'on décide de rajouter une contrainte, par exemple $y-\frac{\sqrt2}{2}$, alors le jacobien n'est pas carré, on peut se servir du pseudo-inverse pour appliquer la méthode de Newton-Raphson.
+    \end{exemple}
 \end{rmk}
 \begin{rmk}
-    Il est important que la fonction $G$ admette un développement de Taylor d'ordre 1 dans un voisinage des racines $x_*$. En effet, l'existence de ce développement justifie la convergence de la méthode itérative.
-    On considère le développement de Taylor d'ordre 1 au voisinage de $x_{k+1}$.
+    Il est important que la fonction $G$ admette un développement de Taylor d'ordre 1 dans un voisinage des racines $x_*$. En effet, l'existence de ce développement justifie la convergence de la méthode itérative. Itérativement, on contraint la suite $(x_k)_{k\in \mathbb{N}}$ telle qu'à toute itération $k$, $G(x_{k+1})=0$. On considère le développement de Taylor d'ordre 1 au voisinage de $x_{k}$.
     \begin{equation*}
-        G(x_{k+1})\simeq G(x_k)+\Jacobian_G(x_k)(x_{k+1}-x_k)
+        G(x_{k+1})\simeq G(x_k)+\Jacobian_G(x_k)\cdot(x_{k+1}-x_k)
     \end{equation*}
-    Pour s'approcher d'une racine de $G$, on considère que $G(x_{k+1})=0$, et on en déduit l'expression de l'équation \ref{eq:iteration-newton-rn}.
+    Pour s'approcher d'une racine de $G$, on applique la contrainte du problème $G(x_{k+1})=0$, et on en déduit l'expression de l'équation \ref{eq:iteration-newton-rn}. Ainsi, la suite s'approche bien d'un $x_{k+1}$, racine de $G$. L'erreur à chaque itération est dûe à l'approximation par le développement de Taylor : on a négligé son reste.
+\end{rmk}
+\begin{rmk}
+    La méthode de Newton-Raphson peut être appliquée aux fonctions holomorphes, fonctions à valeurs complexes, définie et dérivable en tout point d'un ouvert de $\mathbb{C}$.
 \end{rmk}
 
 \subsection{Interprétation géométrique}
-Pour comprendre cette méthode itérative, il est plus simple de raisonner en deux dimensions. On considère la fonction $g :\Omega\subset\mathbb R^2 \rightarrow \mathbb R$.
+Pour mieux comprendre cette méthode itérative, il est plus simple de raisonner en deux dimensions. On considère la fonction $g :\Omega\subset\mathbb R^2 \rightarrow \mathbb R$.
 
 La formule itérative équivalente est la suivante :
 \begin{equation}
     x_{k+1}=x_k-\frac{g(x_k)}{g'(x_k)}
     \label{eq:iteration-newton-r2}
 \end{equation}
-En passant tous les membres à gauche dans l'équation \ref{eq:iteration-newton-r2}, on se retrouve avec $g'(x_k)(x_{k+1}-x_k)+g(x_k)=0$. On reconnaît ici l'équation de la tangente à $g$ au point $x=x_k$ évaluée au point $(x_{k+1},0)$.
-Le point $(x_{k+1},0)$ correspond à l'intersection entre la tangente à $g$ au point $x_k$ et la droite des abscisses.
+En passant tous les membres à gauche dans l'équation \ref{eq:iteration-newton-r2}, on se retrouve avec $g'(x_k)(x_{k+1}-x_k)+g(x_k)=0$. On reconnaît ici l'équation de la tangente à $g$ en $x=x_k$ évaluée au point $(x_{k+1},0)$.
+Ce point correspond à l'intersection entre la tangente à $g$ en $x_k$ et la droite des abscisses.
 
 La figure \ref{fig:nr-iterations-1} fournit un exemple visuel des itérations de la méthode de Newton-Raphson en deux dimensions. La fonction $g$ est définie par $g(x)=\frac{1}{12}x^3+\frac18x^2-3x$, et on choisit comme valeur de recherche initiale $x_0=-3.5$. On dessine les tangentes successives, et leurs intersections, jusqu'à s'approcher raisonnablement d'une racine de $g$.
 
@@ -169,18 +181,39 @@ La figure \ref{fig:nr-iterations-1} fournit un exemple visuel des itérations de
 \end{figure}
 
 \begin{rmk}
-    Le choix de la valeur de recherche initiale est important. Si l'on choisit $x_0=-4$, la pente de la tangente de $g$ en $x_0$ est nulle, et les itérations suivantes ne donnent pas de valeurs finies car la dérivée est nulle : la méthode itérative s'arrête. Ce choix a tout autant d'importance en dimensions supérieures à 2.
+    Le choix de la valeur de recherche initiale est important. Si l'on choisit $x_0=-4$, la pente de la tangente de $g$ en $x_0$ est nulle, et les itérations suivantes ne sont pas définies car la dérivée est nulle : la méthode itérative s'arrête. Ce choix a tout autant d'importance en dimensions supérieures à 2.
 \end{rmk}
 
-\subsection{Cas de non-convergence}
-\subsubsection{Domaine de définition}
-Le calcul de $x_{k+1}$ peut mener à une valeur en dehors du domaine de définition $\Omega$ de $G$.
-\subsubsection{Différentiabilité}
-Il n'existe pas de développement de Taylor au voisinage de la racine $x_*$. C'est-à-dire que $G$ n'est pas différentiable en $x_*$          
+
+\subsection{Qualités et faiblesses}
+\subsubsection{Vitesse de convergence}
+La convergence est d'ordre quadratique au voisinage d'une solution. Si la suite converge, alors :
+
+\begin{equation*}
+    \lVert x_{k+1}-x^{*}\rVert \leq \gamma\lVert x_{k}- x^{*}\rVert^{2}, \gamma >0
+    \label{eq:convergence-nr}
+\end{equation*}
+
+La méthode de Newton-Raphson converge quadratiquement au voisinage d'une solution, ce qui est remarquable. Malheureusement, cet ordre de convergence n'est valable que localement, ce qui limite son intérêt.
+
+\subsubsection{Cas de non convergence}
+Dans certains cas, la méthode de Newton-Raphson ne converge pas.
+
+\begin{enumerate}
+    \item \textbf{Domaine de définition} - Le calcul de $x_{k+1}$ peut mener à une valeur en dehors du domaine de définition $\Omega$ de $G$.
+
+    \item \textbf{Différentiabilité} - Si le gradient de la fonction $G$, $\Jacobian_G(x)$ a un comportement anormal, e.g. il n'est pas définie au voisinage d'une racine $x_*$, c'est-à-dire que $G$ n'est pas différentiable en $x_*$, alors la méthode ne peut pas converger.
+
+    \item \textbf{Optimum} - Au cours des itérations de la méthode, l'algorithme peut éventuellement s'arrêter sur un optimum. La méthode oscille (ou s'arrête si on doit diviser par 0), car la matrice jacobienne sera nul. La matrice jacobienne peut être nulle, dans ce cas-là la méthode est "bloquée" : $x_{k+1} = x_k$. Ce cas de non-convergence correspond en deux dimensions à la pente nulle de la tangente en $x_k$.
+
+\end{enumerate}
+
+Toutefois, la non-convergence de la méthode de Newton-Raphson est le plus souvent due au mauvais choix de la valeur initiale $x_{0}$. Il est important d'itérer à partir d'une estimation de la solution voulue.
+
 \begin{exemple}
-    On considère la fonction $G:\mathbb R^n\rightarrow \mathbb R^n$ définie par $G(x)=\left(\lvert x_i\rvert^{\frac12}\right)_{1\leq i\leq n}$. La méthode itérative de Newton-Raphson mène à $x_{k+1}=-x_k$. Les détails du calcul sont précisés dans l'annexe \ref{ap:calcul-exemple-nr}.
-    \label{ex:newton-raphson-non-differentiable}    
-    La méthode Newton-Raphson ne converge pas, et on oscille entre deux points. Effectivement, comme $G$ n'est pas différentiable en $x_k=\overrightarrow 0$, la matrice jacobienne n'est pas valable pour en ce point. Pour toute valeur $x_0\neq \overrightarrow 0$, l'algorithme ne convergera pas. Ci-dessous, les itérations pour la fonction $G$ lorsque $n=1$.
+    On considère la fonction $G:\mathbb R^n\rightarrow \mathbb R^n$ définie par $G(x)=\left(\lvert x_i\rvert^{\frac12}\right)_{1\leq i\leq n}$. La méthode itérative de Newton-Raphson mène à $x_{k+1}=-x_k$. \footnote{Les détails du calcul sont précisés dans l'annexe \ref{ap:calcul-exemple-nr}.}
+    \label{ex:newton-raphson-non-differentiable}
+    La méthode Newton-Raphson ne converge pas, et on oscille entre deux points. Effectivement, comme $G$ n'est pas différentiable en $x_k=\overrightarrow 0$, la matrice jacobienne n'est pas valable pour en ce point. Pour toute valeur $x_0\neq \overrightarrow 0$, l'algorithme ne convergera pas. En figure \ref{fig:nr-iterations-2}, les itérations pour la fonction $G$ lorsque $n=1$.
     \begin{figure}[htbp]
         \centering
         \includegraphics[width = 0.3\textwidth]{iteration-newton-2.png}
@@ -189,42 +222,30 @@ Il n'existe pas de développement de Taylor au voisinage de la racine $x_*$. C'e
     \end{figure}
 \end{exemple}
 
-\subsubsection{Matrice jacobienne nulle}
-La matrice jacobienne peut être nulle, dans ce cas-là la méthode est "bloquée" : $x_{k+1} = x_k$. Ce cas de non-convergence correspond en deux dimensions à la pente nulle de la tangente en $x_k$.
-
-\subsection{Résultats connus}
-
-
-\subsection{Qualités et faiblesses}
-\subsubsection{Convergence}
-La méthode de Newton-Raphson est remarquable car sa convergence est quadratique au voisinage de la solution, donc pour un $x_{0}$ suffisament proche de la solution $x^{*}$ la méthode converge très vite: 
-\newline
-$||x_{k+1}-x^{*} \leq ||x_{k}- x^{*}||^{2}, \qquad \gamma >0$ 
-\newline
-Cependant, cela n'est vrai que si $x_{0}$ est proche de $x{*}$, ce qui diminue l'interet de cette méthode.
-On peut contourner ce problème en ajoutant une phase de recherche linéaire lorsque la Hessienne de $f$: $\nabla ^{2}f$ est définie positive, ce qui n'est pas toujours le cas. Si la Hessienne est définie positive on aura comme direction de descente:
-\newline
-$d_{k} = -\nabla ^{2}f(x_{k})^{-1} \nabla f(x_{k}) $
-
-\subsubsection{Vers les méthodes de quasi-Newton}
-Si la Hessienne de $f$ n'est pas définie positive, il n'est pas possible de faire une recherche linéaire. Cependant il est possible d'en faire une approximation $H_{k]$ ce qui permet de trouver les racines de $f$, les méthodes qui utilisent ces approximations sont des méthodes de quasi-Newton.
-
-\subsubsection{Cas de non convergence}
-Dans certains cas, la méthode de Newton-Raphson ne converge pas.
-\newline
-Si la dérivée première de la fonction $f$: $f'(x)$ n'a pas un comportement normal (par exemple si la fonction n'est pas différenciable au point $x^{*}$) au voisinage de la racine, la méthode ne va pas converger. 
-De même, si lors de l'utilisation de la méthode, l'algorithme arrive sur un minimum ou un maximum local, l'algorithme va s'arrêter car la dérivée sera nulle et une division par zéro est impossible.
-Toutefois, la non-convergence de la méthode de Newton-Raphson est le plus souvent dûe à une mauvaise estimation de $x_{0}$.
-
 \subsubsection{Cas de convergence lente}
-Si la racine recherchée est de multiplicité supérieure à 1, la convergence n'est plus quadratique mais presque linéaire. Cependant, si cette multiplicité est connue il est possible de modifier la méthode pour retrouver une convergence quadratique. En notant $m$ la mutiplicité, on obtient:
-\newline
-$x_{n+1}=x_{n}-m\frac{f(x_{n})}{f'(x_{n})}$
-\newline
-Enfin, s'il existe deux racines, proches l'une de l'autre, l'algorithme aura besoin de plusieurs itérations pour s'approcher de l'une d'entre elles.
-\subsubsection{Coût de la méthode}
-Le coût de la méthode de Newton peut être important. En effet, à chaque itération, il est nécessaire d’évaluer la dérivée de $f$ au point $x_{k}$: $\nabla f(x_{k})$ et la Hessienne de $f$ au point $x_{k}$: $\nabla ^{2}f$. Or, cette évaluation est relativement coûteuse.
+Lorsqu'une racine est au moins de multiplicité 2, alors la convergence n'est plus d'ordre quadratique mais presque linéaire. Cependant, si cette multiplicité est connue, il est possible de modifier la méthode pour retrouver une convergence quadratique locale. En notant $m$ cette mutiplicité, on obtient :
+% TODO : Jacobien ? 
+\begin{equation*}
+    x_{n+1}=x_{n}-m\frac{f(x_{n})}{f'(x_{n})}    
+\end{equation*}
 
+\subsubsection{Proximité des racines}
+S'il existe deux racines, proches l'une de l'autre, l'algorithme aura besoin de plusieurs itérations pour s'approcher de l'une d'entre elles. La méthode de Newton-Raphson est sensible 
+
+\subsubsection{Coût de la méthode}
+Le coût de calcul de la méthode de Newton est important. En effet, à chaque itération, il est nécessaire d’évaluer la jacobienne de $f$. Or, cette évaluation est relativement coûteuse.
+
+\subsection{Application à l'optimisation mono-objectif} 
+% Introduction objectif. Redéfinition méthode de newton raphson.
+
+\subsubsection{Convergence restreinte au voisinage de $x_*$}
+Ce problème peut être résolu en ajoutant une phase de recherche linéaire lorsque la Hessienne de $f$: $\nabla ^{2}f$ est définie positive, ce qui n'est pas toujours le cas. Si la Hessienne est définie positive on aura comme direction de descente :
+
+\begin{equation*}
+    d_{k} = -\nabla ^{2}f(x_{k})^{-1} \nabla f(x_{k})
+\end{equation*}
+\subsubsection{Vers les méthodes de quasi-Newton}
+Si la Hessienne de $f$ n'est pas définie positive, il n'est pas possible de faire une recherche linéaire. Cependant il est possible d'en faire une approximation $H_{k}$ ce qui permet de trouver les racines de $f$, les méthodes qui utilisent ces approximations sont des méthodes de quasi-Newton.
 
 \section{Méthode de BFGS}
 \subsection{Origines}
@@ -295,10 +316,19 @@ Le coût de la méthode de Newton peut être important. En effet, à chaque ité
 % \paragraph{Prise en main du langage}
 % \paragraph{Temps de calcul}
 \subsubsection{Alternatives}
+
+L'utilisation de SCILAB pour implémenter des algorithmes d'optimisation manuellement a été limitée à l'utilisation des outils standard. Une alternative à l'utilisation de l'expression analytique de la dérivée est la différentiation automatique. Sur des fonctions complexes dont l'expression analytique est difficile à calculer, les résultats obtenus sont possiblements convaincants. L'optimisation de programmes utilisant ces techniques est cependant complexe, car elle nécessite une compréhension poussée de la différentiation automatique, notamment de la construction du graphe de calcul. SCILAB possède quelques librairies de différentiation automatique (sciad, diffcode). Eventuellement, l'implémentation des algorithmes aurait pu se détacher de l'interpréteur de SCILAB, et préférer compiler le code en C (en utilisant une librairie de conversion Scilab2C par exemple) en espérant que le code compilé ait une meilleure performance d'exécution que le code interprété. 
+
+Concernant les logiciels d'analyse numérique, la première alternative qui surgit à l'esprit est MATLAB. L'interpréteur de MATLAB est sans équivoque supérieur à celui de SCILAB, moyennant son aspect propriétaire et commercial. 
+
+Egalement, on peut reprocher à SCILAB et MATLAB de restreindre les utilisateurs à un langage de programmation spécifique. Le concurrent populaire sur ce point est l'utilisation du Python, notamment les librairies SciPy et NumPy qui offrent un panel très complet d'outils. La popularité du Python est due en grande partie à la facilité d'apprendre le langage. La présence d'une communauté active et impliquée est aussi l'un de ses points forts. La présence dominante de framework/librairies (PyTorch, NumPy, CuPy, ...) en Python en fait l'un des langages de programmations majeurs.
+\begin{enumerate}
+    \item 
+\end{enumerate}
 \section{Applications}
 \subsection{Problème 1 : ...}
 % \paragraph{Indicateur 1 : courbe de convergence (exemple)}
-
+\cleardoublepage
 \begin{appendices}
     \section{Détails de calcul de l'exemple \ref{ex:newton-raphson-non-differentiable}}
     \label{ap:calcul-exemple-nr}
@@ -317,17 +347,19 @@ Le coût de la méthode de Newton peut être important. En effet, à chaque ité
 
     \begin{align*}
         x_{k+1} & = x_k - \left(\frac{(x_k)_i}{2\lvert (x_k)_i\rvert^{\frac32}}\right)_{1\leq i\leq n}\cdot \lvert (x_k)_i\vert ^{\frac12} \\
-                & = x_k - \left(\frac{2\lvert (x_k)_i \rvert^{2}}{(x_k)_i}\right)_{1\leq i\leq n}\\
-                & = x_k - 2x_k\\
+                & = x_k - \left(\frac{2\lvert (x_k)_i \rvert^{2}}{(x_k)_i}\right)_{1\leq i\leq n}                                          \\
+                & = x_k - 2x_k                                                                                                             \\
         x_{k+1} & = - x_k
     \end{align*}
 \end{appendices}
 
 % Bibliographie
-% http://merkel.texture.rocks/Latex/natbib.php?lang=fr
-\bibliographystyle{elsarticle-num-names}
+% http://merkel.texture.rocks/Latex/natbib.php?lang=f
+\cleardoublepage
+\nocite{*}
+\biboptions{numbers}
+\bibliographystyle{elsarticle-num}
 \bibliography{bibliographie}
-
 \phantomsection
 \addcontentsline{toc}{section}{Références}
 
