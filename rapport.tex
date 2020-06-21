@@ -150,11 +150,11 @@ La méthode de Newton-Raphson est une méthode de recherche des racines de fonct
     \end{exemple}
 \end{rmk}
 \begin{rmk}
-    Il est important que la fonction $G$ admette un développement de Taylor d'ordre 1 dans un voisinage des racines $x_*$. En effet, l'existence de ce développement justifie la convergence de la méthode itérative. Itérativement, on contraint la suite $(x_k)_{k\in \mathbb{N}}$ telle qu'à toute itération $k$, $G(x_{k+1})=0$. On considère le développement de Taylor d'ordre 1 au voisinage de $x_{k}$.
+    Il est important que la fonction $G$ admette un développement de Taylor d'ordre 1 dans un voisinage des racines $x_*$. En effet, l'existence de ce développement justifie en partie la convergence de la méthode itérative. Itérativement, on souhaite contraindre la suite $(x_k)_{k\in \mathbb{N}}$ telle qu'à toute itération $k$, $G(x_{k+1})=0$. On considère le développement de Taylor \textit{d'ordre 1} au voisinage de $x_{k}$.
     \begin{equation*}
         G(x_{k+1})\simeq G(x_k)+\Jacobian_G(x_k)\cdot(x_{k+1}-x_k)
     \end{equation*}
-    Pour s'approcher d'une racine de $G$, on applique la contrainte du problème $G(x_{k+1})=0$, et on en déduit l'expression de l'équation \ref{eq:iteration-newton-rn}. Ainsi, la suite s'approche bien d'un $x_{k+1}$, racine de $G$. L'erreur à chaque itération est dûe à l'approximation par le développement de Taylor : on a négligé son reste.
+    Dans l'idée, pour s'approcher d'une racine de $G$, on applique la contrainte souhaitée $G(x_{k+1})=0$, et on en déduit l'expression de l'équation \ref{eq:iteration-newton-rn}. L'erreur à chaque itération est dûe à l'approximation par le développement de Taylor : on a négligé son reste.
 \end{rmk}
 \begin{rmk}
     La méthode de Newton-Raphson peut être appliquée aux fonctions holomorphes, fonctions à valeurs complexes, définie et dérivable en tout point d'un ouvert de $\mathbb{C}$.
@@ -168,7 +168,7 @@ La formule itérative équivalente est la suivante :
     x_{k+1}=x_k-\frac{g(x_k)}{g'(x_k)}
     \label{eq:iteration-newton-r2}
 \end{equation}
-En passant tous les membres à gauche dans l'équation \ref{eq:iteration-newton-r2}, on se retrouve avec $g'(x_k)(x_{k+1}-x_k)+g(x_k)=0$. On reconnaît ici l'équation de la tangente à $g$ en $x=x_k$ évaluée au point $(x_{k+1},0)$.
+En passant tous les membres à gauche dans l'équation \ref{eq:iteration-newton-r2}, on obtient $g'(x_k)(x_{k+1}-x_k)+g(x_k)=0$. On reconnaît ici l'équation de la tangente à $g$ en $x=x_k$ évaluée au point $(x_{k+1},0)$.
 Ce point correspond à l'intersection entre la tangente à $g$ en $x_k$ et la droite des abscisses.
 
 La figure \ref{fig:nr-iterations-1} fournit un exemple visuel des itérations de la méthode de Newton-Raphson en deux dimensions. La fonction $g$ est définie par $g(x)=\frac{1}{12}x^3+\frac18x^2-3x$, et on choisit comme valeur de recherche initiale $x_0=-3.5$. On dessine les tangentes successives, et leurs intersections, jusqu'à s'approcher raisonnablement d'une racine de $g$.
@@ -194,21 +194,20 @@ La convergence est d'ordre quadratique au voisinage d'une solution. Si la suite 
     \label{eq:convergence-nr}
 \end{equation*}
 
-La méthode de Newton-Raphson converge quadratiquement au voisinage d'une solution, ce qui est remarquable. Malheureusement, cet ordre de convergence n'est valable que localement, ce qui limite son intérêt.
+La méthode de Newton-Raphson converge quadratiquement au voisinage d'une solution, ce qui est remarquable. Malheureusement, cet ordre de convergence n'est valable que localement, ce qui limite son intérêt. De plus, il est généralement difficile d'expliciter "le voisinage de $x_*$".
 
 \subsubsection{Cas de non convergence}
 Dans certains cas, la méthode de Newton-Raphson ne converge pas.
 
-\begin{enumerate}
-    \item \textbf{Domaine de définition} - Le calcul de $x_{k+1}$ peut mener à une valeur en dehors du domaine de définition $\Omega$ de $G$.
+ \textbf{Domaine de définition} - Le calcul de $x_{k+1}$ peut mener à une valeur en dehors du domaine de définition $\Omega$ de $G$.
 
-    \item \textbf{Différentiabilité} - Si le gradient de la fonction $G$, $\Jacobian_G(x)$ a un comportement anormal, e.g. il n'est pas définie au voisinage d'une racine $x_*$, c'est-à-dire que $G$ n'est pas différentiable en $x_*$, alors la méthode ne peut pas converger.
+ \textbf{Différentiabilité} - Si le gradient de la fonction $G$, $\Jacobian_G(x)$ a un comportement anormal, e.g. il n'est pas définie au voisinage d'une racine $x_*$, c'est-à-dire que $G$ n'est pas différentiable en $x_*$, alors la méthode ne peut pas converger.
 
-    \item \textbf{Optimum} - Au cours des itérations de la méthode, l'algorithme peut éventuellement s'arrêter sur un optimum. La méthode oscille (ou s'arrête si on doit diviser par 0), car la matrice jacobienne sera nul. La matrice jacobienne peut être nulle, dans ce cas-là la méthode est "bloquée" : $x_{k+1} = x_k$. Ce cas de non-convergence correspond en deux dimensions à la pente nulle de la tangente en $x_k$.
+ \textbf{Optimum} - Au cours des itérations de la méthode, l'algorithme peut éventuellement s'arrêter sur un optimum. La méthode oscille (ou s'arrête si on doit diviser par 0), car la matrice jacobienne sera nul. La matrice jacobienne peut être nulle, dans ce cas-là la méthode est "bloquée" : $x_{k+1} = x_k$. Ce cas de non-convergence correspond en deux dimensions à la pente nulle de la tangente en $x_k$.
 
-\end{enumerate}
+\textbf{Valeur initiale} - Toutefois, la non-convergence de la méthode de Newton-Raphson est le plus souvent due au mauvais choix de la valeur initiale $x_{0}$. Il est important d'itérer à partir d'une estimation raisonnable de la solution voulue.
 
-Toutefois, la non-convergence de la méthode de Newton-Raphson est le plus souvent due au mauvais choix de la valeur initiale $x_{0}$. Il est important d'itérer à partir d'une estimation de la solution voulue.
+\textbf{Convergence} - En somme, pour une fonction quelconque, il n'existe aucune garantie que la méthode de Newton-Raphson converge. Il faudra s'assurer que la fonction ait certaines propriétés particulières - notamment sa stricte convexité - pour appliquer la méthode de Newton-Raphson à un problème d'optimisation. 
 
 \begin{exemple}
     On considère la fonction $G:\mathbb R^n\rightarrow \mathbb R^n$ définie par $G(x)=\left(\lvert x_i\rvert^{\frac12}\right)_{1\leq i\leq n}$. La méthode itérative de Newton-Raphson mène à $x_{k+1}=-x_k$. \footnote{Les détails du calcul sont précisés dans l'annexe \ref{ap:calcul-exemple-nr}.}
@@ -229,8 +228,9 @@ Lorsqu'une racine est au moins de multiplicité 2, alors la convergence n'est pl
     x_{n+1}=x_{n}-m\frac{f(x_{n})}{f'(x_{n})}    
 \end{equation*}
 
-\subsubsection{Proximité des racines}
-S'il existe deux racines, proches l'une de l'autre, l'algorithme aura besoin de plusieurs itérations pour s'approcher de l'une d'entre elles. La méthode de Newton-Raphson est sensible 
+\begin{rmk}
+S'il existe deux racines, proches l'une de l'autre, l'algorithme aura besoin de plusieurs itérations pour s'approcher de l'une d'entre elles.
+\end{rmk}
 
 \subsubsection{Coût de la méthode}
 Le coût de calcul de la méthode de Newton est important. En effet, à chaque itération, il est nécessaire d’évaluer la jacobienne de $f$. Or, cette évaluation est relativement coûteuse.
