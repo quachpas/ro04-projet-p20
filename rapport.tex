@@ -112,8 +112,11 @@
 \section{Notations}
 \begin{enumerate}
     \item $\Jacobian_{f}(x)$ désigne la matrice jacobienne de la fonction $f$ évaluée en $x$.
+    \item $\nabla f(x)$ désigne le gradient de la fonction $f$ évaluée en $x$.
     \item $\Hessian_{f}(x)$ désigne la matrice hessienne de la fonction $f$ évaluée en $x$.
+    \item $\nabla^2_{f}(x)$ désigne la dérivée du gradient de la fonction $f$ évaluée en $x$.
 \end{enumerate}
+
 \section{Méthode de Newton}
 \subsection{Origines}
 La méthode de Newton apparaît pour la première fois au XVIIème siècle dans l'ouvrage \emph{De analysi per aequationes numero terminorum infinitas} (1669), puis une seconde fois dans \textit{La méthode des fluxions\footnote{Les fluxions représentent des dérivées}, et les suites infinies}\footnote{Voir \cite{book:newtonfluxions}}, tous deux écrits par Isaac Newton. Elle est à l'époque appliquée au cas particulier des recherches des racines d'un polynôme. Ses travaux ne seront malheureusement publiés que de façon posthume à partir de 1736. Cette méthode est simplifiée par Joseph Raphson dans \textit{Analysis aequationum universalis} (1690), et c'est généralement la version de Raphson qui est utilisée aujourd'hui. Pour ces raisons, on a tendance à parler de la méthode de Newton-Raphson. Les travaux de Thomas Simpson élargissent cette méthode itérative à la recherche de racines d'un plus grande nombre d'équations, notamment les équations non linéaires.
@@ -203,7 +206,7 @@ Dans certains cas, la méthode de Newton-Raphson ne converge pas.
 
  \textbf{Différentiabilité} - Si le gradient de la fonction $G$, $\Jacobian_G(x)$ a un comportement anormal, e.g. il n'est pas définie au voisinage d'une racine $x_*$, c'est-à-dire que $G$ n'est pas différentiable en $x_*$, alors la méthode ne peut pas converger.
 
- \textbf{Optimum} - Au cours des itérations de la méthode, l'algorithme peut éventuellement s'arrêter sur un optimum. La méthode oscille (ou s'arrête si on doit diviser par 0), car la matrice jacobienne sera nul. La matrice jacobienne peut être nulle, dans ce cas-là la méthode est "bloquée" : $x_{k+1} = x_k$. Ce cas de non-convergence correspond en deux dimensions à la pente nulle de la tangente en $x_k$.
+ \textbf{Optima locaux} - Au cours des itérations de la méthode, l'algorithme peut éventuellement s'arrêter sur un optimum. La méthode oscille (ou s'arrête si on doit diviser par 0), car la matrice jacobienne sera nul. La matrice jacobienne peut être nulle, dans ce cas-là la méthode est "bloquée" : $x_{k+1} = x_k$. Ce cas de non-convergence correspond en deux dimensions à la pente nulle de la tangente en $x_k$.
 
 \textbf{Valeur initiale} - Toutefois, la non-convergence de la méthode de Newton-Raphson est le plus souvent due au mauvais choix de la valeur initiale $x_{0}$. Il est important d'itérer à partir d'une estimation raisonnable de la solution voulue.
 
@@ -212,7 +215,7 @@ Dans certains cas, la méthode de Newton-Raphson ne converge pas.
 \begin{exemple}
     On considère la fonction $G:\mathbb R^n\rightarrow \mathbb R^n$ définie par $G(x)=\left(\lvert x_i\rvert^{\frac12}\right)_{1\leq i\leq n}$. La méthode itérative de Newton-Raphson mène à $x_{k+1}=-x_k$. \footnote{Les détails du calcul sont précisés dans l'annexe \ref{ap:calcul-exemple-nr}.}
     \label{ex:newton-raphson-non-differentiable}
-    La méthode Newton-Raphson ne converge pas, et on oscille entre deux points. Effectivement, comme $G$ n'est pas différentiable en $x_k=\overrightarrow 0$, la matrice jacobienne n'est pas valable pour en ce point. Pour toute valeur $x_0\neq \overrightarrow 0$, l'algorithme ne convergera pas. En figure \ref{fig:nr-iterations-2}, les itérations pour la fonction $G$ lorsque $n=1$.
+    La méthode Newton-Raphson ne converge pas, et on oscille entre deux points. Effectivement, comme $G$ n'est pas différentiable en $x_k=\overrightarrow 0$, la matrice jacobienne n'y est pas définie. Pour toute valeur $x_0\neq \overrightarrow 0$, l'algorithme ne convergera pas. En figure \ref{fig:nr-iterations-2}, les itérations pour la fonction $G$ lorsque $n=1$.
     \begin{figure}[htbp]
         \centering
         \includegraphics[width = 0.3\textwidth]{iteration-newton-2.png}
@@ -221,7 +224,7 @@ Dans certains cas, la méthode de Newton-Raphson ne converge pas.
     \end{figure}
 \end{exemple}
 
-\subsubsection{Cas de convergence lente}
+\subsubsection{Cas de convergence lente $f:\mathbb{R}\rightarrow \mathbb{R}$}
 Lorsqu'une racine est au moins de multiplicité 2, alors la convergence n'est plus d'ordre quadratique mais presque linéaire. Cependant, si cette multiplicité est connue, il est possible de modifier la méthode pour retrouver une convergence quadratique locale. En notant $m$ cette mutiplicité, on obtient :
 % TODO : Jacobien ? 
 \begin{equation*}
@@ -236,6 +239,10 @@ S'il existe deux racines, proches l'une de l'autre, l'algorithme aura besoin de 
 Le coût de calcul de la méthode de Newton est important. En effet, à chaque itération, il est nécessaire d’évaluer la jacobienne de $f$. Or, cette évaluation est relativement coûteuse.
 
 \subsection{Application à l'optimisation mono-objectif} 
+La recherche de l'optimum global d'une fonction s'apparente à la recherche des zéros de son gradient. 
+\begin{definition}
+    Soit une fonction $f:\Omega \in \mathbb{R}^n\rightarrow \mathbb{R}$, $f$ deux fois continûment dérivable, strictement convexe et de hessienne K-lipschitzienne.
+\end{definition}
 % Introduction objectif. Redéfinition méthode de newton raphson.
 
 \subsubsection{Convergence restreinte au voisinage de $x_*$}
