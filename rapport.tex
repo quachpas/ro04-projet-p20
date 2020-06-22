@@ -35,6 +35,7 @@
 \usepackage{pdfpages}
 \usepackage{caption}
 \usepackage{titletoc}
+\usepackage{mathrsfs}
 \usepackage[table]{xcolor}
 \usepackage{minted}
 \usepackage[french]{algorithm2e}% http://tug.ctan.org/macros/latex/contrib/algorithm2e/doc/algorithm2e.pdf
@@ -133,7 +134,7 @@ La méthode de Newton-Raphson est une méthode de recherche des racines de fonct
 \begin{definition}
     Étant donné une fonction $G: \Omega\subset\mathbb{R}^n\longrightarrow \mathbb{R}^m$, $G\in C^1$ et une valeur initiale $x_0\in \Omega$ donnée, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par
     \begin{equation}
-        x_{k+1} = x_k - \Jacobian^{-1}_G(x)\cdot G(x_k)
+        x_{k+1} = x_k - \Jacobian^{-1}_G(x_k)\cdot G(x_k)
         \label{eq:iteration-newton-rn}
     \end{equation}
     converge vers une racine $x_*$ de $G$, à condition que $x_0$ soit suffisamment proche de $x_*$.
@@ -238,19 +239,39 @@ S'il existe deux racines, proches l'une de l'autre, l'algorithme aura besoin de 
 \subsubsection{Coût de la méthode}
 Le coût de calcul de la méthode de Newton est important. En effet, à chaque itération, il est nécessaire d’évaluer la jacobienne de $f$. Or, cette évaluation est relativement coûteuse.
 
-\subsection{Application à l'optimisation mono-objectif} 
-La recherche de l'optimum global d'une fonction s'apparente à la recherche des zéros de son gradient. 
+\subsection{Application à l'optimisation mono-objectif}
+La recherche de l'optimum d'une fonction s'apparente à la recherche des zéros de son gradient.
+Soit le problème d'optimisation, avec $f:\Omega \subset \mathbb{R}^n \rightarrow \mathbb{R}$
+\begin{equation}
+    (\mathscr{P}):\quad\min_{x\in \Omega} f(x)
+    \label{eq:probleme-opt}
+\end{equation}
+La méthode de Newton-Raphson peut donc être appliquée au problème d'optimisation (\ref{eq:probleme-opt}) en choisissant $g(x)=\nabla(f(x))$.
 \begin{definition}
-    Soit une fonction $f:\Omega \in \mathbb{R}^n\rightarrow \mathbb{R}$, $f$ deux fois continûment dérivable, strictement convexe et de hessienne K-lipschitzienne.
+    Soit une fonction $f:\Omega \in \mathbb{R}^n\rightarrow \mathbb{R}$, deux fois continûment dérivable, strictement convexe et de hessienne K-lipschitzienne dans un voisinage de $x_*$. Soit une valeur initiale $x_0\in Omega$, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par
+    \begin{equation}
+        x_{k+1}=x_k-\nabla^{-2}f(x_k)\cdot \nabla f(x_k)
+        \label{eq:nr-opt-mono}
+    \end{equation}
+    converge vers $x_*$ le minimum de $f$.
 \end{definition}
-% Introduction objectif. Redéfinition méthode de newton raphson.
+
 
 \subsubsection{Convergence restreinte au voisinage de $x_*$}
-Ce problème peut être résolu en ajoutant une phase de recherche linéaire lorsque la Hessienne de $f$: $\nabla ^{2}f$ est définie positive, ce qui n'est pas toujours le cas. Si la Hessienne est définie positive on aura comme direction de descente :
-
+Encore une fois, l'intérêt de la méthode de Newton-Raphson est limitée par la restriction locale de la valeur initiale $x_0$.
+Ce problème peut être résolu en ajoutant une phase de recherche linéaire dans la directiion
 \begin{equation*}
     d_{k} = -\nabla ^{2}f(x_{k})^{-1} \nabla f(x_{k})
 \end{equation*}
+Compte tenu des propriétés choisies pour $f$, $d_k$ est une direction de descente en $x_k$. En effet, la stricte convexité de $f$ implique que la hessienne soit strictement définie positive. 
+\begin{rmk}
+    Si la stricte convexité de $f$ n'est pas vérifiée, il faudra vérifier que la hessienne est strictement définie positive. Ce résultat n'est pas garanti, on sait tout au plus que $\nabla^2f(x_*)>0$.
+\end{rmk}
+
+\subsubsection{Optima locaux}
+La convergence de la méthode de Newton-Raphson n'implique l'obtention d'un minimum global de $f$, particulièrement si la valeur initiale $x_0$ est mal choisie. La fonction peut posséder plusieurs minima. Pour pallier à ce problème, différents algorithmes génétiques ont été conçus. Parmi eux, la méthode \textit{Hybrid Genetic Deflated Newton} (HGBN) \cite{art:Noack_Funke_2017} est particulièrement équipée pour optimiser des fonctions qui possède de nombreux optima locaux. HGBN consiste en l'application locale de multiples algorithmes de Newton-Raphson pour identifier des optima et les rendre introuvable ($deflate$). 
+% TODO : finir paragraphe
+
 \subsubsection{Vers les méthodes de quasi-Newton}
 Si la Hessienne de $f$ n'est pas définie positive, il n'est pas possible de faire une recherche linéaire. Cependant il est possible d'en faire une approximation $H_{k}$ ce qui permet de trouver les racines de $f$, les méthodes qui utilisent ces approximations sont des méthodes de quasi-Newton.
 
