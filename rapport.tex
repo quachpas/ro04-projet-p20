@@ -132,7 +132,7 @@ La méthode de Newton apparaît pour la première fois au XVIIème siècle dans 
 \subsection{Principe}
 La méthode de Newton-Raphson est une méthode de recherche des racines de fonctions à valeurs réelles.
 \begin{definition}
-    Étant donné une fonction $G: \Omega\subset\mathbb{R}^n\longrightarrow \mathbb{R}^m$, $G\in C^1$ et une valeur initiale $x_0\in \Omega$ donnée, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par
+    Étant donné une fonction $G: \Omega\subset\mathbb{R}^n\longrightarrow \mathbb{R}^m$, $G$ différentiable et une valeur initiale $x_0\in \Omega$ donnée, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par
     \begin{equation}
         x_{k+1} = x_k - \Jacobian^{-1}_G(x_k)\cdot G(x_k)
         \label{eq:iteration-newton-rn}
@@ -140,7 +140,7 @@ La méthode de Newton-Raphson est une méthode de recherche des racines de fonct
     converge vers une racine $x_*$ de $G$, à condition que $x_0$ soit suffisamment proche de $x_*$.
 \end{definition}
 \begin{rmk}
-    $\Jacobian_G$ est préférablement inversible. Si la matrice n'est pas carrée, on peut se servir du pseudo-inverse de matrices non-carrés; à gauche s'il y a plus de contraintes que de variables; à droite s'il y a plus de variables que de contraintes. Si la matrice est carrée non inversible, on peut se servir du pseudo-inverse de Moore-Penrose. 
+    $\Jacobian_G$ est préférablement inversible. Si la matrice n'est pas carrée, on peut se servir du pseudo-inverse de matrices non-carrés; à gauche s'il y a plus de contraintes que de variables; à droite s'il y a plus de variables que de contraintes. Si la matrice est carrée non inversible, on peut se servir du pseudo-inverse de Moore-Penrose.
     \begin{exemple}
         Trouver les racines de $F
         \begin{pmatrix}
@@ -246,37 +246,68 @@ Soit le problème d'optimisation, avec $f:\Omega \subset \mathbb{R}^n \rightarro
     (\mathscr{P}):\quad\min_{x\in \Omega} f(x)
     \label{eq:probleme-opt}
 \end{equation}
-La méthode de Newton-Raphson peut donc être appliquée au problème d'optimisation (\ref{eq:probleme-opt}) en choisissant $g(x)=\nabla(f(x))$.
+La méthode de Newton-Raphson peut donc être appliquée au problème d'optimisation (\ref{eq:probleme-opt}) en choisissant $g(x)=\nabla f(x)$.
 \begin{definition}
-    Soit une fonction $f:\Omega \in \mathbb{R}^n\rightarrow \mathbb{R}$, deux fois continûment dérivable, strictement convexe et de hessienne K-lipschitzienne dans un voisinage de $x_*$. Soit une valeur initiale $x_0\in Omega$, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par
+    Soit une fonction $f:\Omega \in \mathbb{R}^n\rightarrow \mathbb{R}$, deux fois dérivable, strictement convexe et de hessienne K-lipschitzienne dans un voisinage de $x_*$. Soit une valeur initiale $x_0\in Omega$, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par
     \begin{equation}
-        x_{k+1}=x_k-\nabla^{-2}f(x_k)\cdot \nabla f(x_k)
+        x_{k+1}=x_k-\nabla^{2}f(x_k)^{-1}\cdot \nabla f(x_k)
         \label{eq:nr-opt-mono}
     \end{equation}
-    converge vers $x_*$ le minimum de $f$.
+    converge quadratiquement vers $x_*$, le minimum de $f$, dans son voisinage.
 \end{definition}
 
-
 \subsubsection{Convergence restreinte au voisinage de $x_*$}
-Encore une fois, l'intérêt de la méthode de Newton-Raphson est limitée par la restriction locale de la valeur initiale $x_0$.
-Ce problème peut être résolu en ajoutant une phase de recherche linéaire dans la directiion
+Encore une fois, l'intérêt de la méthode de Newton-Raphson est limitée par la restriction sur la valeur initiale $x_0$ qui doit être dans un voisinage de $x_*$.
+Ce problème peut être résolu en ajoutant une phase de recherche linéaire dans la direction
 \begin{equation*}
     d_{k} = -\nabla ^{2}f(x_{k})^{-1} \nabla f(x_{k})
 \end{equation*}
-Compte tenu des propriétés choisies pour $f$, $d_k$ est une direction de descente en $x_k$. En effet, la stricte convexité de $f$ implique que la hessienne soit strictement définie positive. 
+telle que la suite $(x_k)_{k\in \mathbb{N}}$ soit définie par
+\begin{equation}
+    x_{k+1}=x_k+t_k\cdot d_k
+    \label{eq:nr-opt-mono}
+\end{equation} 
+avec $t_k$ le pas résultant d'une recherche linéaire.
+Compte tenu des propriétés choisies pour $f$, $d_k$ est une direction de descente en $x_k$. En effet, la stricte convexité de $f$ implique que la hessienne soit strictement définie positive.
 \begin{rmk}
-    Si la stricte convexité de $f$ n'est pas vérifiée, il faudra vérifier que la hessienne est strictement définie positive. Ce résultat n'est pas garanti, on sait tout au plus que $\nabla^2f(x_*)>0$.
+    Si la stricte convexité de $f$ n'est pas vérifiée, il faudra vérifier que la hessienne est strictement définie positive. Ce résultat n'est pas garanti. S'il existe une solution au problème, on sait tout au plus que $\nabla^2f(x_*)>0$.
 \end{rmk}
 
 \subsubsection{Optima locaux}
-La convergence de la méthode de Newton-Raphson n'implique l'obtention d'un minimum global de $f$, particulièrement si la valeur initiale $x_0$ est mal choisie. La fonction peut posséder plusieurs minima. Pour pallier à ce problème, différents algorithmes génétiques ont été conçus. Parmi eux, la méthode \textit{Hybrid Genetic Deflated Newton} (HGBN) \cite{art:Noack_Funke_2017} est particulièrement équipée pour optimiser des fonctions qui possède de nombreux optima locaux. HGBN consiste en l'application locale de multiples algorithmes de Newton-Raphson pour identifier des optima et les rendre introuvable ($deflate$). 
-% TODO : finir paragraphe
+Cependant, la convergence de la méthode de Newton-Raphson n'implique pas l'obtention d'un minimum global de $f$, particulièrement si la valeur initiale $x_0$ est mal choisie. La fonction peut posséder plusieurs minima. Pour pallier à ce problème, différents solutions existent. Parmi elles, des méthodes hybrides (utilisation d'un algorithme génétique en parallèle de la méthode) ont été développé.
+
+La méthode \textit{Hybrid Genetic Deflated Newton} (HGBN) \cite{art:Noack_Funke_2017} est particulièrement équipée pour optimiser des fonctions qui possède de nombreux optima locaux. Elle consiste en l'application locale de multiples algorithmes de Newton-Raphson sur une population d'individus - les valeurs initiales - pour identifier des optima et les rendre introuvable ($deflation$). La nouvelle génération est sélectionnée par survie du plus adapté, et on recherche de nouveau les optima jusqu'à les avoir tous trouvé.
+
+HGBN converge vers un optimum global, et réduit significativement le nombre d'évaluations de fonctions nécessaire. 
+
+\begin{rmk}
+    Concernant la recherche d'un optimum global, une alternative raisonnable serait la méthode du recuit simulé (\textit{simulated annealing} en anglais). Sur des problèmes où l'optimum global est enfoui parmi de multiples optima locaux, le recours à cette méthode est un choix raisonnable, quitte à être contraint à paramétrer l'algorithme manuellement, étant donné que c'est une méthode métaheuristique.
+\end{rmk}
+
+\subsubsection{Nombre d'évaluations, de calcul}
+Les itérations de la méthode de Newton-Raphson nécessite l'évaluation du gradient, et de l'inverse de la hessienne de $f$ (matrice de taille $n\times n$). Dépendant de l'implémentation de l'algorithme, l'inversion de la hessienne de $f$ est également à prendre en compte, e.g. si on décide de ne pas l'inverser manuellement. La méthode de Newton-Raphson est donc informatiquement coûteuse, l'inversion d'une matrice étant souvent implémentée par la résolution d'un système d'équations linéaires.
+
+\subsubsection{Propriétés de $f$}
+La méthode de Newton-Raphson est valable si certaines propriétés de $f$ sont vérifiées : stricte convexité, deux fois différentiable. Cela restreint considérablement le champ d'application de la méthode de Newton-Raphson.
+
+Si la fonction $f$ est seulement convexe, la hessienne de $f$ est semi-définie positive. Elle n'est donc pas forcément inversible. 
 
 \subsubsection{Vers les méthodes de quasi-Newton}
-Si la Hessienne de $f$ n'est pas définie positive, il n'est pas possible de faire une recherche linéaire. Cependant il est possible d'en faire une approximation $H_{k}$ ce qui permet de trouver les racines de $f$, les méthodes qui utilisent ces approximations sont des méthodes de quasi-Newton.
+La nécessité que $f$ soit deux fois différentiable, et strictement convexe, ainsi que le coût relativement élevé de calcul des itérations de la méthode de Newton-Raphson est une faiblesse majeure de l'algorithme.
+
+Cependant, il est possible d'approximer la hessienne (ou son inverse) pour réduire à la fois les restrictions placées sur $f$, et réduire les coûts de calcul. 
 
 \section{Méthode de BFGS}
 \subsection{Origines}
+% Broyden
+% méthodes à métrique variable
+% méthodes sécante générale
+% méthode quasi-Newton
+% Méthode Broyden : parenthèse rapide
+% DFP : correction rang 2, conserve B > 0
+% BFGS : principe (update sur les gradients), modèle quadratique (Taylor), relation quasi-Newton, équation sécante, propriétés (B > 0, forall k, directions conjuguées), recherche linéaire (WolfePoweel ou Goldstein) + remarque V.2.4.
+% Remarques : Famille Broyden, Dualité, Remarques sur l'estimation de l'inverse. (pas toujours le cas), L-BFGS
+% 
 \subsection{Principe}
 \subsection{Résultats connus}
 \subsection{Qualités et faiblesses}
@@ -286,7 +317,7 @@ Si la Hessienne de $f$ n'est pas définie positive, il n'est pas possible de fai
 \subsubsection{Programme}
 \subsubsection{Conditions d'arrêts et précision}
 \subsubsection{Difficultées techniques}
-\subsection{Méthode de Newton}
+\subsection{Méthode de Newton-Raphson}
 \subsubsection{Algorithme}
 \begin{algorithm}[ht]
     \centering{
@@ -302,14 +333,16 @@ Si la Hessienne de $f$ n'est pas définie positive, il n'est pas possible de fai
                     \line{NR-01} \> $g$ := la fonction dont on cherche les racines\\
                     \line{NR-02} \> $\nabla g$ := l'expression analytique du gradient de $g$\\
                     \line{NR-03} \> $k = 0$ := le nombre d'itérations actuels\\
-                    \line{NR-04} \> $x_0 \in \mathbb{R}^n$ := la valeur initiale de recherche\\
-                    \line{NR-05} \> $\varepsilon \in \mathbb{R}^+_*$ := la marge d'erreur acceptable, le critère d'arrêt\\
-                    \line{NR-06} \> $N\in \mathbb{N}$ := le nombre d'itérations maximales\\
+                    \line{NR-04} \> $x_0 \in \Omega$ := la valeur initiale de recherche\\
+                    \line{NR-05} \> $t_k \in \Omega$ := le pas de l'itération $k$,\\
+                    déterminé par une méthode de recherche linéaire\\
+                    \line{NR-06} \> $\varepsilon \in \mathbb{R}^+_*$ := la marge d'erreur acceptable,\\ le critère d'arrêt\\
+                    \line{NR-07} \> $N\in \mathbb{N}$ := le nombre d'itérations maximales\\
                     {\bf Itérations :}\\
-                    \line{NR-07} \> {\bf Tant que} $g(x_k) > \varepsilon$ {\bf ET} $k < N$ {\bf faire :}\\
-                    \line{NR-08} \>\> $x_{k+1} = x_k - \nabla g^{-1}(x_k)\cdot g(x_k)$\\
-                    \line{NR-09} \>\> $N = N+1$\\
-                    \line{NR-10} \>\> $k = k+1$\\
+                    \line{NR-08} \> {\bf Tant que} $g(x_k) > \varepsilon$ {\bf ET} $k < N$ {\bf faire :}\\
+                    \line{NR-09} \>\> $x_{k+1} = x_k - t_k\nabla f^{2}(x_k)^{-2}\cdot \nabla f(x_k)$\\
+                    \line{NR-10} \>\> $N = N+1$\\
+                    \line{NR-11} \>\> $k = k+1$\\
                     %------------------
                 \end{tabbing}
                 \normalsize
