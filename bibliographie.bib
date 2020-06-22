@@ -17,7 +17,13 @@ Liste des types d'entrées : article, book, booklet, inbook, incollection, inpro
   year = "2010",
   pages = "154-"
 }
-
+@misc{poly:quasi-newton-gramfort,
+  author       = {Alexandre Gramfort},
+  title        = {(Quasi-)Newton Methods},
+  month        = {September},
+  url          = {http://www.lix.polytechnique.fr/bigdata/mathbigdata/wp-content/uploads/2014/09/notes_quasi_newton.pdf},
+  year         = {2014}
+}
 @misc{arxiv:kovalev2019stochastic,
   title={Stochastic Newton and Cubic Newton Methods with Simple Local Linear-Quadratic Rates},
   author={Dmitry Kovalev and Konstantin Mishchenko and Peter Richtárik},
@@ -27,47 +33,79 @@ Liste des types d'entrées : article, book, booklet, inbook, incollection, inpro
   primaryClass={cs.LG}
 }
 @article{art:Noack_Funke_2017,
-title={Hybrid genetic deflated Newton method for global optimisation},
-volume={325},
-ISSN={0377-0427}, 
-DOI={10.1016/j.cam.2017.04.047}, 
-abstractNote={Optimisation is a basic principle of nature and has a vast variety of applications in research and industry. There is a plurality of different optimisation procedures which exhibit different strengths and weaknesses in computational efficiency and probability of finding the global optimum. Most methods offer a trade-off between these two aspects. This paper proposes a hybrid genetic deflated Newton (HGDN) method to find local and global optima more efficiently than competing methods. The proposed method is a hybrid algorithm which uses a genetic algorithm to explore the parameter domain for regions containing local minima, and a deflated Newton algorithm to efficiently find their exact locations. In each iteration, identified minima are removed using deflation, so that they cannot be found again. The genetic algorithm is adapted as follows: every individual of every generation of offspring searches its adjacent space for optima using Newton’s method; when found, the optimum is removed by deflation, and the individual returns to its starting position. This procedure is repeated until no more optima can be found. The deflation step ensures that the same optimum is not found twice. In the subsequent genetic step, a new generation of offspring is created, using procreation of the fittest. We demonstrate that the proposed method converges to the global optimum, even for small populations. Furthermore, the numerical results show that the HGDN method can improve the number of necessary function and derivative evaluations by orders of magnitude.}, 
-journal={Journal of Computational and Applied Mathematics}, 
-author={Noack, Marcus M. and Funke, Simon W.}, 
-year={2017}, 
-month={Dec}, 
-pages={97–112} 
+  title={Hybrid genetic deflated Newton method for global optimisation},
+  volume={325},
+  ISSN={0377-0427},
+  DOI={10.1016/j.cam.2017.04.047},
+  abstractNote={Optimisation is a basic principle of nature and has a vast variety of applications in research and industry. There is a plurality of different optimisation procedures which exhibit different strengths and weaknesses in computational efficiency and probability of finding the global optimum. Most methods offer a trade-off between these two aspects. This paper proposes a hybrid genetic deflated Newton (HGDN) method to find local and global optima more efficiently than competing methods. The proposed method is a hybrid algorithm which uses a genetic algorithm to explore the parameter domain for regions containing local minima, and a deflated Newton algorithm to efficiently find their exact locations. In each iteration, identified minima are removed using deflation, so that they cannot be found again. The genetic algorithm is adapted as follows: every individual of every generation of offspring searches its adjacent space for optima using Newton’s method; when found, the optimum is removed by deflation, and the individual returns to its starting position. This procedure is repeated until no more optima can be found. The deflation step ensures that the same optimum is not found twice. In the subsequent genetic step, a new generation of offspring is created, using procreation of the fittest. We demonstrate that the proposed method converges to the global optimum, even for small populations. Furthermore, the numerical results show that the HGDN method can improve the number of necessary function and derivative evaluations by orders of magnitude.},
+  journal={Journal of Computational and Applied Mathematics},
+  author={Noack, Marcus M. and Funke, Simon W.},
+  year={2017},
+  month={Dec},
+  pages={97–112}
 }
-@book{Floudas_Pardalos_2008, 
-title={Encyclopedia of Optimization}, 
-ISBN={9780387747583}, 
-abstractNote={The goal of the Encyclopedia of Optimization is to introduce the reader to a complete set of topics that show the spectrum of research, the richness of ideas, and the breadth of applications that has come from this field. The second edition builds on the success of the former edition with more than 150 completely new entries, designed to ensure that the reference addresses recent areas where optimization theories and techniques have advanced. Particularly heavy attention resulted in health science and transportation, with entries such as “Algorithms for Genomics”, “Optimization and Radiotherapy Treatment Design”, and “Crew Scheduling”.}, 
-note={Google-Books-ID: 1a6lSRbQ4YsC}, 
-publisher={Springer Science \& Business Media}, 
-author={Floudas, Christodoulos A. and Pardalos, Panos M.}, 
-year={2008}, 
-month={Sep}
+@article{art:Margossian_2019,
+  title={A Review of automatic differentiation and its efficient implementation},
+  volume={9},
+  ISSN={1942-4787, 1942-4795},
+  url={http://arxiv.org/abs/1811.05031},
+  DOI={10.1002/WIDM.1305},
+  abstractNote={Derivatives play a critical role in computational statistics, examples being Bayesian inference using Hamiltonian Monte Carlo sampling and the training of neural networks. Automatic differentiation is a powerful tool to automate the calculation of derivatives and is preferable to more traditional methods, especially when differentiating complex algorithms and mathematical functions. The implementation of automatic differentiation however requires some care to insure efficiency. Modern differentiation packages deploy a broad range of computational techniques to improve applicability, run time, and memory management. Among these techniques are operation overloading, region based memory, and expression templates. There also exist several mathematical techniques which can yield high performance gains when applied to complex algorithms. For example, semi-analytical derivatives can reduce by orders of magnitude the runtime required to numerically solve and differentiate an algebraic equation. Open problems include the extension of current packages to provide more specialized routines, and efficient methods to perform higher-order differentiation.},
+  note={arXiv: 1811.05031},
+  number={4},
+  journal={WIREs Data Mining and Knowledge Discovery},
+  author={Margossian, Charles C.},
+  year={2019},
+  month={Jul}
 }
-@article{Margossian_2019, 
-title={A Review of automatic differentiation and its efficient implementation}, 
-volume={9}, 
-ISSN={1942-4787, 1942-4795}, 
-url={http://arxiv.org/abs/1811.05031}, 
-DOI={10.1002/WIDM.1305}, 
-abstractNote={Derivatives play a critical role in computational statistics, examples being Bayesian inference using Hamiltonian Monte Carlo sampling and the training of neural networks. Automatic differentiation is a powerful tool to automate the calculation of derivatives and is preferable to more traditional methods, especially when differentiating complex algorithms and mathematical functions. The implementation of automatic differentiation however requires some care to insure efficiency. Modern differentiation packages deploy a broad range of computational techniques to improve applicability, run time, and memory management. Among these techniques are operation overloading, region based memory, and expression templates. There also exist several mathematical techniques which can yield high performance gains when applied to complex algorithms. For example, semi-analytical derivatives can reduce by orders of magnitude the runtime required to numerically solve and differentiate an algebraic equation. Open problems include the extension of current packages to provide more specialized routines, and efficient methods to perform higher-order differentiation.}, 
-note={arXiv: 1811.05031}, 
-number={4}, 
-journal={WIREs Data Mining and Knowledge Discovery}, 
-author={Margossian, Charles C.}, 
-year={2019}, 
-month={Jul} 
+@inproceedings{in:Greenstadt_1970,
+  title={Variations on Variable-Metric Methods},
+  DOI={10.2307/2004872},
+  abstractNote={In unconstrained minimization of a functions, the method of Davidon-Fletcher- Powell (a “variable-metric” method) enables the inverse of the Hessian H of f to be ap- proximated stepwise, using only values of the gradient of f. It is shown here that, by solv- ing a certain variational problem, formulas for the successive corrections to H can be de- rived which closely resemble Davidon’s. A symmetric correction matrix is sought which minimizes a weighted Euclidean norm, and also satisfies the “DFP condition.” Numerical tests are described, comparing the performance (on four “standard” test functions) of two variationally-derived formulas with Davidon’s. A proof by Y. Bard, modelled on Fletcher and Powell’s, showing that the new formulas give the exact H after N steps, is included in an appendix. 1. The DFP Method. The class of gradient methods for finding the uncon- strained minimum of a function f(x)* in which the direction Sk of the next iterative step from Xk to Xk+l is computed from a formula such as:},
+  author={Greenstadt, John},
+  year={1970}
 }
-@misc{Summary of Optimizers,
-title = "Advanced Design System 2008 - Tuning, Optimization, and Statistical Design",
-author = "Agilent Technologies",
-month = "January",
-year = "2008",
-url={http://literature.cdn.keysight.com/litweb/pdf/ads2008/optstat/ads2008/Summary_of_Optimizers.html#SummaryofOptimizers-SimulatedAnnealingOptimizer}
+@article{art:Davidon_1991,
+  title={Variable Metric Method for Minimization},
+  volume={1},
+  ISSN={1052-6234},
+  DOI={10.1137/0801001},
+  abstractNote={This is a method for determining numerically local minima of differentiable functions of several variables. In the process of locating each minimum, a matrix which characterizes the behavior of the function about the minimum is determined. For a region in which the function depends quadratically on the variables, no more than N iterations are required, where N is the number of variables. By suitable choice of starting values, and without modification of the procedure, linear constraints can be imposed upon the variables.},
+  number={1},
+  journal={SIAM Journal on Optimization},
+  author={Davidon, William C.},
+  year={1991},
+  month={Feb},
+  pages={1–17}
+}
+@article{art:Broyden_1967, 
+title={Quasi-Newton methods and their application to function minimisation}, 
+volume={21}, 
+ISSN={0025-5718, 1088-6842}, 
+DOI={10.1090/S0025-5718-1967-0224273-2}, 
+abstractNote={Advancing research. Creating connections.}, 
+number={99}, 
+journal={Mathematics of Computation}, 
+author={Broyden, C. G.}, 
+year={1967}, 
+pages={368–381} 
+}
+@book{book:Floudas_Pardalos_2008,
+  title={Encyclopedia of Optimization},
+  ISBN={9780387747583},
+  abstractNote={The goal of the Encyclopedia of Optimization is to introduce the reader to a complete set of topics that show the spectrum of research, the richness of ideas, and the breadth of applications that has come from this field. The second edition builds on the success of the former edition with more than 150 completely new entries, designed to ensure that the reference addresses recent areas where optimization theories and techniques have advanced. Particularly heavy attention resulted in health science and transportation, with entries such as “Algorithms for Genomics”, “Optimization and Radiotherapy Treatment Design”, and “Crew Scheduling”.},
+  note={Google-Books-ID: 1a6lSRbQ4YsC},
+  publisher={Springer Science \& Business Media},
+  author={Floudas, Christodoulos A. and Pardalos, Panos M.},
+  year={2008},
+  month={Sep}
+}
+@book{book:SummaryofOptimizers,
+  title = "Advanced Design System 2008 - Tuning, Optimization, and Statistical Design",
+  author = "Agilent Technologies",
+  month = "January",
+  year = "2008",
+  url={http://literature.cdn.keysight.com/litweb/pdf/ads2008/optstat/ads2008/Summary_of_Optimizers.html#SummaryofOptimizers-SimulatedAnnealingOptimizer}
 }
 @book{book:newtonfluxions,
 author    = "Isaac Newton (1642-1727",
@@ -83,6 +121,7 @@ note = "[En ligne; Source : gallica.bnf.fr / BnF]"
   title     = {Analysis aequationum universalis seu ad aequationes algebraicas resolvendas methodus generalis, \& expedita, ex nova infinitarum serierum methodo, deducta ac demonstrata},
   year      = {1690}
 }
+
 @misc{wiki:frmethodenewton,
 author = "Wikipédia",
 title = "Méthode de Newton --- Wikipédia{,} l'encyclopédie libre",

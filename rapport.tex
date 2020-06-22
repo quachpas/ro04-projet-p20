@@ -102,7 +102,7 @@
     \author{Félix Poullet-Pagès}
 
     \begin{abstract}
-        La méthode de Newton est une méthode itérative de recherche d'un zéro d'une fonction $g$, qui se repose sur la méthode du point fixe. Elle requiert cependant le calcul coûteux de la dérivée ou matrice jacobienne de $g$ dans le cas d'une fonction à plusieurs variables, et également son inversion. Les méthodes sont qualifiées de quasi-Newton lorsque la matrice jacobienne - généralement son inverse - sont remplacées par une approximation. Appliquée à un problème d'optimisation mono-objectif, où l'on cherche l'optimum d'une fonction $f:\mathbb{R}^n\rightarrow \mathbb{R}$, la méthode de Newton force le calcul de la matrice hessienne de $f$, car on cherche les zéros du gradient de $f$. La méthode de Broyden-Fletcher-Goldfarb-Shanno (BFGS) est une méthode quasi-Newton qui se repose sur l'approximation de la matrice hessienne - ou son inverse - par analyse des gradients successifs. La matrice hessienne n'est pas calculée à chaque itération de la méthode, mais mise à jour itérativement en prenant une estimation de la matrice hessienne initiale.
+        La méthode de Newton est une méthode itérative de recherche d'un zéro d'une fonction $g$, qui se repose sur la méthode du point fixe. Elle requiert cependant le calcul coûteux de la dérivée ou matrice jacobienne de $g$ dans le cas d'une fonction à plusieurs variables, et également son inversion. Les méthodes sont qualifiées de quasi-Newton lorsque la matrice jacobienne - généralement son inverse - sont remplacées par une approximation. Appliquée à un problème d'optimisation mono-objectif libre, où l'on cherche l'optimum d'une fonction $f:\mathbb{R}^n\rightarrow \mathbb{R}$, la méthode de Newton force le calcul de la matrice hessienne de $f$, car on cherche les zéros du gradient de $f$. La méthode de Broyden-Fletcher-Goldfarb-Shanno (BFGS) est une méthode quasi-Newton qui se repose sur l'approximation de la matrice hessienne - ou son inverse - par analyse des gradients successifs. La matrice hessienne n'est pas calculée à chaque itération de la méthode, mais mise à jour itérativement en prenant une estimation de la matrice hessienne initiale.
     \end{abstract}
 \end{frontmatter}
 
@@ -239,7 +239,7 @@ S'il existe deux racines, proches l'une de l'autre, l'algorithme aura besoin de 
 \subsubsection{Coût de la méthode}
 Le coût de calcul de la méthode de Newton est important. En effet, à chaque itération, il est nécessaire d’évaluer la jacobienne de $f$. Or, cette évaluation est relativement coûteuse.
 
-\subsection{Application à l'optimisation mono-objectif}
+\subsection{Application à un problème d'optimisation mono-objectif libre}
 La recherche de l'optimum d'une fonction s'apparente à la recherche des zéros de son gradient.
 Soit le problème d'optimisation, avec $f:\Omega \subset \mathbb{R}^n \rightarrow \mathbb{R}$
 \begin{equation}
@@ -298,7 +298,6 @@ La nécessité que $f$ soit deux fois différentiable, et strictement convexe, a
 Cependant, il est possible d'approximer la hessienne (ou son inverse) pour réduire à la fois les restrictions placées sur $f$, et réduire les coûts de calcul. 
 
 \section{Méthode de BFGS}
-\subsection{Origines}
 % Broyden
 % méthodes à métrique variable
 % méthodes sécante générale
@@ -308,6 +307,10 @@ Cependant, il est possible d'approximer la hessienne (ou son inverse) pour rédu
 % BFGS : principe (update sur les gradients), modèle quadratique (Taylor), relation quasi-Newton, équation sécante, propriétés (B > 0, forall k, directions conjuguées), recherche linéaire (WolfePoweel ou Goldstein) + remarque V.2.4.
 % Remarques : Famille Broyden, Dualité, Remarques sur l'estimation de l'inverse. (pas toujours le cas), L-BFGS
 % 
+\subsection{Origines}
+La méthode de Davidon (1959)\cite{art:Davidon_1991} qu'il nomme lui-même méthode à métrique variable est la base de nombreux travaux. Cette méthode de résolution de problèmes d'optimisation non-linéaire libre a la particularité de considérer une matrice variable d'une itération à une autre, i.e. la matrice $B$ estimation de l'inverse de la hessienne. Parmi les mathématiciens s'étant penché sur ces travaux, Fletcher et Powell proposent en 1963 une variation de la méthode à métrique variable (DFP), dont Broyden louera les nombreuses qualités en 1970, en la comparant à ses travaux précédent de 1967. Il s'avance même en qualifiant la méthode DFP de meilleur algorithme pour résoudre un problème d'optimisation libre, où l'expression explicite du gradient est accessible. En 1967, Broyden décrit la classe d'algorithmes qu'il nomme les méthodes de Quasi-Newton, généralisation de la méthode de la sécante dans le cas multidimensionnel. 
+
+La méthode de Broyden-Fletcher-Goldfarb-Shano (BFGS) ...
 \subsection{Principe}
 \subsection{Résultats connus}
 \subsection{Qualités et faiblesses}
