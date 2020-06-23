@@ -131,14 +131,14 @@ La méthode de Newton apparaît pour la première fois au XVIIème siècle dans 
 
 \subsection{Principe}
 La méthode de Newton-Raphson est une méthode de recherche des racines d'une fonction à valeurs réelles.
-\begin{definition}
+\begin{thm}
     \'Etant donné une fonction $G: \Omega\subset\mathbb{R}^n\longrightarrow \mathbb{R}$, $G$ différentiable et une valeur initiale $x_0\in \Omega$ donnée, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par
     \begin{equation}
         x_{k+1} = x_k - \Jacobian^{-1}_G(x_k)\cdot G(x_k)
         \label{eq:iteration-newton-rn}
     \end{equation}
     converge vers une racine $x_*$ de $G$, à condition que $x_0$ soit suffisamment proche de $x_*$.
-\end{definition}
+\end{thm}
 \begin{rmk}
     $\Jacobian_G$ est préférablement inversible. Si la matrice n'est pas carrée, on peut se servir du pseudo-inverse de matrices non-carrés; à gauche s'il y a plus de contraintes que de variables; à droite s'il y a plus de variables que de contraintes. Si la matrice est carrée non inversible, on peut se servir du pseudo-inverse de Moore-Penrose.
     \begin{exemple}
@@ -249,14 +249,14 @@ Soit le problème d'optimisation, avec $f:\Omega \subset \mathbb{R}^n \rightarro
     \label{eq:probleme-opt}
 \end{equation}
 La méthode de Newton-Raphson peut donc être appliquée au problème d'optimisation (\ref{eq:probleme-opt}) en choisissant $g(x)=\nabla f(x)$.
-\begin{definition}
+\begin{thm}
     Soit une fonction $f:\Omega \in \mathbb{R}^n\rightarrow \mathbb{R}$, deux fois dérivable, strictement convexe et de hessienne K-lipschitzienne dans un voisinage de $x_*$. Soit une valeur initiale $x_0\in Omega$, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par
     \begin{equation}
         x_{k+1}=x_k-\nabla^{2}f(x_k)^{-1}\cdot \nabla f(x_k)
         \label{eq:nr-opt-mono}
     \end{equation}
     converge quadratiquement vers $x_*$, le minimum de $f$, dans son voisinage.
-\end{definition}
+\end{thm}
 
 \begin{rmk}
     Si $f$ n'est pas de hessienne K-lipschitzienne, la convergence de la méthode de Newton-Raphson est superlinéaire.
@@ -311,7 +311,62 @@ La méthode de Davidon (1959)\cite{art:Davidon_1991} qu'il nomme lui-même méth
 \begin{rmk}
     Fletcher détaille les caractéristiques des méthodes de la famille Broyden dans son ouvrage d'optimisation \cite{book:Fletcher_1987}, parmi lesquelles on retrouve la formule de DFP, de BFGS, et également la formule de Broyden, qui fût découverte après la formule de DFP, mais dont l'intérêt était diminué par ses inconvénients.
 \end{rmk}
+
 \subsection{Principe}
+Dans cette partie, on considère le problème \ref{eq:probleme-opt}, avec $f:\Omega\subset \mathbb{R}^n\rightarrow \mathbb{R}$, une fonction une fois différentiable et convexe. Les méthodes de quasi-Newton se reposent sur l'approximation quadratique au voisinage de la solution, qui est le principe fondamental de la méthode de Newton.
+
+La différence principale se trouve dans la direction de descente de l'algorithme. Au lieu de choisir $d_{k} = -\nabla ^{2}f(x_{k})^{-1} \nabla f(x_{k})$, on choisira $d_k = -B_k\cdot x_k$ ou $d_k = -H_k^{-1}\dot x_k$. 
+
+Par convention, on notera respectivement $B$ et $H$ les approximations de la hessienne de $f$, et de son inverse.
+
+\begin{definition}
+    Soit une itération $k$ de la méthode de Newton-Raphson, on considère un modèle approximatif quadratique $\varphi$\footnote{Dans le polycopié de RO04, S. Mottelet \cite{poly:mottelet2003} considère la notation $\varphi(t) = f(x+td)$.} de $f$ au voisinage de $x_{k}$ définie par
+    \begin{equation}
+        \varphi_k(x) := f(x_k) + \nabla f(x_k) (x - x_k) + \frac12 (x-x_k)^T B_k (x-x_k)
+    \end{equation}
+\end{definition}
+
+\begin{definition}
+    Incluant une phase de recherche linéaire, l'expression de la suite $(x_k)_{k\in \mathbb{N}}$ est définie par 
+    \begin{equation}
+        d_k = -B_k\cdot g_k \\
+        x_{k+1} = x_k + t_k\cdot d_k
+    \end{equation}
+\end{definition}
+
+\begin{pf}
+    La direction de descente de quasi-Newton $d_k$ est définie comme le minimum du modèle quadratique de $f$ en $x_k$. Le gradient de $\varphi$ est calculé par rapport à $(x - x_k)$. 
+    \begin{align*}
+        \nabla \varphi_k(x)&=\nabla f(x_k) + B_k(x-x_k)\\
+        &= x_k \underbrace{- B_k^{-1}\nabla f(x_k)}_{d_k} 
+    \end{align*}
+    La formule de mise à jour finale est obtenue en considérant une phase de recherche linéaire de pas noté $t_k$ :
+    \begin{equation}
+        d_k = -B_k\cdot g_k \\
+        x_{k+1} = x_k + t_k\cdot d_k
+    \end{equation}
+\end{pf}
+
+\begin{rmk}
+    L'expression de la direction de descente $d_k$ pour la matrice $H$ peut être obtenue en remplaçant $B_k$ par $H_k^{-1}$ dans $\varphi$.
+\end{rmk}
+
+\begin{definition}
+    Soit les valeurs initiales $x_0\in Omega$, $B_0$ ou $H_0$. Une méthode de quasi-Newton est une méthode à métrique variable dont la suite $(x_k)_{k\in \mathbb{N}}$ est définie par
+    \begin{equation}
+        d_k = -B_k\cdot g_k = -H_k^{-1}\dot x_k \\
+        x_{k+1} = x_k + t_k\cdot d_k
+    \end{equation}
+    et les formules de mise à jour de $B$ ou $H$ sont définies par 
+    \begin{equation}
+        B_{k+1} = B_k + \delta_k
+        H_{k+1} = H_k + \delta_k
+    \end{equation}
+    où $\delta_k$ correspond à une matrice symétrique de rang connu tel que les relations de quasi-Newton soient valides 
+\end{definition}
+
+
+
 \subsection{Résultats connus}
 \subsection{Qualités et faiblesses}
 \section{Implémentation sur SCILAB}
