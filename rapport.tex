@@ -130,9 +130,9 @@ La méthode de Newton apparaît pour la première fois au XVIIème siècle dans 
 \end{figure}
 
 \subsection{Principe}
-La méthode de Newton-Raphson est une méthode de recherche des racines de fonctions à valeurs réelles.
+La méthode de Newton-Raphson est une méthode de recherche des racines d'une fonction à valeurs réelles.
 \begin{definition}
-    Étant donné une fonction $G: \Omega\subset\mathbb{R}^n\longrightarrow \mathbb{R}^m$, $G$ différentiable et une valeur initiale $x_0\in \Omega$ donnée, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par
+    \'Etant donné une fonction $G: \Omega\subset\mathbb{R}^n\longrightarrow \mathbb{R}$, $G$ différentiable et une valeur initiale $x_0\in \Omega$ donnée, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par
     \begin{equation}
         x_{k+1} = x_k - \Jacobian^{-1}_G(x_k)\cdot G(x_k)
         \label{eq:iteration-newton-rn}
@@ -163,7 +163,9 @@ La méthode de Newton-Raphson est une méthode de recherche des racines de fonct
 \begin{rmk}
     La méthode de Newton-Raphson peut être appliquée aux fonctions holomorphes, fonctions à valeurs complexes, définie et dérivable en tout point d'un ouvert de $\mathbb{C}$.
 \end{rmk}
-
+\begin{rmk}
+    Il existe des variations sans paramétrisation nécessaire de la méthode de Newton-Raphson pour l'optimisation libre multi-objective. \cite{art:Fliege_Drummond_Svaiter_2009}
+\end{rmk}
 \subsection{Interprétation géométrique}
 Pour mieux comprendre cette méthode itérative, il est plus simple de raisonner en deux dimensions. On considère la fonction $g :\Omega\subset\mathbb R^2 \rightarrow \mathbb R$.
 
@@ -256,6 +258,10 @@ La méthode de Newton-Raphson peut donc être appliquée au problème d'optimisa
     converge quadratiquement vers $x_*$, le minimum de $f$, dans son voisinage.
 \end{definition}
 
+\begin{rmk}
+    Si $f$ n'est pas de hessienne K-lipschitzienne, la convergence de la méthode de Newton-Raphson est superlinéaire.
+\end{rmk}
+
 \subsubsection{Convergence restreinte au voisinage de $x_*$}
 Encore une fois, l'intérêt de la méthode de Newton-Raphson est limitée par la restriction sur la valeur initiale $x_0$ qui doit être dans un voisinage de $x_*$.
 Ce problème peut être résolu en ajoutant une phase de recherche linéaire dans la direction
@@ -295,20 +301,12 @@ Si la fonction $f$ est seulement convexe, la hessienne de $f$ est semi-définie 
 \subsubsection{Vers les méthodes de quasi-Newton}
 La nécessité que $f$ soit deux fois différentiable, et strictement convexe, ainsi que le coût relativement élevé de calcul des itérations de la méthode de Newton-Raphson est une faiblesse majeure de l'algorithme.
 
-Cependant, il est possible d'approximer la hessienne (ou son inverse) pour réduire à la fois les restrictions placées sur $f$, et réduire les coûts de calcul. 
+Cependant, les méthodes à métrique variable introduisent l'idée d'approximer l'inverse de la hessienne pour réduire à la fois les restrictions placées sur $f$, et réduire les coûts de calcul. 
 
 \section{Méthode de BFGS}
-% Broyden
-% méthodes à métrique variable
-% méthodes sécante générale
-% méthode quasi-Newton
-% Méthode Broyden : parenthèse rapide
-% DFP : correction rang 2, conserve B > 0
-% BFGS : principe (update sur les gradients), modèle quadratique (Taylor), relation quasi-Newton, équation sécante, propriétés (B > 0, forall k, directions conjuguées), recherche linéaire (WolfePoweel ou Goldstein) + remarque V.2.4.
-% Remarques : Famille Broyden, Dualité, Remarques sur l'estimation de l'inverse. (pas toujours le cas), L-BFGS
-% 
+
 \subsection{Origines}
-La méthode de Davidon (1959)\cite{art:Davidon_1991} qu'il nomme lui-même méthode à métrique variable est la base de nombreux travaux. Cette méthode de résolution de problèmes d'optimisation non-linéaire libre a la particularité de considérer une matrice variable d'une itération à une autre, i.e. la matrice $B$ estimation de l'inverse de la hessienne. Parmi les mathématiciens s'étant penché sur ces travaux, Fletcher et Powell proposent en 1963 une variation de la méthode à métrique variable (DFP), dont Broyden louera les nombreuses qualités en 1970, en la comparant à ses travaux précédent de 1967. Il s'avance même en qualifiant la méthode DFP de meilleur algorithme pour résoudre un problème d'optimisation libre, où l'expression explicite du gradient est accessible. En 1967, Broyden décrit la classe d'algorithmes qu'il nomme les méthodes de Quasi-Newton, généralisation de la méthode de la sécante dans le cas multidimensionnel basée sur les travaux de Wolfe (1659) et de Barnes (1965).
+La méthode de Davidon (1959)\cite{art:Davidon_1991} qu'il nomme lui-même méthode à métrique variable est la base de nombreux travaux. Cette méthode de résolution de problèmes d'optimisation non-linéaire libre a la particularité de considérer une matrice variable d'une itération à une autre, i.e. la matrice $B$ estimation de l'inverse de la hessienne. Parmi les mathématiciens s'étant penché sur ces travaux, Fletcher et Powell proposent en 1963 une variation de la méthode à métrique variable (DFP), dont Broyden louera les nombreuses qualités en 1970, en la comparant à ses travaux précédent. Il s'avance même en qualifiant à l'époque la méthode DFP de meilleur algorithme pour résoudre un problème d'optimisation libre, où l'expression explicite du gradient est accessible. En 1967, Broyden décrit la classe d'algorithmes qu'il nomme les méthodes de Quasi-Newton, généralisation de la méthode de la sécante dans le cas multidimensionnel basée sur les travaux de Wolfe (1659) et de Barnes (1965).
 
 La méthode de Broyden-Fletcher-Goldfarb-Shano (BFGS) ...
 \subsection{Principe}
