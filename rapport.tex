@@ -120,7 +120,7 @@
 
 \section{Méthode de Newton}
 \subsection{Origines}
-La méthode de Newton apparaît pour la première fois au XVIIème siècle dans l'ouvrage \emph{De analysi per aequationes numero terminorum infinitas} (1669), puis une seconde fois dans \textit{La méthode des fluxions\footnote{Les fluxions représentent des dérivées}, et les suites infinies}\cite{book:newtonfluxions}, tous deux écrits par Isaac Newton. Elle est à l'époque appliquée au cas particulier des recherches des racines d'un polynôme. Ses travaux ne seront malheureusement publiés que de façon posthume à partir de 1736. Cette méthode est simplifiée par Joseph Raphson dans \textit{Analysis aequationum universalis} (1690), et c'est généralement la version de Raphson qui est utilisée aujourd'hui. Pour ces raisons, on a tendance à parler de la méthode de Newton-Raphson. Les travaux de Thomas Simpson élargissent cette méthode itérative à la recherche de racines d'un plus grande nombre d'équations, notamment les équations non linéaires.
+La méthode de Newton apparaît pour la première fois au XVIIème siècle dans l'ouvrage \emph{De analysi per aequationes numero terminorum infinitas} (1669), puis une seconde fois dans \textit{La méthode des fluxions\footnote{Les fluxions représentent des dérivées}, et les suites infinies}\footnote{Voir \cite{book:newtonfluxions}}, tous deux écrits par Isaac Newton. Elle est à l'époque appliquée au cas particulier des recherches des racines d'un polynôme. Ses travaux ne seront malheureusement publiés que de façon posthume à partir de 1736. Cette méthode est simplifiée par Joseph Raphson dans \textit{Analysis aequationum universalis} (1690), et c'est généralement la version de Raphson qui est utilisée aujourd'hui. Pour ces raisons, on a tendance à parler de la méthode de Newton-Raphson. Les travaux de Thomas Simpson élargissent cette méthode itérative à la recherche de racines d'un plus grande nombre d'équations, notamment les équations non linéaires.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width = 0.3\textwidth]{La_méthode_des_fluxions_et_[...]Newton_Isaac_bpt6k62411f_40.jpg}
@@ -161,7 +161,7 @@ La méthode de Newton-Raphson est une méthode de recherche des racines d'une fo
     Dans l'idée, pour s'approcher d'une racine de $G$, on applique la contrainte souhaitée $G(x_{k+1})=0$, et on en déduit l'expression de l'équation \ref{eq:iteration-newton-rn}. L'erreur à chaque itération est dûe à l'approximation par le développement de Taylor : on a négligé son reste.
 \end{rmk}
 \begin{rmk}
-    La méthode de Newton-Raphson peut être appliquée aux fonctions holomorphes, fonctions à valeurs complexes, définie et dérivable en tout point d'un ouvert de $\mathbb{C}$.
+    La méthode de Newton-Raphson peut être appliquée aux fonctions holomorphes, fonctions à valeurs complexes, définies et dérivables en tout point d'un ouvert de $\mathbb{C}$.
 \end{rmk}
 \begin{rmk}
     Il existe des variations sans paramétrisation nécessaire de la méthode de Newton-Raphson pour l'optimisation libre multi-objective. \cite{art:Fliege_Drummond_Svaiter_2009}
@@ -312,19 +312,16 @@ La méthode de Davidon (1959)\cite{art:Davidon_1991} qu'il nomme lui-même méth
 \end{rmk}
 
 \subsection{Principe}
-Dans cette partie, on considère le problème d'optimisation définie par (\ref{eq:probleme-opt}), avec $f:\Omega\subset \mathbb{R}^n\rightarrow \mathbb{R}$, une fonction différentiable et convexe. 
-Les méthodes de quasi-Newton se reposent sur l'approximation quadratique au voisinage de la solution, qui est le principe fondamental de la méthode de Newton.
+Dans cette partie, on considère le problème \ref{eq:probleme-opt}, avec $f:\Omega\subset \mathbb{R}^n\rightarrow \mathbb{R}$, une fonction une fois différentiable et convexe. Les méthodes de quasi-Newton se reposent sur l'approximation quadratique au voisinage de la solution, qui est le principe fondamental de la méthode de Newton.
 
 La différence principale se situe dans la direction de descente de l'algorithme. \`A la place de la hessienne (resp. l'inverse de la hessienne) de $f$, on considèrera son approximation, notée $B$ (resp. $H$).\footnote{La notation est l'opposée de celle utilisée dans le polycopié de S. Mottelet \cite{poly:mottelet2003}, mais on choisit la convention employée par Fletcher dans \cite{book:Fletcher_1987}}
 
 \subsubsection{Méthodes de quasi-Newton}
 \begin{definition}
-    Soit une itération $k$ de la méthode de Newton-Raphson, on considère un modèle approximatif quadratique\footnote{Dans le polycopié de RO04, S. Mottelet \cite{poly:mottelet2003} prend la notation $\varphi(t) = f(x+td)$.} $\varphi$ de $f$ au voisinage de $x_{k}$ définie par
-    \begin{align}
-        \varphi_k(x) := f(x_k) &+ \nabla f(x_k)^T (x - x_k)\nonumber\\ 
-        &+ \frac12 (x-x_k)^T B_k (x-x_k)
-        \label{eq:modele-quad-qn}
-    \end{align}
+    Soit une itération $k$ de la méthode de Newton-Raphson, on considère un modèle approximatif quadratique $\varphi$\footnote{Dans le polycopié de RO04, S. Mottelet \cite{poly:mottelet2003} considère la notation $\varphi(t) = f(x+td)$.} de $f$ au voisinage de $x_{k}$ définie par
+    \begin{equation}
+        \varphi_k(x) := f(x_k) + \nabla f(x_k) (x - x_k) + \frac12 (x-x_k)^T B_k (x-x_k)
+    \end{equation}
 \end{definition}
 
 \begin{definition}
@@ -339,14 +336,18 @@ La différence principale se situe dans la direction de descente de l'algorithme
 \begin{pf}
     La direction de descente de quasi-Newton $d_k$ est définie comme le minimum du modèle quadratique de $f$ en $x_k$. Le gradient de $\varphi$ est calculé par rapport à $(x - x_k)$. 
     \begin{align*}
-        \nabla \varphi_k(x)&=\nabla f(x_k) + B_k(x-x_k) = 0\\
-        \iff x &= x_k \underbrace{- B_k^{-1}\nabla f(x_k)}_{d_k} 
+        \nabla \varphi_k(x)&=\nabla f(x_k) + B_k(x-x_k)\\
+        &= x_k \underbrace{- B_k^{-1}\nabla f(x_k)}_{d_k} 
     \end{align*}
-    La formule de mise à jour finale est obtenue en considérant une phase de recherche linéaire de pas noté $t_k$.
+    La formule de mise à jour finale est obtenue en considérant une phase de recherche linéaire de pas noté $t_k$ :
+    \begin{equation}
+        d_k = -B_k\cdot g_k \\
+        x_{k+1} = x_k + t_k\cdot d_k
+    \end{equation}
 \end{pf}
 
 \begin{rmk}
-    L'expression de la direction de descente $d_k$ pour la matrice $H$ peut être obtenue en remplaçant $B_k$ par $H_k^{-1}$ dans le modèle $\varphi$.
+    L'expression de la direction de descente $d_k$ pour la matrice $H$ peut être obtenue en remplaçant $B_k$ par $H_k^{-1}$ dans $\varphi$.
 \end{rmk}
 \begin{definition}
     Soit l'équation de la sécante, ou condition de quasi-Newton définie par 
@@ -451,11 +452,35 @@ Aussi, les imprécisions de la recherche linéaire affectent sensiblement moins 
     La convergence globale de la méthode de BFGS avec l'utilisation d'une méthode de recherche linéaire inexacte a été prouvée dans les travaux de Fletcher. \cite{book:Fletcher_1987}.
 \end{pf}
 
+\begin{rmk}
+    Le calcul du pas exact $t_k$ pour la méthode de quasi-Newton avec la formule de BFGS implique la terminaison de l'algorithme en au plus $n$ itérations \cite{book:Fletcher_1987}.
+\end{rmk}
+
 Comparée à la formule de DFP, la formule de BFGS donne à l'algorithme de quasi-Newton une plus grande résistance aux imprécisions dû à l'approximation de la hessienne (ou son inverse). Ainsi, le risque de rendre la matrice approximation non inversible est moindre. 
 
 C'est pour ces raisons que l'on préfèrera l'utilisation de la formule de BFGS, que beaucoup considèrent comme la meilleure méthode d'optimisation libre sans contraintes.
 
 Bien que la vitesse convergence des méthodes de quasi-Newton soit en général inférieure à celle de la méthode de Newton, elles ont une complexité calculatoire bien inférieure, car on n'évalue pas la hessienne. 
+
+\subsection{Algorithme de Broyden, Fletcher, Goldfarb et Shanno dit BFGS}
+Soit une valeur initiale $x_0$, une matrice symétrique définie positive $H_0$, de préférence une estimation raisonnable ou par défaut la matrice identité $I$. 
+\begin{enumerate}
+    \item \`A l'itération $k$, on calcule la direction de descente selon
+    \begin{equation*}
+        d_{k}=-B_{k}^{-1}\nabla f(x_{k})
+    \end{equation*}
+    \item Ensuite, on détermine le pas optimal $t_k$, ou on applique une méthode de recherche linéaire inexacte pour calculer l'itéré suivant $x_{k+1}$.
+    \begin{equation*}
+        x_{k+1}=x_{k}+\rho_{k}d_{k}
+    \end{equation*}
+    \item On met à jour la matrice $B_{k+1}$.
+    \begin{equation*}
+        B_{k+1} = B_k + \frac{y_ky_k^T}{y_k^Ts_k}-\frac{B_ks_ks_k^TB_k}{s_k^TB_ks_k}
+    \end{equation*}
+    \item L'algorithme continue, sauf si le ou les critères d'arrêts spécifiés sont vérifiés.
+\end{enumerate}
+
+La matrice $H_{k}$ étant symétrique définie positive, elle peut être décomposée en deux matrices triangulaires par la décomposition de Chloesky. Ainsi, en posant $H_{k}=C_{k}C_{k}^{T}$, la mise à jour de la matrice $H_{k}$ devient moins coûteuse, plus précisement de même complexité que pour la formule de DFP. Cette méthode permet également d'éviter des erreurs d'arrondis, grâce à un contrôle plus précis du caractère défini positif de la matrice $H_{k}$.
 
 \section{Implémentation}
 Toutes les implémentations des algorithmes suivants ont été réalisés sur SCILAB 6.1.0.\footnote{https://www.scilab.org/}
