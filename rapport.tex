@@ -250,7 +250,7 @@ Soit le problème d'optimisation, avec $f:\Omega \subset \mathbb{R}^n \rightarro
 \end{equation}
 La méthode de Newton-Raphson peut donc être appliquée au problème d'optimisation (\ref{eq:probleme-opt}) en choisissant $g(x)=\nabla f(x)$.
 \begin{thm}
-    Soit une fonction $f:\Omega \in \mathbb{R}^n\rightarrow \mathbb{R}$, deux fois dérivable, strictement convexe et de hessienne K-lipschitzienne dans un voisinage de $x_*$. Soit une valeur initiale $x_0\in Omega$, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par
+    Soit une fonction $f:\Omega \in \mathbb{R}^n\rightarrow \mathbb{R}$, deux fois différentiable, strictement convexe et de hessienne K-lipschitzienne dans un voisinage de $x_*$. Soit une valeur initiale $x_0\in Omega$, alors la suite $(x_k)_{k\in \mathbb{N}}$ définie par
     \begin{equation}
         x_{k+1}=x_k-\nabla^{2}f(x_k)^{-1}\cdot \nabla f(x_k)
         \label{eq:nr-opt-mono}
@@ -280,7 +280,7 @@ Compte tenu des propriétés choisies pour $f$, $d_k$ est une direction de desce
 \end{rmk}
 
 \subsubsection{Optima locaux}
-Cependant, la convergence de la méthode de Newton-Raphson n'implique pas l'obtention d'un minimum global de $f$, particulièrement si la valeur initiale $x_0$ est mal choisie. La fonction peut posséder plusieurs minima. Pour pallier à ce problème, différents solutions existent. Parmi elles, des méthodes hybrides (utilisation d'un algorithme génétique en parallèle de la méthode) ont été développé.
+L'application de la méthode de Newton à des fonctions non convexes est limitée par la non différentiation entre les différents points stationnaires. Dans le général, où $f$ est une fonction deux fois différentiable, la convergence de la méthode de Newton-Raphson n'implique pas l'obtention d'un minimum global de $f$, particulièrement si la valeur initiale $x_0$ est mal choisie. La fonction peut posséder plusieurs minima. Pour pallier à ce problème, différents solutions existent. Parmi elles, des méthodes hybrides (utilisation d'un algorithme génétique en parallèle de la méthode) ont été développé.
 
 La méthode \textit{Hybrid Genetic Deflated Newton} (HGBN) \cite{art:Noack_Funke_2017} est particulièrement équipée pour optimiser des fonctions qui possède de nombreux optima locaux. Elle consiste en l'application locale de multiples algorithmes de Newton-Raphson sur une population d'individus - les valeurs initiales - pour identifier des optima et les rendre introuvable ($deflation$). La nouvelle génération est sélectionnée par survie du plus adapté, et on recherche de nouveau les optima jusqu'à les avoir tous trouvé.
 
@@ -317,6 +317,7 @@ Les méthodes de quasi-Newton se reposent sur l'approximation quadratique au voi
 
 La différence principale se situe dans la direction de descente de l'algorithme. \`A la place de la hessienne (resp. l'inverse de la hessienne) de $f$, on considèrera son approximation, notée $B$ (resp. $H$).\footnote{La notation est l'opposée de celle utilisée dans le polycopié de S. Mottelet \cite{poly:mottelet2003}, mais on choisit la convention employée par Fletcher dans \cite{book:Fletcher_1987}}
 
+\subsubsection{Méthodes de quasi-Newton}
 \begin{definition}
     Soit une itération $k$ de la méthode de Newton-Raphson, on considère un modèle approximatif quadratique\footnote{Dans le polycopié de RO04, S. Mottelet \cite{poly:mottelet2003} prend la notation $\varphi(t) = f(x+td)$.} $\varphi$ de $f$ au voisinage de $x_{k}$ définie par
     \begin{align}
@@ -387,28 +388,63 @@ La différence principale se situe dans la direction de descente de l'algorithme
         H_{k+1} = H_k + \Delta_k
         \label{eq:maj-hk}
     \end{align}
-    vérifient l'équation de la sécante, où $\Delta_k$ correspond à une matrice symétrique de rang connu tel que les relations de quasi-Newton soient valides 
+    vérifient l'équation de la sécante, où $\Delta_k$ correspond à une matrice symétrique de rang connu tel que les conditions de quasi-Newton soient vérifiées.
 \end{definition}
 
 \begin{definition}
     Soit $\Delta_k$ une matrice symétrique de rang $i$, on dit que la formule de mise à jour de $B_k$ ou $H_k$ correspondante est une formule de correction de rang $i$. 
 \end{definition}
-% curvature condition + DFP
+
+\subsubsection{Faiblesses des méthodes de quasi-Newton}
+L'efficacité des méthodes de quasi-Newton repose sur la positivité de la matrice approximation. En effet, il faut conserver la direction de descente $d_k$ au cours des itérations. Ainsi, une formule de mise à jour est d'autant meilleure qu'elle préserve la positivité de la matrice initiale. \`A cette fin, on définit une condition dite condition de courbure équivalente à la positivité de la matrice approximation.
+
+\begin{definition}
+    On appelle la condition de courbure l'inéquation
+    \begin{equation}
+        s^ky_k > 0
+    \end{equation}
+\end{definition}
+\begin{pf}
+    La condition de courbure est obtenue en multipliant à gauche (\ref{eq:sec-qn-bk}) ou (\ref{eq:sec-qn-hk}).
+\end{pf}
+
+Aussi, les itérations de l'algorithme dépendant de la nature inversible de la matrice approximation, il faut également conserver cette caractéristique. Si la matrice venait à devenir non inversible lors d'une mise à jour, alors la méthode devra s'arrêter.
+
+\subsubsection{Formule de BFGS}
 \begin{definition}
     La formule de mise à jour de Broyden, Fletcher, Goldfarb et Shanno, formule de correction de rang 2, est définie dans sa forme développée par 
     \begin{align}
         H_{k+1} = H_k &+ \left(I + \frac{y_k H_k y_k}{s_k^T y_k}\right)\frac{s_k s_k^T}{s_k^T y_k}\nonumber\\
         &-\left(\frac{s_k y_k^T H+ H y_k s_k^T}{s_k^T y_k}\right)
-        \label{eq:bfgs-developed}
+        \label{eq:bfgs-hk-developed}
     \end{align}
     On peut factoriser cette expression comme suit 
     \begin{equation}
         H_{k+1} = \left(I - \frac{y_k s_k^T}{s_k^T y_k}\right) H_k \left(I - \frac{s_k y_k^T}{s_k^Ty_k}\right) + \frac{y_k y_k^T}{s_k^T y_k}
-        \label{eq:bfgs-factorised}
+        \label{eq:bfgs-hk-factorised}
+    \end{equation}
+    La formule de mise à jour de $H_k$ permet d'obtenir celle plus simple de $B_{k}$
+    \begin{equation}
+        B_{k+1} = B_k + \frac{y_ky_k^T}{y_k^Ts_k}-\frac{B_ks_ks_k^TB_k}{s_k^TB_ks_k}
+        \label{eq:bfgs-bk}
     \end{equation}
 \end{definition}
 
 La formule de DFP met à jour la matrice $H_k$ en contraignant les itérations suivantes à vérifier (\ref{eq:sec-qn-hk}). L'idée derrière la formule de BFGS est de proposer un pendant en forçant les itérations à vérifier (\ref{eq:sec-qn-bk}) en considérant $B_{k+1} = H_{k+1}^{-1}$. En échangeant $y_k$ et $s_k$, on obtient une nouvelle formule de mise à jour pour $H_{k+1}$.
+
+La formule de BFGS est donc obtenue à partir de la formule de DFP et partage nombreuses de ses propriétés. 
+
+\begin{thm}
+    Si $s_k^Ty_k > 0, \forall k$ (condition de courbure), alors la positivité de la matrice approximation est préservée au cours des itérations.
+\end{thm}
+
+Ce théorème est sans doute le plus important de cette section, car en d'autres mots, la méthode de quasi-Newton équipée de la formule de BFGS "progresse" toujours à chaque itération. Autrement dit, la direction de descente $d_k$ reste une direction de descente au cours des itérations de la méthode. 
+
+\begin{thm}
+    La méthode de quasi-Newton avec la formule de BFGS et équipée d'une méthode de recherche linéaire converge vers la solution du problème (\ref{eq:probleme-opt})
+\end{thm}
+% inexact line search => global convergence BFGS 
+
 
 \subsection{Résultats connus}
 \subsection{Qualités et faiblesses}
