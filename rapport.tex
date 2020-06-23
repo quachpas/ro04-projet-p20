@@ -410,6 +410,8 @@ L'efficacité des méthodes de quasi-Newton repose sur la positivité de la matr
 
 Aussi, les itérations de l'algorithme dépendant de la nature inversible de la matrice approximation, il faut également conserver cette caractéristique. Si la matrice venait à devenir non inversible lors d'une mise à jour, alors la méthode devra s'arrêter.
 
+La condition de quasi-Newton nous montre qu'il existe une infinité de matrices approximations la vérifiant. En effet, c'est un système de $n$ équations linéaires à $\frac{n(n+1)}{2}$ degrés de libertés. En effet, on considère ici toutes les composantes de la matrice approximation comme des variables libres. Cette matrice étant symétrique, il existe $\frac{n(n+1)}{2}$ paramètres ajustables.
+
 \subsubsection{Formule de BFGS}
 \begin{definition}
     La formule de mise à jour de Broyden, Fletcher, Goldfarb et Shanno, formule de correction de rang 2, est définie dans sa forme développée par 
@@ -440,18 +442,25 @@ La formule de BFGS est donc obtenue à partir de la formule de DFP et partage no
 
 Ce théorème est sans doute le plus important de cette section, car en d'autres mots, la méthode de quasi-Newton équipée de la formule de BFGS "progresse" toujours à chaque itération. Autrement dit, la direction de descente $d_k$ reste une direction de descente au cours des itérations de la méthode. 
 
+Aussi, les imprécisions de la recherche linéaire affectent sensiblement moins l'algorithme, 
+
 \begin{thm}
-    La méthode de quasi-Newton avec la formule de BFGS et équipée d'une méthode de recherche linéaire converge vers la solution du problème (\ref{eq:probleme-opt})
+    Soit $B_0$, une matrice initiale symétrique définie positive et une valeur initiale $x_0\in\Omega$. Soit $f$ une fonction différentiable, convexe, et de gradient $K$-Lipschizien. La suite $(x_k)_{k\in \mathbb{N}}$ générée par la méthode de quasi-Newton avec la formule de BFGS et équipée d'une méthode de recherche linéaire converge superlinéairement vers la solution $x_*$ du problème (\ref{eq:probleme-opt}).
 \end{thm}
-% inexact line search => global convergence BFGS 
+\begin{pf}
+    La convergence globale de la méthode de BFGS avec l'utilisation d'une méthode de recherche linéaire inexacte a été prouvée dans les travaux de Fletcher. \cite{book:Fletcher_1987}.
+\end{pf}
 
+Comparée à la formule de DFP, la formule de BFGS donne à l'algorithme de quasi-Newton une plus grande résistance aux imprécisions dû à l'approximation de la hessienne (ou son inverse). Ainsi, le risque de rendre la matrice approximation non inversible est moindre. 
 
-\subsection{Résultats connus}
-\subsection{Qualités et faiblesses}
-\section{Implémentation sur SCILAB}
-\subsection{Recherche linéaire : condition de Wolfe}
+C'est pour ces raisons que l'on préfèrera l'utilisation de la formule de BFGS, que beaucoup considèrent comme la meilleure méthode d'optimisation libre sans contraintes.
+
+Bien que la vitesse convergence des méthodes de quasi-Newton soit en général inférieure à celle de la méthode de Newton, elles ont une complexité calculatoire bien inférieure, car on n'évalue pas la hessienne. 
+
+\section{Implémentation}
+Toutes les implémentations des algorithmes suivants ont été réalisés sur SCILAB 6.1.0.\footnote{https://www.scilab.org/}
+\subsection{Recherche linéaire : condition de Wolfe-Powell}
 \subsubsection{Algorithme}
-\subsubsection{Programme}
 \subsubsection{Conditions d'arrêts et précision}
 \subsubsection{Difficultées techniques}
 \subsection{Méthode de Newton-Raphson}
@@ -490,12 +499,10 @@ Ce théorème est sans doute le plus important de cette section, car en d'autres
         \label{algo:newton_raphson}
     }
 \end{algorithm}
-\subsubsection{Programme}
 \subsubsection{Conditions d'arrêts et précision}
 \subsubsection{Difficultées techniques}
 \subsection{Méthode de BFGS}
 \subsubsection{Algorithme}
-\subsubsection{Programme}
 \subsubsection{Conditions d'arrêts et précision}
 \subsubsection{Difficultées techniques}
 \subsection{Affichage des résultats}
