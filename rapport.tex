@@ -349,6 +349,10 @@ La différence principale se situe dans la direction de descente de l'algorithme
 \begin{rmk}
     L'expression de la direction de descente $d_k$ pour la matrice $H$ peut être obtenue en remplaçant $B_k$ par $H_k^{-1}$ dans $\varphi$.
 \end{rmk}
+\begin{rmk}
+    Les directions de descente de quasi-Newton successives sont conjuguées.
+\end{rmk}
+
 \begin{definition}
     Soit l'équation de la sécante, ou condition de quasi-Newton définie par 
     \begin{align}
@@ -397,7 +401,7 @@ La différence principale se situe dans la direction de descente de l'algorithme
 \end{definition}
 
 \subsubsection{Faiblesses des méthodes de quasi-Newton}
-L'efficacité des méthodes de quasi-Newton repose sur la positivité de la matrice approximation. En effet, il faut conserver la direction de descente $d_k$ au cours des itérations. Ainsi, une formule de mise à jour est d'autant meilleure qu'elle préserve la positivité de la matrice initiale. \`A cette fin, on définit une condition dite condition de courbure équivalente à la positivité de la matrice approximation.
+L'efficacité des méthodes de quasi-Newton repose sur la positivité de la matrice approximation au cours des itérations de l'algorithme. Broyden a nommé cette propriété la stabilité d'une méthode de quasi-Newton. En effet, il faut conserver la direction de descente $d_k$ au cours des itérations. Ainsi, une formule de mise à jour est d'autant meilleure qu'elle préserve la positivité de la matrice initiale. \`A cette fin, on définit une condition dite condition de courbure équivalente à la positivité de la matrice approximation.
 
 \begin{definition}
     On appelle la condition de courbure l'inéquation
@@ -408,10 +412,17 @@ L'efficacité des méthodes de quasi-Newton repose sur la positivité de la matr
 \begin{pf}
     La condition de courbure est obtenue en multipliant à gauche (\ref{eq:sec-qn-bk}) ou (\ref{eq:sec-qn-hk}).
 \end{pf}
+\begin{rmk}
+    La condition de courbure est vérifiée lorsqu'une méthode de recherche linéaire inexacte est employée \cite{poly:mottelet2003}.
+\end{rmk}
 
 Aussi, les itérations de l'algorithme dépendant de la nature inversible de la matrice approximation, il faut également conserver cette caractéristique. Si la matrice venait à devenir non inversible lors d'une mise à jour, alors la méthode devra s'arrêter.
 
 La condition de quasi-Newton nous montre qu'il existe une infinité de matrices approximations la vérifiant. En effet, c'est un système de $n$ équations linéaires à $\frac{n(n+1)}{2}$ degrés de libertés. En effet, on considère ici toutes les composantes de la matrice approximation comme des variables libres. Cette matrice étant symétrique, il existe $\frac{n(n+1)}{2}$ paramètres ajustables.
+
+\begin{rmk}
+    La stabilité d'une méthode de quasi-Newton n'est pas suffisante pour prouver sa convergence.
+\end{rmk}
 
 \subsubsection{Formule de BFGS}
 \begin{definition}
@@ -481,6 +492,13 @@ Soit une valeur initiale $x_0$, une matrice symétrique définie positive $H_0$,
 \end{enumerate}
 
 La matrice $H_{k}$ étant symétrique définie positive, elle peut être décomposée en deux matrices triangulaires par la décomposition de Chloesky. Ainsi, en posant $H_{k}=C_{k}C_{k}^{T}$, la mise à jour de la matrice $H_{k}$ devient moins coûteuse, plus précisement de même complexité que pour la formule de DFP. Cette méthode permet également d'éviter des erreurs d'arrondis, grâce à un contrôle plus précis du caractère défini positif de la matrice $H_{k}$.
+
+\begin{rmk}
+    \textbf{Convergence de $(H_k)_{k\in \mathbb{N}}$} - La formule de BFGS est dite une formule de moindres changements (\textit{least changes update formula}), c'est-à-dire qu'on cherche à effectuer le moins de changements possibles sur la matrice $H_k$. Pour les formules de moindres changements, la suite $(H_k)_{k\in \mathbb{N}}$ converge vers l'inverse de la hessienne. Ce n'est pas forcément le cas pour toutes les formules de mise à jour. 
+\end{rmk}
+
+\subsubsection{Variation de la méthode de BFGS : L-BFGS}
+La méthode L-BFGS (Limited-memory BFGS) est une variation de la méthode de BFGS qui ne stocke pas entièrement la matrice $H_k$. De cette manière, la direction de descente n'est pas calculée directement à partir de la matrice $H_k$, mais en faisant usage d'un historique des mises à jours effectuées. La complexité calculatoire et de stockage devient ainsi linéaire, proportionnelle à la taille de l'historique des mises à jours. 
 
 \section{Implémentation}
 Toutes les implémentations des algorithmes suivants ont été réalisés sur SCILAB 6.1.0.\footnote{https://www.scilab.org/}
