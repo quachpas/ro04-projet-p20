@@ -306,8 +306,7 @@ Cependant, les méthodes à métrique variable introduisent l'idée d'approximer
 \section{Méthode de BFGS}
 
 \subsection{Origines}
-La méthode de Davidon (1959)\cite{art:Davidon_1991} qu'il nomme lui-même méthode à métrique variable est la base de nombreux travaux. Cette méthode de résolution de problèmes d'optimisation non-linéaire libre a la particularité de considérer une matrice variable d'une itération à une autre, i.e. la matrice $B$ estimation de l'inverse de la hessienne. Parmi les mathématiciens s'étant penché sur ces travaux, Fletcher et Powell proposent en 1963 une variation de la méthode à métrique variable (formule de DFP), dont Broyden louera les nombreuses qualités en 1970, en la comparant à ses travaux précédent. Il s'avance même en qualifiant à l'époque la méthode DFP de meilleur algorithme pour résoudre un problème d'optimisation libre, où l'expression explicite du gradient est accessible. En 1967, Broyden décrit la classe d'algorithmes qu'il nomme les méthodes de Quasi-Newton \cite{art:Broyden_1967}, généralisation de la méthode de la sécante dans le cas multidimensionnel basée sur les travaux de Wolfe (1659) et de Barnes (1965). En 1970, Broyden, Fletcher, Goldfarb et Shanno proposent le dual de la formule de DFP : la formule de BFGS, qui partage les caractéristique de la formule de DFP, mais donne de meilleurs résultats en pratique.
-
+La méthode de Davidon (1959)\cite{art:Davidon_1991} qu'il nomme lui-même méthode à métrique variable est la base de nombreux travaux. Cette méthode de résolution de problèmes d'optimisation non-linéaire libre a la particularité de considérer une matrice variable d'une itération à une autre, i.e. la matrice $B$ estimation de l'inverse de la hessienne. Parmi les mathématiciens s'étant penché sur ces travaux, Fletcher et Powell proposent en 1963 une variation de la méthode à métrique variable (formule de DFP), dont Broyden louera les nombreuses qualités en 1970, en la comparant à ses travaux précédent. Il s'avance même en qualifiant à l'époque la méthode DFP de meilleur algorithme pour résoudre un problème d'optimisation libre, où l'expression explicite du gradient est accessible. En 1967, Broyden décrit la classe d'algorithmes qu'il nomme les méthodes de Quasi-Newton \cite{art:Broyden_1967}, généralisation de la méthode de la sécante dans le cas multidimensionnel basée sur les travaux de Wolfe (1659) et de Barnes (1965). En 1970, Broyden, Fletcher, Goldfarb et Shanno proposent le dual de la formule de DFP : la formule de BFGS, qui partage les caractéristique de la formule de DFP, mais donne de meilleurs résultats en pratique. 
 \begin{rmk}
     Fletcher détaille les caractéristiques des méthodes de la famille Broyden dans son ouvrage d'optimisation \cite{book:Fletcher_1987}, parmi lesquelles on retrouve la formule de DFP, de BFGS, et également la formule de Broyden, qui fût découverte après la formule de DFP, mais dont l'intérêt était diminué par ses inconvénients.
 \end{rmk}
@@ -316,7 +315,7 @@ La méthode de Davidon (1959)\cite{art:Davidon_1991} qu'il nomme lui-même méth
 Dans cette partie, on considère le problème d'optimisation définie par (\ref{eq:probleme-opt}), avec $f:\Omega\subset \mathbb{R}^n\rightarrow \mathbb{R}$, une fonction différentiable et convexe. 
 Les méthodes de quasi-Newton se reposent sur l'approximation quadratique au voisinage de la solution, qui est le principe fondamental de la méthode de Newton.
 
-La différence principale se situe dans la direction de descente de l'algorithme. Au lieu de considérer la hessienne de $f$, on notera respectivement $B$ et $H$ son approximation, et celle de son inverse.
+La différence principale se situe dans la direction de descente de l'algorithme. \`A la place de la hessienne (resp. l'inverse de la hessienne) de $f$, on considèrera son approximation, notée $B$ (resp. $H$).\footnote{La notation est l'opposée de celle utilisée dans le polycopié de S. Mottelet \cite{poly:mottelet2003}, mais on choisit la convention employée par Fletcher dans \cite{book:Fletcher_1987}}
 
 \begin{definition}
     Soit une itération $k$ de la méthode de Newton-Raphson, on considère un modèle approximatif quadratique\footnote{Dans le polycopié de RO04, S. Mottelet \cite{poly:mottelet2003} prend la notation $\varphi(t) = f(x+td)$.} $\varphi$ de $f$ au voisinage de $x_{k}$ définie par
@@ -330,7 +329,7 @@ La différence principale se situe dans la direction de descente de l'algorithme
 \begin{definition}
     Incluant une phase de recherche linéaire, l'expression de la suite $(x_k)_{k\in \mathbb{N}}$ et sa direction de descente $d_k$ est définie par 
     \begin{align}
-        d_k = -B_k\cdot \nabla f(x_k)\nonumber \\
+        d_k = -B_k^{-1}\cdot \nabla f(x_k)\nonumber \\
         x_{k+1} = x_k + t_k\cdot d_k
         \label{eq:suite-qn}
     \end{align}
@@ -348,49 +347,26 @@ La différence principale se situe dans la direction de descente de l'algorithme
 \begin{rmk}
     L'expression de la direction de descente $d_k$ pour la matrice $H$ peut être obtenue en remplaçant $B_k$ par $H_k^{-1}$ dans le modèle $\varphi$.
 \end{rmk}
-
-\begin{definition}
-    Soit les valeurs initiales $x_0\in \Omega$, $B_0$ ou $H_0$. Une méthode de quasi-Newton est une méthode à métrique variable dont la suite $(x_k)_{k\in \mathbb{N}}$ est définie par
-    \begin{align*}
-        &d_k = -B_k\cdot g_k = -H_k^{-1}\cdot x_k \\
-        &x_{k+1} = x_k + t_k\cdot d_k
-    \end{align*}
-    et les formules de mise à jour de $B$ et $H$
-    \begin{align}
-        B_{k+1} = B_k + \Delta_k
-        \label{eq:maj-bk}\\
-        H_{k+1} = H_k + \Delta_k
-        \label{eq:maj-hk}
-    \end{align}
-    où $\Delta_k$ correspond à une matrice symétrique de rang connu tel que les relations de quasi-Newton soient valides 
-\end{definition}
-
-\begin{definition}
-    Soit $\Delta_k$ une matrice symétrique de rang $i$, on dit que la formule de mise à jour de $B$ ou $H$ correspondante est une formule de correction de rang $i$. 
-\end{definition}
-
 \begin{definition}
     Soit l'équation de la sécante, ou condition de quasi-Newton définie par 
     \begin{align}
         y_k = B_{k+1} \cdot s_k
         \label{eq:sec-qn-bk}\\
         H_{k+1} \cdot y_k = s_k
-        \label{eq:sec-qn-bk}\\
+        \label{eq:sec-qn-hk}\\
     \end{align}
     avec $y_k = \nabla f(x_{k+1}) - \nabla f(x_k)$ et $s_k = x_{k+1} - x_k$.
 \end{definition}
 \begin{pf}
     On impose à la mise à jour de l'approximation quadratique $\varphi_{k+1}$ l'égalité des gradients en $x_k$ et $x_{k+1}$.
-    
     Vérifions la première condition.
     \begin{align*}
-        \nabla \phi_{k+1}(x_{k+1}) &= \nabla f(x_{k+1}) + B_{k+1}(x_{k+1} - x_{k+1}) \\
+        \nabla \varphi_{k+1}(x_{k+1}) &= \nabla f(x_{k+1}) + B_{k+1}(x_{k+1} - x_{k+1}) \\
         &= \nabla f(x_{k+1})\\
     \end{align*}
-
     Vérifions la deuxième condition.
     \begin{align*}
-        &\nabla \phi_{k+1}(x_{k}) = \nabla f(x_{k+1}) - B_{k+1}s_k \\
+        &\nabla \varphi_{k+1}(x_{k}) = \nabla f(x_{k+1}) - B_{k+1}s_k \\
         \iff& y_k = B_{k+1}\cdot s_k
     \end{align*}
 \end{pf}
@@ -398,6 +374,41 @@ La différence principale se situe dans la direction de descente de l'algorithme
 \begin{rmk}
     L'équation de la sécante ici définie montre bien la raison pour laquelle on considère les méthodes de quasi-Newton comme une généralisation multidimensionnelle de la méthode de la sécante.
 \end{rmk}
+\begin{definition}
+    Soit les valeurs initiales $x_0\in \Omega$, $B_0$ ou $H_0$. Une méthode de quasi-Newton est une méthode à métrique variable dont la suite $(x_k)_{k\in \mathbb{N}}$ est définie par
+    \begin{align*}
+        &d_k = -B_k^{-1}\cdot \nabla f(x_k) = -H_k\cdot \nabla f(x_k) \\
+        &x_{k+1} = x_k + t_k\cdot d_k
+    \end{align*}
+    et les formules de mise à jour de $B_k$ et $H_k$
+    \begin{align}
+        B_{k+1} = B_k + \Delta_k
+        \label{eq:maj-bk}\\
+        H_{k+1} = H_k + \Delta_k
+        \label{eq:maj-hk}
+    \end{align}
+    vérifient l'équation de la sécante, où $\Delta_k$ correspond à une matrice symétrique de rang connu tel que les relations de quasi-Newton soient valides 
+\end{definition}
+
+\begin{definition}
+    Soit $\Delta_k$ une matrice symétrique de rang $i$, on dit que la formule de mise à jour de $B_k$ ou $H_k$ correspondante est une formule de correction de rang $i$. 
+\end{definition}
+% curvature condition + DFP
+\begin{definition}
+    La formule de mise à jour de Broyden, Fletcher, Goldfarb et Shanno, formule de correction de rang 2, est définie dans sa forme développée par 
+    \begin{align}
+        H_{k+1} = H_k &+ \left(I + \frac{y_k H_k y_k}{s_k^T y_k}\right)\frac{s_k s_k^T}{s_k^T y_k}\nonumber\\
+        &-\left(\frac{s_k y_k^T H+ H y_k s_k^T}{s_k^T y_k}\right)
+        \label{eq:bfgs-developed}
+    \end{align}
+    On peut factoriser cette expression comme suit 
+    \begin{equation}
+        H_{k+1} = \left(I - \frac{y_k s_k^T}{s_k^T y_k}\right) H_k \left(I - \frac{s_k y_k^T}{s_k^Ty_k}\right) + \frac{y_k y_k^T}{s_k^T y_k}
+        \label{eq:bfgs-factorised}
+    \end{equation}
+\end{definition}
+
+La formule de DFP met à jour la matrice $H_k$ en contraignant les itérations suivantes à vérifier (\ref{eq:sec-qn-hk}). L'idée derrière la formule de BFGS est de proposer un pendant en forçant les itérations à vérifier (\ref{eq:sec-qn-bk}) en considérant $B_{k+1} = H_{k+1}^{-1}$. En échangeant $y_k$ et $s_k$, on obtient une nouvelle formule de mise à jour pour $H_{k+1}$.
 
 \subsection{Résultats connus}
 \subsection{Qualités et faiblesses}

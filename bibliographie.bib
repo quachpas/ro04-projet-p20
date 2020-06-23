@@ -17,13 +17,6 @@ Liste des types d'entrées : article, book, booklet, inbook, incollection, inpro
   year = "2010",
   pages = "154-"
 }
-@misc{poly:quasi-newton-gramfort,
-  author       = {Alexandre Gramfort},
-  title        = {(Quasi-)Newton Methods},
-  month        = {September},
-  url          = {http://www.lix.polytechnique.fr/bigdata/mathbigdata/wp-content/uploads/2014/09/notes_quasi_newton.pdf},
-  year         = {2014}
-}
 @misc{arxiv:kovalev2019stochastic,
   title={Stochastic Newton and Cubic Newton Methods with Simple Local Linear-Quadratic Rates},
   author={Dmitry Kovalev and Konstantin Mishchenko and Peter Richtárik},
@@ -78,32 +71,45 @@ Liste des types d'entrées : article, book, booklet, inbook, incollection, inpro
   month={Feb},
   pages={1–17}
 }
-@article{art:Broyden_1967, 
-title={Quasi-Newton methods and their application to function minimisation}, 
-volume={21}, 
-ISSN={0025-5718, 1088-6842}, 
-DOI={10.1090/S0025-5718-1967-0224273-2}, 
-abstractNote={Advancing research. Creating connections.}, 
-number={99}, 
-journal={Mathematics of Computation}, 
-author={Broyden, C. G.}, 
-year={1967}, 
-pages={368–381} 
+@article{art:Broyden_1967,
+  title={Quasi-Newton methods and their application to function minimisation},
+  volume={21},
+  ISSN={0025-5718, 1088-6842},
+  DOI={10.1090/S0025-5718-1967-0224273-2},
+  abstractNote={Advancing research. Creating connections.},
+  number={99},
+  journal={Mathematics of Computation},
+  author={Broyden, C. G.},
+  year={1967},
+  pages={368–381}
 }
-@article{art:Broyden_1970, 
-title={The Convergence of a Class of Double-rank Minimization Algorithms 1. General Considerations}, 
-DOI={10.1093/imamat/6.1.76}, 
-abstractNote={This paper presents a more detailed analysis of a class of minimization algorithms, which includes as a special case the DFP (Davidon-Fletcher-Powell) method, than has previously appeared. Only quadratic functions are considered but particular attention is paid to the magnitude of successive errors and their dependence upon the initial matrix. On the basis of this a possible explanation of some of the observed characteristics of the class is tentatively suggested. PROBABLY the best-known algorithm for determining the unconstrained minimum of a function of many variables, where explicit expressions are available for the first partial derivatives, is that of Davidon (1959) as modified by Fletcher & Powell (1963). This algorithm has many virtues. It is simple and does not require at any stage the solution of linear equations. It minimizes a quadratic function exactly in a finite number of steps and this property makes convergence of this algorithm rapid, when applied to more general functions, in the neighbourhood of the solution. It is, at least in theory, stable since the iteration matrix H,, which transforms the jth gradient into the /th step direction, may be shown to be positive definite. In practice the algorithm has been generally successful, but it has exhibited some puzzling behaviour. Broyden (1967) noted that H, does not always remain positive definite, and attributed this to rounding errors. Pearson (1968) found that for some problems the solution was obtained more efficiently if H, was reset to a positive definite matrix, often the unit matrix, at intervals during the computation. Bard (1968) noted that H, could become singular, attributed this to rounding error and suggested the use of suitably chosen scaling factors as a remedy. In this paper we analyse the more general algorithm given by Broyden (1967), of which the DFP algorithm is a special case, and determine how for quadratic functions the choice of an arbitrary parameter affects convergence. We investigate how the successive errors depend, again for quadratic functions, upon the initial choice of iteration matrix paying particular attention to the cases where this is either the unit matrix or a good approximation to the inverse Hessian. We finally give a tentative explanation of some of the observed experimental behaviour in the case where the function to be minimized is not quadratic.},
-author={Broyden, C. G.}, 
-year={1970}
+@article{art:Broyden_1970,
+  title={The Convergence of a Class of Double-rank Minimization Algorithms 1. General Considerations},
+  DOI={10.1093/imamat/6.1.76},
+  abstractNote={This paper presents a more detailed analysis of a class of minimization algorithms, which includes as a special case the DFP (Davidon-Fletcher-Powell) method, than has previously appeared. Only quadratic functions are considered but particular attention is paid to the magnitude of successive errors and their dependence upon the initial matrix. On the basis of this a possible explanation of some of the observed characteristics of the class is tentatively suggested. PROBABLY the best-known algorithm for determining the unconstrained minimum of a function of many variables, where explicit expressions are available for the first partial derivatives, is that of Davidon (1959) as modified by Fletcher & Powell (1963). This algorithm has many virtues. It is simple and does not require at any stage the solution of linear equations. It minimizes a quadratic function exactly in a finite number of steps and this property makes convergence of this algorithm rapid, when applied to more general functions, in the neighbourhood of the solution. It is, at least in theory, stable since the iteration matrix H,, which transforms the jth gradient into the /th step direction, may be shown to be positive definite. In practice the algorithm has been generally successful, but it has exhibited some puzzling behaviour. Broyden (1967) noted that H, does not always remain positive definite, and attributed this to rounding errors. Pearson (1968) found that for some problems the solution was obtained more efficiently if H, was reset to a positive definite matrix, often the unit matrix, at intervals during the computation. Bard (1968) noted that H, could become singular, attributed this to rounding error and suggested the use of suitably chosen scaling factors as a remedy. In this paper we analyse the more general algorithm given by Broyden (1967), of which the DFP algorithm is a special case, and determine how for quadratic functions the choice of an arbitrary parameter affects convergence. We investigate how the successive errors depend, again for quadratic functions, upon the initial choice of iteration matrix paying particular attention to the cases where this is either the unit matrix or a good approximation to the inverse Hessian. We finally give a tentative explanation of some of the observed experimental behaviour in the case where the function to be minimized is not quadratic.},
+  author={Broyden, C. G.},
+  year={1970}
 }
-@article{art:Fliege_Drummond_Svaiter_2009, 
-title={Newton’s Method for Multiobjective Optimization}, 
-DOI={10.1137/08071692X}, 
-abstractNote={We propose an extension of Newton’s method for unconstrained multiobjective optimization (multicriteria optimization). This method does not use a priori chosen weighting factors or any other form of a priori ranking or ordering information for the different objective functions. Newton’s direction at each iterate is obtained by minimizing the max-ordering scalarization of the variations on the quadratic approximations of the objective functions. The objective functions are assumed to be twice continuously differentiable and locally strongly convex. Under these hypotheses, the method, as in the classical case, is locally superlinear convergent to optimal points. Again as in the scalar case, if the second derivatives are Lipschitz continuous, the rate of convergence is quadratic. Our convergence analysis uses a Kantorovich-like technique. As a byproduct, existence of optima is obtained under semilocal assumptions.}, 
-journal={SIAM J. Optim.}, 
-author={Fliege, Jörg and Drummond, L. Mauricio Graña and Svaiter, Benar Fux}, 
-year={2009} 
+@article{art:Fletcher1970,
+  title={A new approach to variable metric algorithms},
+  volume={13},
+  ISSN={0010-4620},
+  DOI={10.1093/comjnl/13.3.317},
+  abstractNote={Abstract.  An approach to variable metric algorithms has been investigated in which the linear search sub-problem no longer becomes necessary. The property of q},
+  number={3},
+  journal={The Computer Journal},
+  author={Fletcher, R.},
+  year={1970},
+  month={Jan},
+  pages={317–322}
+}
+@article{art:Fliege_Drummond_Svaiter_2009,
+  title={Newton’s Method for Multiobjective Optimization},
+  DOI={10.1137/08071692X},
+  abstractNote={We propose an extension of Newton’s method for unconstrained multiobjective optimization (multicriteria optimization). This method does not use a priori chosen weighting factors or any other form of a priori ranking or ordering information for the different objective functions. Newton’s direction at each iterate is obtained by minimizing the max-ordering scalarization of the variations on the quadratic approximations of the objective functions. The objective functions are assumed to be twice continuously differentiable and locally strongly convex. Under these hypotheses, the method, as in the classical case, is locally superlinear convergent to optimal points. Again as in the scalar case, if the second derivatives are Lipschitz continuous, the rate of convergence is quadratic. Our convergence analysis uses a Kantorovich-like technique. As a byproduct, existence of optima is obtained under semilocal assumptions.},
+  journal={SIAM J. Optim.},
+  author={Fliege, Jörg and Drummond, L. Mauricio Graña and Svaiter, Benar Fux},
+  year={2009}
 }
 @book{book:Floudas_Pardalos_2008,
   title={Encyclopedia of Optimization},
