@@ -143,14 +143,14 @@ La méthode de Newton-Raphson est une méthode de recherche des racines d'une fo
     $\Jacobian_G$ est préférablement inversible. Si la matrice n'est pas carrée, on peut se servir du pseudo-inverse de matrices non-carrés; à gauche s'il y a plus de contraintes que de variables; à droite s'il y a plus de variables que de contraintes. Si la matrice est carrée non inversible, on peut se servir du pseudo-inverse de Moore-Penrose.
     \begin{exemple}
         Trouver les racines de $F
-        \begin{pmatrix}
-            x\\y
-        \end{pmatrix}
-        =
-        \begin{pmatrix}
-            x^2+y^2-1\\
-            y+x
-        \end{pmatrix}$ est un problème "bien contraint", la matrice jacobienne est inversible. Si l'on décide de rajouter une contrainte, par exemple $y-\frac{\sqrt2}{2}$, alors le jacobien n'est pas carré, on peut se servir du pseudo-inverse pour appliquer la méthode de Newton-Raphson.
+            \begin{pmatrix}
+                x \\y
+            \end{pmatrix}
+            =
+            \begin{pmatrix}
+                x^2+y^2-1 \\
+                y+x
+            \end{pmatrix}$ est un problème "bien contraint", la matrice jacobienne est inversible. Si l'on décide de rajouter une contrainte, par exemple $y-\frac{\sqrt2}{2}$, alors le jacobien n'est pas carré, on peut se servir du pseudo-inverse pour appliquer la méthode de Newton-Raphson.
     \end{exemple}
 \end{rmk}
 \begin{rmk}
@@ -205,15 +205,15 @@ La méthode de Newton-Raphson converge quadratiquement au voisinage d'une soluti
 \subsubsection{Cas de non convergence}
 Dans certains cas, la méthode de Newton-Raphson ne converge pas.
 
- \textbf{Domaine de définition} - Le calcul de $x_{k+1}$ peut mener à une valeur en dehors du domaine de définition $\Omega$ de $G$.
+\textbf{Domaine de définition} - Le calcul de $x_{k+1}$ peut mener à une valeur en dehors du domaine de définition $\Omega$ de $G$.
 
- \textbf{Différentiabilité} - Si le gradient de la fonction $G$, $\Jacobian_G(x)$ a un comportement anormal, e.g. il n'est pas définie au voisinage d'une racine $x_*$, c'est-à-dire que $G$ n'est pas différentiable en $x_*$, alors la méthode ne peut pas converger.
+\textbf{Différentiabilité} - Si le gradient de la fonction $G$, $\Jacobian_G(x)$ a un comportement anormal, e.g. il n'est pas définie au voisinage d'une racine $x_*$, c'est-à-dire que $G$ n'est pas différentiable en $x_*$, alors la méthode ne peut pas converger.
 
- \textbf{Optima locaux} - Au cours des itérations de la méthode, l'algorithme peut éventuellement s'arrêter sur un optimum. La méthode oscille (ou s'arrête si on doit diviser par 0), car la matrice jacobienne sera nul. La matrice jacobienne peut être nulle, dans ce cas-là la méthode est "bloquée" : $x_{k+1} = x_k$. Ce cas de non-convergence correspond en deux dimensions à la pente nulle de la tangente en $x_k$.
+\textbf{Optima locaux} - Au cours des itérations de la méthode, l'algorithme peut éventuellement s'arrêter sur un optimum. La méthode oscille (ou s'arrête si on doit diviser par 0), car la matrice jacobienne sera nul. La matrice jacobienne peut être nulle, dans ce cas-là la méthode est "bloquée" : $x_{k+1} = x_k$. Ce cas de non-convergence correspond en deux dimensions à la pente nulle de la tangente en $x_k$.
 
 \textbf{Valeur initiale} - Toutefois, la non-convergence de la méthode de Newton-Raphson est le plus souvent due au mauvais choix de la valeur initiale $x_{0}$. Il est important d'itérer à partir d'une estimation raisonnable de la solution voulue.
 
-\textbf{Convergence} - En somme, pour une fonction quelconque, il n'existe aucune garantie que la méthode de Newton-Raphson converge. Il faudra s'assurer que la fonction ait certaines propriétés particulières - notamment sa stricte convexité - pour appliquer la méthode de Newton-Raphson à un problème d'optimisation. 
+\textbf{Convergence} - En somme, pour une fonction quelconque, il n'existe aucune garantie que la méthode de Newton-Raphson converge. Il faudra s'assurer que la fonction ait certaines propriétés particulières - notamment sa stricte convexité - pour appliquer la méthode de Newton-Raphson à un problème d'optimisation.
 
 \begin{exemple}
     On considère la fonction $G:\mathbb R^n\rightarrow \mathbb R^n$ définie par $G(x)=\left(\lvert x_i\rvert^{\frac12}\right)_{1\leq i\leq n}$. La méthode itérative de Newton-Raphson mène à $x_{k+1}=-x_k$. \footnote{Les détails du calcul sont précisés dans l'annexe \ref{ap:calcul-exemple-nr}.}
@@ -231,11 +231,11 @@ Dans certains cas, la méthode de Newton-Raphson ne converge pas.
 Lorsqu'une racine est au moins de multiplicité 2, alors la convergence n'est plus d'ordre quadratique mais presque linéaire. Cependant, si cette multiplicité est connue, il est possible de modifier la méthode pour retrouver une convergence quadratique locale. En notant $m$ cette mutiplicité, on obtient :
 % TODO : Jacobien ? 
 \begin{equation*}
-    x_{n+1}=x_{n}-m\frac{f(x_{n})}{f'(x_{n})}    
+    x_{n+1}=x_{n}-m\frac{f(x_{n})}{f'(x_{n})}
 \end{equation*}
 
 \begin{rmk}
-S'il existe deux racines, proches l'une de l'autre, l'algorithme aura besoin de plusieurs itérations pour s'approcher de l'une d'entre elles.
+    S'il existe deux racines, proches l'une de l'autre, l'algorithme aura besoin de plusieurs itérations pour s'approcher de l'une d'entre elles.
 \end{rmk}
 
 \subsubsection{Coût de la méthode}
@@ -272,7 +272,7 @@ telle que la suite $(x_k)_{k\in \mathbb{N}}$ soit définie par
 \begin{equation}
     x_{k+1}=x_k+t_k\cdot d_k
     \label{eq:nr-opt-mono}
-\end{equation} 
+\end{equation}
 avec $t_k$ le pas résultant d'une recherche linéaire.
 Compte tenu des propriétés choisies pour $f$, $d_k$ est une direction de descente en $x_k$. En effet, la stricte convexité de $f$ implique que la hessienne soit strictement définie positive.
 \begin{rmk}
@@ -284,7 +284,7 @@ L'application de la méthode de Newton à des fonctions non convexes est limité
 
 La méthode \textit{Hybrid Genetic Deflated Newton} (HGBN) \cite{art:Noack_Funke_2017} est particulièrement équipée pour optimiser des fonctions qui possède de nombreux optima locaux. Elle consiste en l'application locale de multiples algorithmes de Newton-Raphson sur une population d'individus - les valeurs initiales - pour identifier des optima et les rendre introuvable ($deflation$). La nouvelle génération est sélectionnée par survie du plus adapté, et on recherche de nouveau les optima jusqu'à les avoir tous trouvé.
 
-HGBN converge vers un optimum global, et réduit significativement le nombre d'évaluations de fonctions nécessaire. 
+HGBN converge vers un optimum global, et réduit significativement le nombre d'évaluations de fonctions nécessaire.
 
 \begin{rmk}
     Concernant la recherche d'un optimum global, une alternative raisonnable serait la méthode du recuit simulé (\textit{simulated annealing} en anglais). Sur des problèmes où l'optimum global est enfoui parmi de multiples optima locaux, le recours à cette méthode est un choix raisonnable, quitte à être contraint à paramétrer l'algorithme manuellement, étant donné que c'est une méthode métaheuristique.
@@ -296,17 +296,17 @@ Les itérations de la méthode de Newton-Raphson nécessite l'évaluation du gra
 \subsubsection{Propriétés de $f$}
 La méthode de Newton-Raphson est valable si certaines propriétés de $f$ sont vérifiées : stricte convexité, deux fois différentiable. Cela restreint considérablement le champ d'application de la méthode de Newton-Raphson.
 
-Si la fonction $f$ est seulement convexe, la hessienne de $f$ est semi-définie positive. Elle n'est donc pas forcément inversible. 
+Si la fonction $f$ est seulement convexe, la hessienne de $f$ est semi-définie positive. Elle n'est donc pas forcément inversible.
 
 \subsubsection{Vers les méthodes de quasi-Newton}
 La nécessité que $f$ soit deux fois différentiable, et strictement convexe, ainsi que le coût relativement élevé de calcul des itérations de la méthode de Newton-Raphson est une faiblesse majeure de l'algorithme.
 
-Cependant, les méthodes à métrique variable introduisent l'idée d'approximer l'inverse de la hessienne pour réduire à la fois les restrictions placées sur $f$, et réduire les coûts de calcul. 
+Cependant, les méthodes à métrique variable introduisent l'idée d'approximer l'inverse de la hessienne pour réduire à la fois les restrictions placées sur $f$, et réduire les coûts de calcul.
 
 \section{Méthode de BFGS}
 
 \subsection{Origines}
-La méthode de Davidon (1959)\cite{art:Davidon_1991} qu'il nomme lui-même méthode à métrique variable est la base de nombreux travaux. Cette méthode de résolution de problèmes d'optimisation non-linéaire libre a la particularité de considérer une matrice variable d'une itération à une autre, i.e. la matrice $B$ estimation de l'inverse de la hessienne. Parmi les mathématiciens s'étant penché sur ces travaux, Fletcher et Powell proposent en 1963 une variation de la méthode à métrique variable (formule de DFP), dont Broyden louera les nombreuses qualités en 1970, en la comparant à ses travaux précédent. Il s'avance même en qualifiant à l'époque la méthode DFP de meilleur algorithme pour résoudre un problème d'optimisation libre, où l'expression explicite du gradient est accessible. En 1967, Broyden décrit la classe d'algorithmes qu'il nomme les méthodes de Quasi-Newton \cite{art:Broyden_1967}, généralisation de la méthode de la sécante dans le cas multidimensionnel basée sur les travaux de Wolfe (1659) et de Barnes (1965). En 1970, Broyden, Fletcher, Goldfarb et Shanno proposent le dual de la formule de DFP : la formule de BFGS, qui partage les caractéristique de la formule de DFP, mais donne de meilleurs résultats en pratique. 
+La méthode de Davidon (1959)\cite{art:Davidon_1991} qu'il nomme lui-même méthode à métrique variable est la base de nombreux travaux. Cette méthode de résolution de problèmes d'optimisation non-linéaire libre a la particularité de considérer une matrice variable d'une itération à une autre, i.e. la matrice $B$ estimation de l'inverse de la hessienne. Parmi les mathématiciens s'étant penché sur ces travaux, Fletcher et Powell proposent en 1963 une variation de la méthode à métrique variable (formule de DFP), dont Broyden louera les nombreuses qualités en 1970, en la comparant à ses travaux précédent. Il s'avance même en qualifiant à l'époque la méthode DFP de meilleur algorithme pour résoudre un problème d'optimisation libre, où l'expression explicite du gradient est accessible. En 1967, Broyden décrit la classe d'algorithmes qu'il nomme les méthodes de Quasi-Newton \cite{art:Broyden_1967}, généralisation de la méthode de la sécante dans le cas multidimensionnel basée sur les travaux de Wolfe (1659) et de Barnes (1965). En 1970, Broyden, Fletcher, Goldfarb et Shanno proposent le dual de la formule de DFP : la formule de BFGS, qui partage les caractéristique de la formule de DFP, mais donne de meilleurs résultats en pratique.
 \begin{rmk}
     Fletcher détaille les caractéristiques des méthodes de la famille Broyden dans son ouvrage d'optimisation \cite{book:Fletcher_1987}, parmi lesquelles on retrouve la formule de DFP, de BFGS, et également la formule de Broyden, qui fût découverte après la formule de DFP, mais dont l'intérêt était diminué par ses inconvénients.
 \end{rmk}
@@ -320,14 +320,14 @@ La différence principale se situe dans la direction de descente de l'algorithme
 \begin{definition}
     Soit une itération $k$ de la méthode de Newton-Raphson, on considère un modèle approximatif quadratique $\varphi$\footnote{Dans le polycopié de RO04, S. Mottelet \cite{poly:mottelet2003} considère la notation $\varphi(t) = f(x+td)$.} de $f$ au voisinage de $x_{k}$ définie par
     \begin{align}
-        \varphi_k(x) := f(x_k) &+ \nabla f(x_k) (x - x_k)\nonumber\\ 
-        &+ \frac12 (x-x_k)^T B_k (x-x_k)
+        \varphi_k(x) := f(x_k) & + \nabla f(x_k) (x - x_k)\nonumber \\
+                               & + \frac12 (x-x_k)^T B_k (x-x_k)
         \label{eq:modele-quadra-qn}
     \end{align}
 \end{definition}
 
 \begin{definition}
-    Incluant une phase de recherche linéaire, l'expression de la suite $(x_k)_{k\in \mathbb{N}}$ et sa direction de descente $d_k$ est définie par 
+    Incluant une phase de recherche linéaire, l'expression de la suite $(x_k)_{k\in \mathbb{N}}$ et sa direction de descente $d_k$ est définie par
     \begin{align}
         d_k = -B_k^{-1}\cdot \nabla f(x_k)\nonumber \\
         x_{k+1} = x_k + t_k\cdot d_k
@@ -336,10 +336,10 @@ La différence principale se situe dans la direction de descente de l'algorithme
 \end{definition}
 
 \begin{pf}
-    La direction de descente de quasi-Newton $d_k$ est définie comme le minimum du modèle quadratique de $f$ en $x_k$. Le gradient de $\varphi$ est calculé par rapport à $(x - x_k)$. 
+    La direction de descente de quasi-Newton $d_k$ est définie comme le minimum du modèle quadratique de $f$ en $x_k$. Le gradient de $\varphi$ est calculé par rapport à $(x - x_k)$.
     \begin{align*}
-        \nabla \varphi_k(x)&=\nabla f(x_k) + B_k(x-x_k)\\
-        &= x_k \underbrace{- B_k^{-1}\nabla f(x_k)}_{d_k} 
+        \nabla \varphi_k(x) & =\nabla f(x_k) + B_k(x-x_k)                      \\
+                            & = x_k \underbrace{- B_k^{-1}\nabla f(x_k)}_{d_k}
     \end{align*}
     La formule de mise à jour finale est obtenue en considérant une phase de recherche linéaire de pas noté $t_k$ :
     \begin{equation}
@@ -356,12 +356,12 @@ La différence principale se situe dans la direction de descente de l'algorithme
 \end{rmk}
 
 \begin{definition}
-    Soit l'équation de la sécante, ou condition de quasi-Newton définie par 
+    Soit l'équation de la sécante, ou condition de quasi-Newton définie par
     \begin{align}
         y_k = B_{k+1} \cdot s_k
-        \label{eq:sec-qn-bk}\\
+        \label{eq:sec-qn-bk} \\
         H_{k+1} \cdot y_k = s_k
-        \label{eq:sec-qn-hk}\\
+        \label{eq:sec-qn-hk} \\
     \end{align}
     avec $y_k = \nabla f(x_{k+1}) - \nabla f(x_k)$ et $s_k = x_{k+1} - x_k$.
 \end{definition}
@@ -369,13 +369,13 @@ La différence principale se situe dans la direction de descente de l'algorithme
     On impose à la mise à jour de l'approximation quadratique $\varphi_{k+1}$ l'égalité des gradients en $x_k$ et $x_{k+1}$.
     Vérifions la première condition.
     \begin{align*}
-        \nabla \varphi_{k+1}(x_{k+1}) &= \nabla f(x_{k+1}) + B_{k+1}(x_{k+1} - x_{k+1}) \\
-        &= \nabla f(x_{k+1})\\
+        \nabla \varphi_{k+1}(x_{k+1}) & = \nabla f(x_{k+1}) + B_{k+1}(x_{k+1} - x_{k+1}) \\
+                                      & = \nabla f(x_{k+1})                              \\
     \end{align*}
     Vérifions la deuxième condition.
     \begin{align*}
-        &\nabla \varphi_{k+1}(x_{k}) = \nabla f(x_{k+1}) - B_{k+1}s_k \\
-        \iff& y_k = B_{k+1}\cdot s_k
+             & \nabla \varphi_{k+1}(x_{k}) = \nabla f(x_{k+1}) - B_{k+1}s_k \\
+        \iff & y_k = B_{k+1}\cdot s_k
     \end{align*}
 \end{pf}
 
@@ -385,13 +385,13 @@ La différence principale se situe dans la direction de descente de l'algorithme
 \begin{definition}
     Soit les valeurs initiales $x_0\in \Omega$, $B_0$ ou $H_0$. Une méthode de quasi-Newton est une méthode à métrique variable dont la suite $(x_k)_{k\in \mathbb{N}}$ est définie par
     \begin{align*}
-        &d_k = -B_k^{-1}\cdot \nabla f(x_k) = -H_k\cdot \nabla f(x_k) \\
-        &x_{k+1} = x_k + t_k\cdot d_k
+         & d_k = -B_k^{-1}\cdot \nabla f(x_k) = -H_k\cdot \nabla f(x_k) \\
+         & x_{k+1} = x_k + t_k\cdot d_k
     \end{align*}
     et les formules de mise à jour de $B_k$ et $H_k$
     \begin{align}
         B_{k+1} = B_k + \Delta_k
-        \label{eq:maj-bk}\\
+        \label{eq:maj-bk} \\
         H_{k+1} = H_k + \Delta_k
         \label{eq:maj-hk}
     \end{align}
@@ -399,7 +399,7 @@ La différence principale se situe dans la direction de descente de l'algorithme
 \end{definition}
 
 \begin{definition}
-    Soit $\Delta_k$ une matrice symétrique de rang $i$, on dit que la formule de mise à jour de $B_k$ ou $H_k$ correspondante est une formule de correction de rang $i$. 
+    Soit $\Delta_k$ une matrice symétrique de rang $i$, on dit que la formule de mise à jour de $B_k$ ou $H_k$ correspondante est une formule de correction de rang $i$.
 \end{definition}
 
 \subsubsection{Faiblesses des méthodes de quasi-Newton}
@@ -428,13 +428,13 @@ La condition de quasi-Newton nous montre qu'il existe une infinité de matrices 
 
 \subsubsection{Formule de BFGS}
 \begin{definition}
-    La formule de mise à jour de Broyden, Fletcher, Goldfarb et Shanno, formule de correction de rang 2, est définie dans sa forme développée par 
+    La formule de mise à jour de Broyden, Fletcher, Goldfarb et Shanno, formule de correction de rang 2, est définie dans sa forme développée par
     \begin{align}
-        H_{k+1} = H_k &+ \left(I + \frac{y_k H_k y_k}{s_k^T y_k}\right)\frac{s_k s_k^T}{s_k^T y_k}\nonumber\\
-        &-\left(\frac{s_k y_k^T H+ H y_k s_k^T}{s_k^T y_k}\right)
+        H_{k+1} = H_k & + \left(I + \frac{y_k H_k y_k}{s_k^T y_k}\right)\frac{s_k s_k^T}{s_k^T y_k}\nonumber \\
+                      & -\left(\frac{s_k y_k^T H+ H y_k s_k^T}{s_k^T y_k}\right)
         \label{eq:bfgs-hk-developed}
     \end{align}
-    On peut factoriser cette expression comme suit 
+    On peut factoriser cette expression comme suit
     \begin{equation}
         H_{k+1} = \left(I - \frac{y_k s_k^T}{s_k^T y_k}\right) H_k \left(I - \frac{s_k y_k^T}{s_k^Ty_k}\right) + \frac{y_k y_k^T}{s_k^T y_k}
         \label{eq:bfgs-hk-factorised}
@@ -448,15 +448,15 @@ La condition de quasi-Newton nous montre qu'il existe une infinité de matrices 
 
 La formule de DFP met à jour la matrice $H_k$ en contraignant les itérations suivantes à vérifier (\ref{eq:sec-qn-hk}). L'idée derrière la formule de BFGS est de proposer un pendant en forçant les itérations à vérifier (\ref{eq:sec-qn-bk}) en considérant $B_{k+1} = H_{k+1}^{-1}$. En échangeant $y_k$ et $s_k$, on obtient une nouvelle formule de mise à jour pour $H_{k+1}$.
 
-La formule de BFGS est donc obtenue à partir de la formule de DFP et partage nombreuses de ses propriétés. 
+La formule de BFGS est donc obtenue à partir de la formule de DFP et partage nombreuses de ses propriétés.
 
 \begin{thm}
     Si $s_k^Ty_k > 0, \forall k$ (condition de courbure), alors la positivité de la matrice approximation est préservée au cours des itérations.
 \end{thm}
 
-Ce théorème est sans doute le plus important de cette section, car en d'autres mots, la méthode de quasi-Newton équipée de la formule de BFGS "progresse" toujours à chaque itération. Autrement dit, la direction de descente $d_k$ reste une direction de descente au cours des itérations de la méthode. 
+Ce théorème est sans doute le plus important de cette section, car en d'autres mots, la méthode de quasi-Newton équipée de la formule de BFGS "progresse" toujours à chaque itération. Autrement dit, la direction de descente $d_k$ reste une direction de descente au cours des itérations de la méthode.
 
-Aussi, les imprécisions de la recherche linéaire affectent sensiblement moins l'algorithme, 
+Aussi, les imprécisions de la recherche linéaire affectent sensiblement moins l'algorithme,
 
 \begin{thm}
     Soit $B_0$, une matrice initiale symétrique définie positive et une valeur initiale $x_0\in\Omega$. Soit $f$ une fonction différentiable, convexe, et de gradient $K$-Lipschizien. La suite $(x_k)_{k\in \mathbb{N}}$ générée par la méthode de quasi-Newton avec la formule de BFGS et équipée d'une méthode de recherche linéaire converge superlinéairement vers la solution $x_*$ du problème (\ref{eq:probleme-opt}).
@@ -469,53 +469,53 @@ Aussi, les imprécisions de la recherche linéaire affectent sensiblement moins 
     Le calcul du pas optimal $\hat t$ pour la méthode de quasi-Newton avec la formule de BFGS implique la terminaison de l'algorithme en au plus $n$ itérations \cite{book:Fletcher_1987}.
 \end{rmk}
 
-Comparée à la formule de DFP, la formule de BFGS donne à l'algorithme de quasi-Newton une plus grande résistance aux imprécisions dû à l'approximation de la hessienne (ou son inverse). Ainsi, le risque de rendre la matrice approximation non inversible est moindre. 
+Comparée à la formule de DFP, la formule de BFGS donne à l'algorithme de quasi-Newton une plus grande résistance aux imprécisions dû à l'approximation de la hessienne (ou son inverse). Ainsi, le risque de rendre la matrice approximation non inversible est moindre.
 
 C'est pour ces raisons que l'on préfèrera l'utilisation de la formule de BFGS, que beaucoup considèrent comme la meilleure méthode d'optimisation libre sans contraintes.
 
-Bien que la vitesse convergence des méthodes de quasi-Newton soit en général inférieure à celle de la méthode de Newton, elles ont une complexité calculatoire bien inférieure, car on n'évalue pas la hessienne. 
+Bien que la vitesse convergence des méthodes de quasi-Newton soit en général inférieure à celle de la méthode de Newton, elles ont une complexité calculatoire bien inférieure, car on n'évalue pas la hessienne.
 
 \subsection{Algorithme de Broyden, Fletcher, Goldfarb et Shanno dit BFGS}
-Soit une valeur initiale $x_0$, une matrice symétrique définie positive $H_0$, de préférence une estimation raisonnable ou par défaut la matrice identité $I$. 
+Soit une valeur initiale $x_0$, une matrice symétrique définie positive $H_0$, de préférence une estimation raisonnable ou par défaut la matrice identité $I$.
 \begin{enumerate}
     \item \`A l'itération $k$, on calcule la direction de descente selon
-    \begin{equation*}
-        d_{k}=-B_{k}^{-1}\nabla f(x_{k})
-    \end{equation*}
+          \begin{equation*}
+              d_{k}=-B_{k}^{-1}\nabla f(x_{k})
+          \end{equation*}
     \item Ensuite, on détermine le pas optimal $\hat t$, ou on applique une méthode de recherche linéaire inexacte pour calculer l'itéré suivant $x_{k+1}$.
-    \begin{equation*}
-        x_{k+1}=x_{k}+\rho_{k}d_{k}
-    \end{equation*}
+          \begin{equation*}
+              x_{k+1}=x_{k}+\rho_{k}d_{k}
+          \end{equation*}
     \item On met à jour la matrice $B_{k+1}$.
-    \begin{equation*}
-        B_{k+1} = B_k + \frac{y_ky_k^T}{y_k^Ts_k}-\frac{B_ks_ks_k^TB_k}{s_k^TB_ks_k}
-    \end{equation*}
+          \begin{equation*}
+              B_{k+1} = B_k + \frac{y_ky_k^T}{y_k^Ts_k}-\frac{B_ks_ks_k^TB_k}{s_k^TB_ks_k}
+          \end{equation*}
     \item L'algorithme continue, sauf si le ou les critères d'arrêts spécifiés sont vérifiés.
 \end{enumerate}
 
 La matrice $H_{k}$ étant symétrique définie positive, elle peut être décomposée en deux matrices triangulaires par la décomposition de Chloesky. Ainsi, en posant $H_{k}=C_{k}C_{k}^{T}$, la mise à jour de la matrice $H_{k}$ devient moins coûteuse, plus précisement de même complexité que pour la formule de DFP. Cette méthode permet également d'éviter des erreurs d'arrondis, grâce à un contrôle plus précis du caractère défini positif de la matrice $H_{k}$.
 
 \begin{rmk}
-    \textbf{Convergence de $(B_k)_{k\in \mathbb{N}}$} - La formule de BFGS est qualifiée de formule de moindres changements (\textit{least changes update formula}), c'est-à-dire qu'on cherche à effectuer le moins de changements possibles sur la matrice $B_k$. Pour les formules de moindres changements, la suite $(B_k)_{k\in \mathbb{N}}$ converge vers l'inverse de la hessienne. Ce n'est pas forcément le cas pour toutes les formules de mise à jour. 
+    \textbf{Convergence de $(B_k)_{k\in \mathbb{N}}$} - La formule de BFGS est qualifiée de formule de moindres changements (\textit{least changes update formula}), c'est-à-dire qu'on cherche à effectuer le moins de changements possibles sur la matrice $B_k$. Pour les formules de moindres changements, la suite $(B_k)_{k\in \mathbb{N}}$ converge vers l'inverse de la hessienne. Ce n'est pas forcément le cas pour toutes les formules de mise à jour.
 \end{rmk}
 
 \subsubsection{Variation de la méthode de BFGS : L-BFGS}
-La méthode L-BFGS (Limited-memory BFGS) est une variation de la méthode de BFGS qui ne stocke pas entièrement la matrice $H_k$. De cette manière, la direction de descente n'est pas calculée directement à partir de la matrice $H_k$, mais en faisant usage d'un historique des mises à jours effectuées. La complexité calculatoire et de stockage devient ainsi linéaire, proportionnelle à la taille de l'historique des mises à jours. 
+La méthode L-BFGS (Limited-memory BFGS) est une variation de la méthode de BFGS qui ne stocke pas entièrement la matrice $H_k$. De cette manière, la direction de descente n'est pas calculée directement à partir de la matrice $H_k$, mais en faisant usage d'un historique des mises à jours effectuées. La complexité calculatoire et de stockage devient ainsi linéaire, proportionnelle à la taille de l'historique des mises à jours.
 
 \section{Implémentation}
-Toutes les implémentations des algorithmes suivants ont été réalisé sur SCILAB 6.1.0.\footnote{https://www.scilab.org/}. 
+Toutes les implémentations des algorithmes suivants ont été réalisé sur SCILAB 6.1.0.\footnote{https://www.scilab.org/}.
 
-On souhaite tout d'abord définir les algorithmes supports qui nous serviront par la suite. Ainsi, on s'intéressa premièrement aux méthodes de recherche linéaire inexacte, puis à la factorisation de Cholesky. 
+On souhaite tout d'abord définir les algorithmes supports qui nous serviront par la suite. Ainsi, on s'intéressa premièrement aux méthodes de recherche linéaire inexacte, puis à la factorisation de Cholesky.
 
 \subsection{Recherche linéaire inexacte}
 Contrairement au calcul d'un pas $\hat t$ exact (optimal), la recherche linéaire inexacte fait usage d'un intervalle de sécurité pour lequel on qualifie le pas $t$ de convenable, ou au contraire trop petit ou trop grand. On cherche ainsi à assurer une décroissance suffisante dans une direction de descente donnée. Il existe plusieurs règles caractérisant la réduction de l'intervalle de sécurité. Parmi elles, on s'intéresse aux règles d'Armijo, Golstein et Wolfe-Powell.
 
 On note $f$ la fonction à optimiser, $\nabla f$ l'expression de son gradient, $x_k$ une itération de l'algorithme d'optimisation, $d_k$ la direction de descente de l'itération $k$, et $\varphi$ une fonction du pas $t$ définie par $\varphi(t)=f(x_k+td_k)$.
 
-On définit $I=[\alpha,\beta]$, l'intervalle de sécurité contenant le pas $t$. 
+On définit $I=[\alpha,\beta]$, l'intervalle de sécurité contenant le pas $t$.
 
 \begin{rmk}
-    Avec la notation utilisée, on pourra ainsi noter la dérivée dans la direction $d_k$ par $\varphi'(0)=\nabla f(x_k)^T d_k$. 
+    Avec la notation utilisée, on pourra ainsi noter la dérivée dans la direction $d_k$ par $\varphi'(0)=\nabla f(x_k)^T d_k$.
 \end{rmk}
 \subsubsection{Règle d'Armijo}
 \begin{definition}
@@ -526,16 +526,15 @@ On définit $I=[\alpha,\beta]$, l'intervalle de sécurité contenant le pas $t$.
     \end{equation}
     Si la condition d'Armijo est vérifiée, alors on dit que le pas $t$ convient. Sinon, le pas $t$ est trop grand.
 \end{definition}
-\begin{rmk}
-    La règle d'Armijo ne définit une restriction que si le pas est trop grand. 
-\end{rmk}
+La règle d'Armijo ne définit une restriction que si le pas est trop grand.
+
 \subsubsection{Règle de Goldstein}
 La règle de Goldstein rajoute une condition sur la petitesse du pas $t$ à la règle d'Armijo.
 \begin{definition}
     Soit deux réels $m_1$, et $m_2$ vérifiant $0<m_1<m_2<1$. On définit l'intervalle de sécurité $I$ par $I=[\alpha,\beta]$. La règle de Goldstein est définie par les conditions suivantes
     \begin{align}
         \varphi(t) \leq \varphi(0) + m_1\varphi'(0)t
-        \label{eq:goldstein-grand}\\
+        \label{eq:goldstein-grand} \\
         \varphi(t) \geq \varphi(0) + m_2\varphi'(0)t
         \label{eq:goldstein-petit}
     \end{align}
@@ -549,15 +548,16 @@ La règle de Wolfe-Powell rajoute à la règle d'Armijo une condition sur la dé
 \begin{definition}
     Soit deux réels $m_1$, et $m_2$ vérifiant $0<m_1<m_2<1$. On définit l'intervalle de sécurité $I$ par $I=[\alpha,\beta]$. La règle de Wolfe-Powell est définie par les conditions suivantes
     \begin{align}
-        \varphi(t) &\leq \varphi(0) + m_1\varphi'(0)t
-        \label{eq:wolfe-powell-grand}\\
-        \varphi'(t) &\geq m_2\varphi'(0)t
+        \varphi(t)  & \leq \varphi(0) + m_1\varphi'(0)t
+        \label{eq:wolfe-powell-grand}                   \\
+        \varphi'(t) & \geq m_2\varphi'(0)t
         \label{eq:wolfe-powell-petit}
     \end{align}
     Si les conditions de Wolfe-Powell sont vérifiées, on dit que le pas $t$ convient. Sinon, si (\ref{eq:goldstein-grand}) n'est pas vérifiée, on dit que le pas $t$ est trop grand. Si (\ref{eq:goldstein-petit}) n'est pas vérifiée, on dit que le pas $t$ est trop petit.
 \end{definition}
+La règle de Wolfe-Powell garantit que le pas $t$ n'est pas trop petit en s'assurant que la pente après descente $\varphi'(t)$ a suffisamment augmenté.
 \begin{rmk}
-    La règle de Wolfe-Powell garantit que le pas $t$ n'est pas trop petit en s'assurant que la pente après descente $\varphi'(t)$ a suffisamment augmenté. 
+    $\varphi'(t) = \nabla f(x_k+td_k)^Td_k$.
 \end{rmk}
 \subsubsection{Algorithme}
 L'algorithme de recherche linéaire inexacte est découpée en plusieurs phases : la recherche d'un intervalle de départ, puis la réduction de l'intervalle, soit par dichotomie, soit par une approximation cubique de $\varphi(t)$ lorqu'on utilise la règle de Wolfe-Powell.
@@ -593,17 +593,18 @@ L'algorithme de recherche linéaire inexacte est découpée en plusieurs phases 
                     \line{LINE-05} \> $\beta$ \>:= la borne supérieure de $I$\\
                     {\bf Recherche d'un intervalle de départ $I$ :}\\
                     \line{LINE-06} \> {\bf Si} $t$ convient, {\bf alors} l'algorithme (\ref{algo:line-search}) s'arrête.\\
-                    \line{LINE-07} \> {\bf Si} $t$ est trop grand, {\bf alors} $\beta=t$.\\
+                    \line{LINE-07} \> {\bf Sinon si} $t$ est trop grand, {\bf alors} $\beta=t$.\\
                     \line{LINE-08} \> {\bf Sinon faire :}\\
                     \line{LINE-09} \>\>{\bf Tant que} $t$ est trop petit {\bf faire :}\\
                     \line{LINE-10} \>\>\> $t=c\cdot t$\\
                     \line{LINE-11} \>\> {\bf Si} $t$ convient, {\bf alors} l'algorithme (\ref{algo:line-search}) s'arrête.\\
                     \line{LINE-12} \>\> {\bf Si} $t$ est trop grand, {\bf alors} $\beta=t$.\\
                     {\bf Réduction de l'intervalle $I$ :}\\
-                    \line{LINE-13} \> {\bf Tant que } $t$ ne convient pas {\bf faire :}\\
-                    \line{LINE-14} \>\> $t=\frac{\alpha+\beta}{2}$ ou $t_{\texttt{WP}}=\alpha + \frac{-3(\varphi(\beta)-\varphi(\alpha))+(\beta-\alpha)(2\varphi'(\alpha)+\varphi'(\beta)))+\sqrt{blablabla}}{}$\\
-                    % TODO : compléter l'interpolation cubique
-                    \line{LINE-14} \>\> {\bf Si } $t$ est trop petit {\bf alors}\\
+                    \line{LINE-15} \> {\bf Tant que } $t$ ne convient pas {\bf faire :}\\
+                    \line{LINE-16} \>\> $t=\frac{\alpha+\beta}{2}$\\
+                    \>\> ou $t_{\texttt{WP}} = \underset{t}\min$ {\texttt{INTERPOLATION$^3$}$_{\varphi}$}($t$, $\alpha$, $\beta$, $f$, $\nabla f$, $x_k$, $d_k$)\\
+                    \line{LINE-17} \>\> {\bf Si } $t$ est trop petit {\bf alors} $\alpha=t$\\
+                    \line{LINE-18} \>\> {\bf Sinon si} $t$ est trop grand {\bf alors} $\beta=t$\\
                     %------------------
                 \end{tabbing}
                 \normalsize
@@ -614,13 +615,36 @@ L'algorithme de recherche linéaire inexacte est découpée en plusieurs phases 
         \label{algo:line-search}
     }
 \end{algorithm}
+
+On définit le minimum $t_{\min}$ de l'interpolation cubique de $\varphi$ par 
+\[t_{\min} = \underset{t}\min\, \textrm{\texttt{INTERPOLATION}}^3_{\varphi}\left(t_0, \alpha, \beta, f, \nabla f, x_k, d_k\right)\]
+ en prenant les notations de \cite{poly:mottelet2003}
+\begin{align*}
+    \varphi(t) &= f(x_k+td_k)\\
+    \varphi'(t) &= \nabla f(x_k+td_k)^Td_k\\
+    \tau &= \beta-\alpha\\
+    a &= \tau(\varphi'(\alpha)+\varphi'(\beta))+2(\varphi(\alpha)+\varphi(\beta))\\
+    b &= 3(\varphi(\beta)-\varphi(\alpha))-\tau(2\varphi'(\alpha)+\varphi'(\beta))\\
+    c &= \tau\varphi'(\alpha)
+\end{align*}
+Si $b^2-3ac \geq 0$, alors il existe un minimum tel que 
+\begin{equation}
+    t_{\min} = t_0 + \tau\frac{-b+\sqrt{b^2-3ac}}{3a}
+    \label{eq:min-interp-3}
+\end{equation}
 \subsubsection{Conditions d'arrêts et précision}
+La recherche linéaire ne s'arrête pas tant qu'elle n'a pas trouvé de pas $t$ qui convienne. Cette méthode de recherche est inexacte, et le pas n'est pas optimal, mais on gagne en complexité calculatoire. Au lieu de calculer le pas optimal, on se contente de l'approcher, et cette approximation est suffisante pour que la méthode de quasi-Newton avec la formule de BFGS converge, ce qui n'est pas le cas pour la formule de DFP.
+
+On préfèrera la règle de Wolfe-Powell, pour augmenter la vitesse de réduction de l'intervalle, qui n'est pas suffisante en utilisant une dichotomie simple. Cependant, si l'interpolation cubique ne donne n'est pas utilisable (soit car elle ne renvoie pas de minimum, soit car on n'utilise pas la règle de Wolfe-Powell), on peut se retrancher sur la dichotomie.
+
 \subsubsection{Difficultées techniques}
+L'implémentation de l'algorithme (\ref{algo:line-search}) n'est pas difficile. S'il y a un point à souligner lors de l'implémentation, c'est de faire attention à optimiser la vérification de la règle utilisée. Il faut à tout prix éviter de vérifier plusieurs fois de suite la même inégalité, au risque de ralentir la recherche. On pourra à cette fin stocker le résultat d'une comparaison dans une variable booléenne et en faire usage si nécessaire plus loin.
+
 \subsection{Factorisation matricielle : factorisation de Cholesky}
-L'implémentation d'une méthode de quasi-Newton requiert la mise à jour d'une matrice symétrique définie positive à chaque itération. Il est clair que la mise à jour d'une matrice symétrique n'est pas une opération entièrement optimisé. Pour des raisons de performance, on préfèrera donc mettre à jour la matrice triangulaire inférieure $L_k$ et la matrice diagonale $D_k$ de la matrice approximation, issues de la factorisation modifiée de Cholesky. L'algorithme modifié de Cholesky ici décrit est celui défini dans \cite{art:McSweeney_2017}.
+L'implémentation d'une méthode de quasi-Newton requiert la mise à jour d'une matrice symétrique définie positive à chaque itération. Il est clair que la mise à jour d'une matrice entière avec de telles propriétés n'est pas une opération entièrement optimisé. Pour des raisons de performance, on préfèrera donc mettre à jour la matrice triangulaire inférieure $L_k$ et la matrice diagonale $D_k$ de la matrice approximation, issues de la factorisation modifiée de Cholesky. L'algorithme modifié de Cholesky ici décrit est celui défini dans \cite{art:McSweeney_2017}.
 
 \begin{rmk}
-    On prendra comme notation pour la composante de ligne $i$ et de colonne $i$ d'une matrice $A$, $a_{ij}$.
+    On choisit $a_{ij}$ comme la notation du coefficient de ligne $i$ et de colonne $i$ d'une matrice $A$.
 \end{rmk}
 \subsubsection{Algorithme}
 \begin{algorithm}[ht]
@@ -657,9 +681,9 @@ L'implémentation d'une méthode de quasi-Newton requiert la mise à jour d'une 
     }
 \end{algorithm}
 \subsubsection{Conditions d'arrêts et précision}
-L'algorithme (\ref{algo:cldlt}) n'explicite pas de conditions d'arrêts. Il est destiné ici à factoriser symétrique définie positive provenant de la méthode de quasi-Newton avec la formule de BFGS, qui préserve la positivité de sa matrice $B_k$ au cours des itérations.
+L'algorithme (\ref{algo:cldlt}) n'explicite pas de conditions d'arrêts. Il est destiné ici à factoriser une matrice symétrique définie positive provenant de la méthode de quasi-Newton avec la formule de BFGS, qui préserve la positivité de sa matrice $B_k$ au cours des itérations.
 
-Néanmoins, les erreurs éventuelles peuvent provenir de deux sources différentes : la matrice $B$, variable d'entrée; et le calcul de $d_{jj}$. Si la matrice d'entrée $B$ n'est pas définie positive, l'algorithme ne fonctionnera pas. Aussi, si lors du calcul de $d_{jj}$, le coefficient venait à devenir nul, alors le calcul de $l_{ij}$ en serait impacté, et l'algorithme s'arrête. Cette deuxième source d'erreur est en réalité identique à la première. En effet, le coefficient $d_{jj}$ s'annule uniquement si la matrice $B$ n'est pas définie positive. La factorisation de Cholesky peut mettre à profit cette caractéristique, et servir d'algorithme de vérification de la positivité d'une matrice \cite{art:McSweeney_2017}.
+Néanmoins, des erreurs éventuelles peuvent provenir de deux sources différentes : la matrice $B$, variable d'entrée; et le calcul de $d_{jj}$. Si la matrice d'entrée $B$ n'est pas définie positive, l'algorithme ne fonctionnera pas. Aussi, si lors du calcul de $d_{jj}$, le coefficient venait à devenir nul, alors le calcul de $l_{ij}$ en serait impacté, et l'algorithme s'arrête. Cette deuxième source d'erreur est en réalité identique à la première. En effet, le coefficient $d_{jj}$ s'annule uniquement si la matrice $B$ n'est pas définie positive. La factorisation de Cholesky peut mettre à profit cette caractéristique, et servir d'algorithme de vérification de la positivité d'une matrice \cite{art:McSweeney_2017}.
 
 \subsubsection{Difficultées techniques}
 La factorisation de Cholesky n'est pas algorithmiquement complexe à implémenter. Les difficultées techniques proviennent de l'utilisation optimale des opérateurs vectoriels (e.g. \texttt{.*}, \texttt{'}) de Scilab dans le but d'améliorer les performances.
@@ -725,13 +749,13 @@ La factorisation de Cholesky n'est pas algorithmiquement complexe à implémente
 % \paragraph{Temps de calcul}
 \subsubsection{Alternatives}
 
-L'utilisation de SCILAB pour implémenter des algorithmes d'optimisation manuellement a été limitée à l'utilisation des outils standard. Une alternative à l'utilisation de l'expression analytique de la dérivée est la différentiation automatique. Sur des fonctions complexes dont l'expression analytique est difficile à calculer, les résultats obtenus sont possiblements convaincants. L'optimisation de programmes utilisant ces techniques est cependant complexe, car elle nécessite une compréhension poussée de la différentiation automatique, notamment de la construction du graphe de calcul. SCILAB possède quelques librairies de différentiation automatique (sciad, diffcode). Eventuellement, l'implémentation des algorithmes aurait pu se détacher de l'interpréteur de SCILAB, et préférer compiler le code en C (en utilisant une librairie de conversion Scilab2C par exemple) en espérant que le code compilé ait une meilleure performance d'exécution que le code interprété. 
+L'utilisation de SCILAB pour implémenter des algorithmes d'optimisation manuellement a été limitée à l'utilisation des outils standard. Une alternative à l'utilisation de l'expression analytique de la dérivée est la différentiation automatique. Sur des fonctions complexes dont l'expression analytique est difficile à calculer, les résultats obtenus sont possiblements convaincants. L'optimisation de programmes utilisant ces techniques est cependant complexe, car elle nécessite une compréhension poussée de la différentiation automatique, notamment de la construction du graphe de calcul. SCILAB possède quelques librairies de différentiation automatique (sciad, diffcode). Eventuellement, l'implémentation des algorithmes aurait pu se détacher de l'interpréteur de SCILAB, et préférer compiler le code en C (en utilisant une librairie de conversion Scilab2C par exemple) en espérant que le code compilé ait une meilleure performance d'exécution que le code interprété.
 
-Concernant les logiciels d'analyse numérique, la première alternative qui surgit à l'esprit est MATLAB. L'interpréteur de MATLAB est sans équivoque supérieur à celui de SCILAB, moyennant son aspect propriétaire et commercial. 
+Concernant les logiciels d'analyse numérique, la première alternative qui surgit à l'esprit est MATLAB. L'interpréteur de MATLAB est sans équivoque supérieur à celui de SCILAB, moyennant son aspect propriétaire et commercial.
 
 Egalement, on peut reprocher à SCILAB et MATLAB de restreindre les utilisateurs à un langage de programmation spécifique. Le concurrent populaire sur ce point est l'utilisation du Python, notamment les librairies SciPy et NumPy qui offrent un panel très complet d'outils. La popularité du Python est due en grande partie à la facilité d'apprendre le langage. La présence d'une communauté active et impliquée est aussi l'un de ses points forts. La présence dominante de framework/librairies (PyTorch, NumPy, CuPy, ...) en Python en fait l'un des langages de programmations majeurs.
 \begin{enumerate}
-    \item 
+    \item
 \end{enumerate}
 \section{Applications}
 \subsection{Problème 1 : ...}
