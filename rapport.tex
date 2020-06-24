@@ -106,10 +106,8 @@
     \end{abstract}
 \end{frontmatter}
 
-\cleardoublepage
 \tableofcontents
 
-\cleardoublepage
 \section{Notations}
 \begin{enumerate}
     \item $\Jacobian_{f}(x)$ désigne la matrice jacobienne de la fonction $f$ évaluée en $x$.
@@ -439,7 +437,7 @@ La condition de quasi-Newton nous montre qu'il existe une infinité de matrices 
         H_{k+1} = \left(I - \frac{y_k s_k^T}{s_k^T y_k}\right) H_k \left(I - \frac{s_k y_k^T}{s_k^Ty_k}\right) + \frac{y_k y_k^T}{s_k^T y_k}
         \label{eq:bfgs-hk-factorised}
     \end{equation}
-    La formule de mise à jour de $H_k$ permet d'obtenir celle plus simple de $B_{k}$
+    La formule de mise à jour de $H_k$ permet d'obtenir celle de $B_{k}$
     \begin{equation}
         B_{k+1} = B_k + \frac{y_ky_k^T}{y_k^Ts_k}-\frac{B_ks_ks_k^TB_k}{s_k^TB_ks_k}
         \label{eq:bfgs-bk}
@@ -450,11 +448,11 @@ La formule de DFP met à jour la matrice $H_k$ en contraignant les itérations s
 
 La formule de BFGS est donc obtenue à partir de la formule de DFP et partage nombreuses de ses propriétés.
 \begin{rmk}
-    On préfère la formule de mise à jour de $B_{k+1}$ au lieu de son inverse $H_{k+1}$, pour des raisons de précision de calcul. En effet, la mise à jour de $H_{k+1}$ est sensible, et on risque de perdre la positivité de la matrice. Malgré que le nombre d'opérations nécessaire soit supérieur, cette différence peut être palliée par la factorisation $LDL^T$ de la matrice $B_{k}$. Le nombre d'opérations nécessaire à la mise à jour devient alors sensiblement identique à celui pour mettre à jour $H_{k+1}$ \cite{book:GillMurrayWright1981}.
+    On préfère la formule de mise à jour de $B_{k+1}$ au lieu de son inverse $H_{k+1}$, car cette dernière a un défaut significatif. En effet, la mise à jour de $H_{k+1}$ est sensible aux arrondis de calcul, et on risque de perdre la positivité de la matrice. Malgré que le nombre d'opérations nécessaire soit supérieur, cette différence peut être palliée par la factorisation $LDL^T$ de la matrice $B_{k}$. Le nombre d'opérations nécessaire à la mise à jour devient alors sensiblement identique à celui pour mettre à jour $H_{k+1}$ \cite{book:GillMurrayWright1981}.
 \end{rmk}
 
 \begin{thm}
-    Si $s_k^Ty_k > 0, \forall k$ (condition de courbure), alors la positivité de la matrice approximation est préservée au cours des itérations.
+    Si $s_k^Ty_k > 0, \forall k$, alors la positivité de la matrice $B_{k}$ est préservée au cours des itérations.
 \end{thm}
 
 Ce théorème est sans doute le plus important de cette section, car en d'autres mots, la méthode de quasi-Newton équipée de la formule de BFGS "progresse" toujours à chaque itération. Autrement dit, la direction de descente $d_k$ reste une direction de descente au cours des itérations de la méthode.
@@ -476,27 +474,26 @@ Comparée à la formule de DFP, la formule de BFGS donne à l'algorithme de quas
 
 C'est pour ces raisons que l'on préfèrera l'utilisation de la formule de BFGS, que beaucoup considèrent comme la meilleure méthode d'optimisation libre sans contraintes.
 
-Bien que la vitesse convergence des méthodes de quasi-Newton soit en général inférieure à celle de la méthode de Newton, elles ont une complexité calculatoire bien inférieure, car on n'évalue pas la hessienne.
+Bien que la vitesse de convergence des méthodes de quasi-Newton soit en général inférieure à celle de la méthode de Newton-Raphson, elles ont une complexité calculatoire bien inférieure, car la hessienne n'est pas évaluée.
 
 \subsection{Algorithme de Broyden, Fletcher, Goldfarb et Shanno dit BFGS}
 Soit une valeur initiale $x_0$, une matrice symétrique définie positive $H_0$, de préférence une estimation raisonnable ou par défaut la matrice identité $I$.
 \begin{enumerate}
-    \item \`A l'itération $k$, on calcule la direction de descente selon
+    \item \`A l'itération $k$, la direction de descente est calculée selon
           \begin{equation*}
               d_{k}=-B_{k}^{-1}\nabla f(x_{k})
           \end{equation*}
-    \item Ensuite, on détermine le pas optimal $\hat t$, ou on applique une méthode de recherche linéaire inexacte pour calculer l'itéré suivant $x_{k+1}$.
+    \item Ensuite, le pas optimal $\hat t$ est calculé, ou une méthode de recherche linéaire inexacte est utilisée pour déterminer le pas $t_k$. On calcule ensuite l'itéré suivant :
           \begin{equation*}
               x_{k+1}=x_{k}+\rho_{k}d_{k}
           \end{equation*}
-    \item On met à jour la matrice $B_{k+1}$.
-          \begin{equation*}
-              B_{k+1} = B_k + \frac{y_ky_k^T}{y_k^Ts_k}-\frac{B_ks_ks_k^TB_k}{s_k^TB_ks_k}
-          \end{equation*}
+    \item On met à jour la matrice $B_{k}$ ou $H_{k}$.
     \item L'algorithme continue, sauf si le ou les critères d'arrêts spécifiés sont vérifiés.
 \end{enumerate}
 
-La matrice $H_{k}$ étant symétrique définie positive, elle peut être décomposée en deux matrices triangulaires par la décomposition de Chloesky. Ainsi, en posant $H_{k}=C_{k}C_{k}^{T}$, la mise à jour de la matrice $H_{k}$ devient moins coûteuse, plus précisement de même complexité que pour la formule de DFP. Cette méthode permet également d'éviter des erreurs d'arrondis, grâce à un contrôle plus précis du caractère défini positif de la matrice $H_{k}$.
+La matrice $H_{k}$ étant symétrique définie positive, elle peut être décomposée en deux matrices triangulaires par la décomposition de Chloesky. Ainsi, en posant $H_{k}=C_{k}C_{k}^{T}$, la mise à jour de la matrice $H_{k}$ devient moins coûteuse, plus précisement de même complexité que pour la formule de DFP.
+
+PLus loin, on propose d'autres méthodes de factorisation de Cholesky. Ces techniques permettent d'éviter des erreurs d'arrondis, grâce à un contrôle plus précis du caractère défini positif de la matrice $H_{k}$.
 
 \begin{rmk}
     \textbf{Convergence de $(B_k)_{k\in \mathbb{N}}$} - La formule de BFGS est qualifiée de formule de moindres changements (\textit{least changes update formula}), c'est-à-dire qu'on cherche à effectuer le moins de changements possibles sur la matrice $B_k$. Pour les formules de moindres changements, la suite $(B_k)_{k\in \mathbb{N}}$ converge vers l'inverse de la hessienne. Ce n'est pas forcément le cas pour toutes les formules de mise à jour.
@@ -513,12 +510,10 @@ On souhaite tout d'abord définir les algorithmes supports qui nous serviront pa
 \subsection{Recherche linéaire inexacte}
 Contrairement au calcul d'un pas $\hat t$ exact (optimal), la recherche linéaire inexacte fait usage d'un intervalle de sécurité pour lequel on qualifie le pas $t$ de convenable, ou au contraire trop petit ou trop grand. On cherche ainsi à assurer une décroissance suffisante dans une direction de descente donnée. Il existe plusieurs règles caractérisant la réduction de l'intervalle de sécurité. Parmi elles, on s'intéresse aux règles d'Armijo, Golstein et Wolfe-Powell.
 
-On note $f$ la fonction à optimiser, $\nabla f$ l'expression de son gradient, $x_k$ une itération de l'algorithme d'optimisation, $d_k$ la direction de descente de l'itération $k$, et $\varphi$ une fonction du pas $t$ définie par $\varphi(t)=f(x_k+td_k)$.
-
-On définit $I=[\alpha,\beta]$, l'intervalle de sécurité contenant le pas $t$.
+On note $f$ la fonction à optimiser, $\nabla f$ l'expression de son gradient, $x_k$ une itération de l'algorithme d'optimisation, $d_k$ la direction de descente de l'itération $k$, et $\varphi$ une fonction du pas $t$ définie par $\varphi(t)=f(x_k+td_k)$. On définit $I=[\alpha,\beta]$, l'intervalle de sécurité contenant le pas $t$.
 
 \begin{rmk}
-    Avec la notation utilisée, on pourra ainsi noter la dérivée dans la direction $d_k$ par $\varphi'(0)=\nabla f(x_k)^T d_k$.
+    Avec la notation utilisée, $\varphi'(0)=\nabla f(x_k)^T d_k$.
 \end{rmk}
 \subsubsection{Règle d'Armijo}
 \begin{definition}
@@ -565,7 +560,7 @@ La règle de Wolfe-Powell garantit que le pas $t$ n'est pas trop petit en s'assu
 L'algorithme de recherche linéaire inexacte est découpée en plusieurs phases : la recherche d'un intervalle de départ, puis la réduction de l'intervalle, soit par dichotomie, soit par une approximation cubique de $\varphi(t)$ lorqu'on utilise la règle de Wolfe-Powell.
 
 \begin{rmk}
-    Dans l'algorithme (\ref{algo:line-search}), la règle utilisée n'est pas explicitée, mais précisera les conditions "$t$ est trop petit", "$t$ est trop grand", ou "$t$ convient".
+    Dans l'algorithme~(\ref{algo:line-search}), la règle utilisée n'est pas explicitée, mais sont utilisées les conditions "$t$ est trop petit", "$t$ est trop grand", ou "$t$ convient".
 \end{rmk}
 \begin{algorithm}[ht]
     \centering{
@@ -603,8 +598,8 @@ L'algorithme de recherche linéaire inexacte est découpée en plusieurs phases 
                     \line{LINE-12} \>\> {\bf Si} $t$ est trop grand, {\bf alors} $\beta=t$.\\
                     {\bf Réduction de l'intervalle $I$ :}\\
                     \line{LINE-15} \> {\bf Tant que } $t$ ne convient pas {\bf faire :}\\
-                    \line{LINE-16} \>\> $t=\frac{\alpha+\beta}{2}$\\
-                    \>\> ou $t_{\texttt{WP}} = \underset{t}\min$ {\texttt{INTERPOLATION$^3$}$_{\varphi}$}($t$, $\alpha$, $\beta$, $f$, $\nabla f$, $x_k$, $d_k$)\\
+                    \line{LINE-16} \>\> $t=\frac{\alpha+\beta}{2}$ ou\\
+                    \>\> $t_{\texttt{WP}} = \underset{t}\min$ {\texttt{INTERPOLATION$^3$}$_{\varphi}$}($t$, $\alpha$, $\beta$, $f$, $\nabla f$, $x_k$, $d_k$)\\
                     \line{LINE-17} \>\> {\bf Si } $t$ est trop petit {\bf alors} $\alpha=t$\\
                     \line{LINE-18} \>\> {\bf Sinon si} $t$ est trop grand {\bf alors} $\beta=t$\\
                     %------------------
@@ -618,6 +613,7 @@ L'algorithme de recherche linéaire inexacte est découpée en plusieurs phases 
     }
 \end{algorithm}
 
+\subsubsection{Interpolation cubique de $\varphi$}
 On définit le minimum $t_{\min}$ de l'interpolation cubique de $\varphi$ par 
 \[t_{\min} = \underset{t}\min\, \textrm{\texttt{INTERPOLATION}}^3_{\varphi}\left(t_0, \alpha, \beta, f, \nabla f, x_k, d_k\right)\]
  en prenant les notations de \cite{poly:mottelet2003}
@@ -625,7 +621,7 @@ On définit le minimum $t_{\min}$ de l'interpolation cubique de $\varphi$ par
     \varphi(t) &= f(x_k+td_k)\\
     \varphi'(t) &= \nabla f(x_k+td_k)^Td_k\\
     \tau &= \beta-\alpha\\
-    a &= \tau(\varphi'(\alpha)+\varphi'(\beta))+2(\varphi(\alpha)+\varphi(\beta))\\
+    a &= \tau(\varphi'(\alpha)+\varphi'(\beta))+2(\varphi(\alpha)-\varphi(\beta))\\
     b &= 3(\varphi(\beta)-\varphi(\alpha))-\tau(2\varphi'(\alpha)+\varphi'(\beta))\\
     c &= \tau\varphi'(\alpha)
 \end{align*}
@@ -643,7 +639,7 @@ On préfèrera la règle de Wolfe-Powell, pour augmenter la vitesse de réductio
 L'implémentation de l'algorithme (\ref{algo:line-search}) n'est pas difficile. S'il y a un point à souligner lors de l'implémentation, c'est de faire attention à optimiser la vérification de la règle utilisée. Il faut à tout prix éviter de vérifier plusieurs fois de suite la même inégalité, au risque de ralentir la recherche. On pourra à cette fin stocker le résultat d'une comparaison dans une variable booléenne et en faire usage si nécessaire plus loin.
 
 \subsection{Factorisation matricielle : factorisation $LDL^T$ de Cholesky}
-L'implémentation d'une méthode de quasi-Newton requiert la mise à jour d'une matrice symétrique définie positive à chaque itération. Il est clair que la mise à jour d'une matrice entière avec de telles propriétés n'est pas une opération entièrement optimisé. Pour des raisons de performance, on préfèrera donc mettre à jour la matrice triangulaire inférieure unité $L_k$ et la matrice diagonale $D_k$ de la matrice approximation, issues de la factorisation alternative de Cholesky. L'algorithme modifié de Cholesky ici décrit est celui défini dans \cite{art:McSweeney_2017}.
+L'implémentation d'une méthode de quasi-Newton requiert la mise à jour d'une matrice symétrique définie positive à chaque itération. Il est clair que la mise à jour d'une matrice entière avec de telles propriétés n'est pas une opération entièrement optimisé. Pour des raisons de performance, on préfèrera donc mettre à jour les facteurs d'une décomposition de la matrice $B_{k+1}$, issues de la factorisation alternative de Cholesky. L'algorithme modifié de Cholesky ici décrit est celui défini dans \cite{art:McSweeney_2017}.
 
 \begin{rmk}
     On choisit $a_{ij}$ comme la notation du coefficient de ligne $i$ et de colonne $i$ d'une matrice $A$.
@@ -734,9 +730,9 @@ On définit deux conditions d'arrêts à l'algorithme (\ref{algo:newton_raphson}
 La précision de l'algorithme de quasi-Newton dépend de l'entrée utilisateur.
 
 \subsubsection{Difficultées techniques}
-L'implémentation de l'algorithme de Newton-Raphson n'est pas difficile. Il n'y a presque aucunes difficultées techniques.
+L'implémentation de l'algorithme de Newton-Raphson n'est pas difficile. Il n'y a presque aucune difficulté technique.
 
-On fera particulièrement attention à l'inversion de $\nabla g(x_k)$, qui se réalisera à travers une division matricielle gauche. L'opérateur utilisée sera \texttt{\textbackslash}. Cet opérateur est bien plus efficace que la commande d'inversion \texttt{inv}, qui résout le système d'équations linéaires \cite{doc:scilab-backslash}.
+On fera néanmoins attention à l'inversion de $\nabla g(x_k)$, qui se réalisera à travers une division matricielle gauche. L'opérateur utilisée sera \texttt{\textbackslash}. Cet opérateur est bien plus efficace que la commande d'inversion \texttt{inv}, qui résout le système d'équations linéaires \cite{doc:scilab-backslash}.
 
 \subsection{Méthode de BFGS}
 L'algorithme de la méthode de BFGS qu'on décrit ici, ne fait pas usage de la factorisation alternative de Cholesky décrit dans l'algorithme (\ref{algo:cldlt}) pour des raisons expliquées ci-après. Pour réduire la complexité calculatoire, on fera donc usage de la formule de mise à jour (\ref{eq:bfgs-hk-factorised}).
@@ -789,23 +785,27 @@ L'algorithme de la méthode de BFGS qu'on décrit ici, ne fait pas usage de la f
 
 On a proposé précédemment avec l'algorithme (\ref{algo:cldlt}) une technique pour factoriser la matrice $B_k$ afin de réduire la complexité calculatoire de la formule de mise à jour de $B_{k}$. Cependant, dans la littérature, il est difficile de trouver la formule explicite de mise à jour utilisant l'une des méthodes de décomposition basée sur celle de Cholesky. \cite{book:2ndorder-neuralN-opt}\cite{book:GillMurrayWright1981} proposent une décomposition modifiée de Cholesky telle que $B_k^*=B_k+E_k$, et \cite{poly:raphael-hauser-qn-methods} propose une factorisation standard de Cholesky ($LL^T$) et explicite l'algorithme de BFGS modifié.
 
-Dans notre implémentation, on se servira de la formule de mise à jour de $H_{k+1}$. Malgré son grand défaut, elle a l'avantage par rapport aux méthodes recherchés d'être beaucoup plus simple à implémenter...
+Dans notre implémentation, on se servira de la formule de mise à jour de $H_{k+1}$. Malgré son grand défaut, elle a l'avantage par rapport aux méthodes citées d'être beaucoup plus simple à implémenter...
 
-Il faudra faire particulièrement attention dans les simulations à la positivité de la matrice $H_k$, pour laquelle on peut vérifier la positivité en essayant de la décomposer selon l'algorithme (\ref{algo:cldlt}). Ainsi, on vérifie à la ligne (\ref{BFGS-12}) si la matrice n'est plus définie positive. Si $H_{k+1}$ ne se décompose pas sous la forme $LDL^T$, alors on réinitialise $H_{k+1}$ à $I$. La complexité de l'algorithme (\ref{algo:cldlt}) étant de l'ordre de $O(n^3)$, on tentera d'observer l'impact calculatoire de cette vérification.
+On prête une attention particulière dans les simulations à la positivité de la matrice $H_k$, pour laquelle on vérifie sa positivité en essayant de la décomposer selon l'algorithme (\ref{algo:cldlt}). Ainsi, à la ligne (\ref{BFGS-12}), si la matrice n'est plus définie positive, alors on réinitialise $H_{k+1}$ à $I$. La complexité de l'algorithme (\ref{algo:cldlt}) étant de l'ordre de $O(n^3)$, on tentera d'observer l'impact calculatoire de cette vérification.
 
 \subsubsection{Conditions d'arrêts et précision}
 Les conditions d'arrêts sont sensiblement les mêmes que pour l'algorithme (\ref{algo:newton_raphson}).
 
 \subsubsection{Difficultées techniques}
-La difficulté technique majeure se situe dans la formule de mise à jour, où il faut prêter un oeil attentif à l'optimalité des opérateurs vectorielles utilisés.
+La difficulté technique majeure se situe dans la formule de mise à jour, où il faut prêter un oeil attentif à l'optimalité des opérateurs vectoriels utilisés.
 
 \subsection{Alternatives à Scilab}
 
-L'utilisation de SCILAB pour implémenter des algorithmes d'optimisation manuellement a été limitée à l'utilisation des outils standard. Une alternative à l'utilisation de l'expression analytique de la dérivée est la différentiation automatique. Sur des fonctions complexes dont l'expression analytique est difficile à calculer, les résultats obtenus sont possiblements convaincants. L'optimisation de programmes utilisant ces techniques est cependant complexe, car elle nécessite une compréhension poussée de la différentiation automatique, notamment de la construction du graphe de calcul. SCILAB possède quelques librairies de différentiation automatique (sciad, diffcode). Eventuellement, l'implémentation des algorithmes aurait pu se détacher de l'interpréteur de SCILAB, et préférer compiler le code en C (en utilisant une librairie de conversion Scilab2C par exemple) en espérant que le code compilé ait une meilleure performance d'exécution que le code interprété.
+L'utilisation de Scilab pour implémenter manuellement les algorithmes précédemment détaillés a été limitée à l'utilisation d'opérateurs et méthodes standards. Certains des algorithmes sont déjà implémentés dans les librairies de Scilab, notamment la factorisation de Cholesky. L'utilisation des outils des librairies serait plus juste, car ils sont déjà optimisés pour les cas d'usage. On pense également à la fonction \texttt{optim}.
 
-Concernant les logiciels d'analyse numérique, la première alternative qui surgit à l'esprit est MATLAB. L'interpréteur de MATLAB est sans équivoque supérieur à celui de SCILAB, moyennant son aspect propriétaire et commercial.
+Une alternative à l'utilisation de l'expression analytique de la dérivée est la différentiation automatique. Sur des fonctions complexes dont l'expression analytique est difficile à calculer, les résultats obtenus sont possiblements convaincants. L'optimisation de programmes utilisant ces techniques est cependant complexe, car elle nécessite une compréhension poussée de la différentiation automatique, notamment de la construction du graphe de calcul. Scilab possède quelques librairies de différentiation automatique (sciad, diffcode). 
 
-Egalement, on peut reprocher à SCILAB et MATLAB de restreindre les utilisateurs à un langage de programmation spécifique. Le concurrent populaire sur ce point est l'utilisation du Python, notamment les librairies SciPy et NumPy qui offrent un panel très complet d'outils. La popularité du Python est due en grande partie à la facilité d'apprendre le langage. La présence d'une communauté active et impliquée est aussi l'un de ses points forts. La présence dominante de framework/librairies (PyTorch, NumPy, CuPy, ...) en Python en fait l'un des langages de programmations majeurs.
+Eventuellement, l'implémentation des algorithmes aurait pu se détacher de l'interpréteur de Scilab, et préférer compiler le code en C (en utilisant une librairie de conversion, e.g. Scilab2C) en espérant que le code compilé ait une meilleure performance d'exécution que le code interprété.
+
+Concernant les logiciels d'analyse numérique, la première alternative qui surgit à l'esprit est Matlab. L'interpréteur de Matlab est sans équivoque supérieur à celui de Scilab, moyennant son aspect propriétaire et commercial.
+
+Egalement, on peut reprocher à Scilab et Matlab de restreindre les utilisateurs à un langage de programmation spécifique. Le concurrent populaire sur ce point est l'utilisation du Python, notamment les librairies SciPy et NumPy qui offrent un panel très complet d'outils. La popularité du Python est due en grande partie à la facilité d'apprendre le langage. La présence d'une communauté active et impliquée est aussi l'un de ses points forts. La présence dominante de framework/librairies (PyTorch, NumPy, CuPy, ...) en Python en fait l'un des langages de programmations majeurs.
 
 \section{Simulations}
 \subsection{Fonction de Rosenbrock}
@@ -829,6 +829,7 @@ On souhaite minimiser la fonction de Rosenbrock $r$, avec pour paramètre $p=100
             -4px & 2p
         \end{pmatrix}
     \end{align*}
+
 \subsubsection{Application de BFGS}
 % Initialisation x_0, y_0
 % Comparaisons différentes recherches linéaires
@@ -837,7 +838,7 @@ On souhaite minimiser la fonction de Rosenbrock $r$, avec pour paramètre $p=100
 \subsection{Reconstitutions d'un signal à partir d'observations}
 \subsection{Conformation atomique}
 % \paragraph{Indicateur 1 : courbe de convergence (exemple)}
-\cleardoublepage
+
 \begin{appendices}
     \section{Détails de calcul de l'exemple \ref{ex:newton-raphson-non-differentiable}}
     \label{ap:calcul-exemple-nr}
@@ -864,11 +865,11 @@ On souhaite minimiser la fonction de Rosenbrock $r$, avec pour paramètre $p=100
 
 % Bibliographie
 % http://merkel.texture.rocks/Latex/natbib.php?lang=f
-\cleardoublepage
 \nocite{*}
 \biboptions{numbers}
 \bibliographystyle{elsarticle-num}
-\bibliography{bibliographie}
+{\footnotesize
+\bibliography{bibliographie}}
 \phantomsection
 \addcontentsline{toc}{section}{Références}
 
