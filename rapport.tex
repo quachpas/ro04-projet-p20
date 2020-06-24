@@ -711,11 +711,12 @@ La factorisation de Cholesky n'est pas algorithmiquement complexe à implémente
                     \line{NR-01} \> $k = 0$ \>:= le nombre d'itérations actuels\\
                     \line{NR-02} \> $t_0 = 1$ \>:= le pas initial de l'itération $k$, puis \\
                     déterminé par une méthode de recherche linéaire\\
+                    \line{NR-03} \> $\epsilon = 10^{-3}$, si une précision n'est pas précisée.\\
                     {\bf Itérations :}\\
-                    \line{NR-03} \> {\bf Tant que} $g(x_k) > \varepsilon$ {\bf ET} $k < N$ {\bf faire :}\\
-                    \line{NR-04} \>\> $x_{k+1} = x_k - t_k\nabla f^{2}(x_k)^{-2}\cdot \nabla f(x_k)$\\
-                    \line{NR-05} \>\> $N = N+1$\\
-                    \line{NR-06} \>\> $k = k+1$\\
+                    \line{NR-04} \> {\bf Tant que} $g(x_k) > \varepsilon$ {\bf ET} $k < N$ {\bf faire :}\\
+                    \line{NR-05} \>\> $x_{k+1} = x_k - t_k\nabla g(x_k)^{-1}\cdot g(x_k)$\\
+                    \line{NR-06} \>\> $N = N+1$\\
+                    \line{NR-07} \>\> $k = k+1$\\
                     %------------------
                 \end{tabbing}
                 \normalsize
@@ -727,9 +728,19 @@ La factorisation de Cholesky n'est pas algorithmiquement complexe à implémente
     }
 \end{algorithm}
 \subsubsection{Conditions d'arrêts et précision}
+On définit deux conditions d'arrêts à l'algorithme (\ref{algo:newton_raphson}) : si la précision voulue est atteinte, ou si le nombre d'itérations maximal est dépassé. La première condition d'arrêt est nécessaire car l'algorithme ne s'arrêterait pas une fois qu'il se soit approché d'une racine de $g$. La deuxième condition d'arrêt est nécessaire et arrête l'algorithme lorsqu'il ne trouve rien. Cela peut arriver lorsqu'une itération se trouve sur un optimum de $g$, ou dans des situations particulières telles comme dans l'exemple (\ref{ex:newton-raphson-non-differentiable}).
+
+La précision de l'algorithme de quasi-Newton dépend de l'entrée utilisateur.
+
 \subsubsection{Difficultées techniques}
+L'implémentation de l'algorithme de Newton-Raphson n'est pas difficile. Il n'y a presque aucunes difficultées techniques.
+
+On fera particulièrement attention à l'inversion de $\nabla g(x_k)$, qui se réalisera à travers une division matricielle gauche. L'opérateur utilisée sera \texttt{\}. Cet opérateur est bien plus efficace que la commande d'inversion \texttt{inv}, qui résout le système d'équations linéaires \cite{doc:scilab-backslash}.
+
 \subsection{Méthode de BFGS}
+
 \subsubsection{Algorithme}
+
 \subsubsection{Conditions d'arrêts et précision}
 \subsubsection{Difficultées techniques}
 \subsection{Affichage des résultats}
