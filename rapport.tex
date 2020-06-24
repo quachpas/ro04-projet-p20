@@ -506,12 +506,59 @@ Toutes les implémentations des algorithmes suivants ont été réalisé sur SCI
 On souhaite tout d'abord définir les algorithmes supports qui nous serviront par la suite. Ainsi, on s'intéressa premièrement aux méthodes de recherche linéaire inexacte, puis à la factorisation de Cholesky. 
 
 \subsection{Recherche linéaire inexacte}
-Contrairement au calcul d'un pas $t_k$ exact (optimal), la recherche linéaire inexacte fait usage d'un intervalle de sécurité pour lequel on qualifie le pas $t_k$ de convenable, ou au contraire trop petit ou trop grand. Il existe plusieurs règles caractérisant l'intervalle de sécurité. Parmi elles, on s'intéresse aux règles d'Armijo, Golstein et Wolfe-Powell.
+Contrairement au calcul d'un pas $\hat t$ exact (optimal), la recherche linéaire inexacte fait usage d'un intervalle de sécurité pour lequel on qualifie le pas $t$ de convenable, ou au contraire trop petit ou trop grand. On cherche ainsi à assurer une décroissante suffisante dans une direction de descente donnée. Il existe plusieurs règles caractérisant l'intervalle de sécurité. Parmi elles, on s'intéresse aux règles d'Armijo, Golstein et Wolfe-Powell.
 
+On note $f$ la fonction à optimiser, $\nabla f$ l'expression de son gradient, $x_k$ une itération de l'algorithme d'optimisation, $d_k$ la direction de descente de l'itération $k$, et $\varphi$ une fonction du pas $t$ définie par $\varphi(t)=f(x_k+td_k)$.
+
+On définit $I=[\alpha,\beta]$, l'intervalle de sécurité contenant le pas $t$. 
+
+\begin{rmk}
+    Avec la notation utilisée, on pourra ainsi noter $\nabla f(x_k)^T d_k$ par $\varphi'(0)$. 
+\end{rmk}
 \subsubsection{Règle d'Armijo}
+\begin{definition}
+    Soit un réel $m$ compris strictement entre $0$ et $1$. On définit l'intervalle de sécurité $I$ par $I=[0,\beta]$. La règle d'Armijo est définie par la condition suivante
+    \begin{equation}
+        \varphi(t) \leq \phi(0) + m\phi'(0)t
+        \label{eq:armijo}
+    \end{equation}
+    Si la condition d'Armijo est vérifiée, alors on dit que le pas $t$ convient. Sinon, le pas $t$ est trop grand.
+\end{definition}
+\begin{rmk}
+    La règle d'Armijo ne définit une restriction que si le pas est trop grand. 
+\end{rmk}
 \subsubsection{Règle de Goldstein}
+La règle de Goldstein rajoute une condition sur la petitesse du pas $t$ à la règle d'Armijo.
+\begin{definition}
+    Soit deux réels $m_1$, et $m_2$ vérifiant $0<m_1<m_2<1$. On définit l'intervalle de sécurité $I$ par $I=[\alpha,\beta]$. La règle de Goldstein est définie par les conditions suivantes
+    \begin{align}
+        \varphi(t) \leq \phi(0) + m_1\phi'(0)t
+        \label{eq:goldstein-grand}\\
+        \varphi(t) \geq \phi(0) + m_2\phi'(0)t
+        \label{eq:goldstein-petit}\\
+    \end{align}
+    Si les conditions de Goldstein sont vérifiées, on dit que le pas $t$ convient. Sinon, si (\ref{eq:goldstein-grand}) n'est pas vérifiée, on dit que le pas $t$ est trop grand. Si (\ref{eq:goldstein-petit}) n'est pas vérifiée, on dit que le pas $t$ est trop petit.
+\end{definition}
+\begin{rmk}
+    Dans la pratique, on choisit $m_1=0.1$ et $m_2 = 0.7$. Par ailleurs, le choix de $m_2$ est préférable tel que $m_2\geq \frac12$, de sorte à ce que le pas optimal soit inclus dans l'intervalle de sécurité.
+\end{rmk}
 \subsubsection{Règle de Wolfe-Powell}
+La règle de Wolfe-Powell rajoute à la règle d'Armijo une condition sur la dérivée $\varphi'(t)$, qui permettra de réduire $I$ par une méthode d'interpolation cubique.
+\begin{definition}
+    Soit deux réels $m_1$, et $m_2$ vérifiant $0<m_1<m_2<1$. On définit l'intervalle de sécurité $I$ par $I=[\alpha,\beta]$. La règle de Wolfe-Powell est définie par les conditions suivantes
+    \begin{align}
+        \varphi(t) \leq \phi(0) + m_1\phi'(0)t
+        \label{eq:wolfe-powell-grand}\\
+        \varphi'(t) \geq m_2\phi'(0)t
+        \label{eq:wolfe-powell-petit}\\
+    \end{align}
+    Si les conditions de Wolfe-Powell sont vérifiées, on dit que le pas $t$ convient. Sinon, si (\ref{eq:goldstein-grand}) n'est pas vérifiée, on dit que le pas $t$ est trop grand. Si (\ref{eq:goldstein-petit}) n'est pas vérifiée, on dit que le pas $t$ est trop petit.
+\end{definition}
+\begin{rmk}
+    La règle de Wolfe-Powell garanti que le pas $t$ n'est pas trop petit en s'assurant que la pente après descente $\varphi'(t)$ a suffisamment augmenté. 
+\end{rmk}
 \subsubsection{Algorithme}
+L'algorithme de recherche linéaire est découpée en plusieurs phases : la recherche d'un intervalle de départ, puis la réduction de l'intervalle, soit par dichotomie, soit par une approximation cubique de $\varphi(t)$.
 \begin{algorithm}[ht]
     \centering{
         \fbox{
@@ -532,7 +579,7 @@ Contrairement au calcul d'un pas $t_k$ exact (optimal), la recherche linéaire i
         }
         \medbreak
         \caption{Algorithme de recherche linéaire inexacte}
-        \label{algo:lin-search}
+        \label{algo:line-search}
     }
 \end{algorithm}
 \subsubsection{Conditions d'arrêts et précision}
