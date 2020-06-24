@@ -494,22 +494,97 @@ Soit une valeur initiale $x_0$, une matrice symétrique définie positive $H_0$,
 La matrice $H_{k}$ étant symétrique définie positive, elle peut être décomposée en deux matrices triangulaires par la décomposition de Chloesky. Ainsi, en posant $H_{k}=C_{k}C_{k}^{T}$, la mise à jour de la matrice $H_{k}$ devient moins coûteuse, plus précisement de même complexité que pour la formule de DFP. Cette méthode permet également d'éviter des erreurs d'arrondis, grâce à un contrôle plus précis du caractère défini positif de la matrice $H_{k}$.
 
 \begin{rmk}
-    \textbf{Convergence de $(H_k)_{k\in \mathbb{N}}$} - La formule de BFGS est dite une formule de moindres changements (\textit{least changes update formula}), c'est-à-dire qu'on cherche à effectuer le moins de changements possibles sur la matrice $H_k$. Pour les formules de moindres changements, la suite $(H_k)_{k\in \mathbb{N}}$ converge vers l'inverse de la hessienne. Ce n'est pas forcément le cas pour toutes les formules de mise à jour. 
+    \textbf{Convergence de $(B_k)_{k\in \mathbb{N}}$} - La formule de BFGS est dite une formule de moindres changements (\textit{least changes update formula}), c'est-à-dire qu'on cherche à effectuer le moins de changements possibles sur la matrice $B_k$. Pour les formules de moindres changements, la suite $(B_k)_{k\in \mathbb{N}}$ converge vers l'inverse de la hessienne. Ce n'est pas forcément le cas pour toutes les formules de mise à jour. 
 \end{rmk}
 
 \subsubsection{Variation de la méthode de BFGS : L-BFGS}
 La méthode L-BFGS (Limited-memory BFGS) est une variation de la méthode de BFGS qui ne stocke pas entièrement la matrice $H_k$. De cette manière, la direction de descente n'est pas calculée directement à partir de la matrice $H_k$, mais en faisant usage d'un historique des mises à jours effectuées. La complexité calculatoire et de stockage devient ainsi linéaire, proportionnelle à la taille de l'historique des mises à jours. 
 
 \section{Implémentation}
-Toutes les implémentations des algorithmes suivants ont été réalisés sur SCILAB 6.1.0.\footnote{https://www.scilab.org/}
-\subsection{Recherche linéaire : conditions d'Armijo/Goldstein/Wolfe-Powell}
-\subsubsection{Algorithmes}
+Toutes les implémentations des algorithmes suivants ont été réalisé sur SCILAB 6.1.0.\footnote{https://www.scilab.org/}. 
+
+On souhaite tout d'abord définir les algorithmes supports qui nous serviront par la suite. Ainsi, on s'intéressa premièrement aux méthodes de recherche linéaire inexacte, puis à la factorisation de Cholesky. 
+
+\subsection{Recherche linéaire inexacte}
+Contrairement au calcul d'un pas $t_k$ exact (optimal), la recherche linéaire inexacte fait usage d'un intervalle de sécurité pour lequel on qualifie le pas $t_k$ de convenable, ou au contraire trop petit ou trop grand. Il existe plusieurs règles caractérisant l'intervalle de sécurité. Parmi elles, on s'intéresse aux règles d'Armijo, Golstein et Wolfe-Powell.
+
+\subsubsection{Règle d'Armijo}
+\subsubsection{Règle de Goldstein}
+\subsubsection{Règle de Wolfe-Powell}
+\subsubsection{Algorithme}
+\begin{algorithm}[ht]
+    \centering{
+        \fbox{
+            \begin{minipage}[t]{150mm}
+                \footnotesize
+                \renewcommand{\baselinestretch}{2.5}
+                \resetline
+                \begin{tabbing}
+                    aaaA\=aA\=aaaA\=aaA\=aaA\=aaA\=aaA\kill
+                    {\bf  Entrée :}\\
+                    {\bf  Sortie :}\\
+                    {\bf  Initialisation :}\\
+                    {\bf Itérations :}\\
+                    %------------------
+                \end{tabbing}
+                \normalsize
+            \end{minipage}
+        }
+        \medbreak
+        \caption{Algorithme de recherche linéaire inexacte}
+        \label{algo:lin-search}
+    }
+\end{algorithm}
 \subsubsection{Conditions d'arrêts et précision}
 \subsubsection{Difficultées techniques}
 \subsection{Factorisation matricielle : factorisation de Cholesky}
-\subsubsection{Algorithmes}
+L'implémentation d'une méthode de quasi-Newton requiert la mise à jour d'une matrice symétrique définie positive à chaque itération. Il est clair que la mise à jour d'une matrice symétrique n'est pas une opération entièrement optimisé. Pour des raisons de performance, on préfèrera donc mettre à jour la matrice triangulaire inférieure $L_k$ et la matrice diagonale $D_k$ de la matrice approximation, issues de la factorisation modifiée de Cholesky. L'algorithme modifié de Cholesky ici décrit est celui défini dans \cite{art:McSweeney_2017}.
+
+\begin{rmk}
+    On prendra comme notation pour la composante de ligne $i$ et de colonne $i$ d'une matrice $A$, $a_{ij}$.
+\end{rmk}
+\subsubsection{Algorithme}
+\begin{algorithm}[ht]
+    \centering{
+        \fbox{
+            \begin{minipage}[t]{150mm}
+                \footnotesize
+                \renewcommand{\baselinestretch}{2.5}
+                \resetline
+                \begin{tabbing}
+                    aaaA\=aA\=aaaA\=aaA\=aaA\=aaA\=aaA\kill
+                    {\bf  Entrée :}\\
+                    \> $B$\>:= matrice symétrique définie positive à factoriser\\
+                    {\bf  Sortie :}\\
+                    \> $L$\>:= matrice triangulaire inférieure de diagonale\\ \>\>unité\\
+                    \> $D$\>:= matrice diagonale définie positive\\
+                    {\bf  Initialisation :}\\
+                    \line{CLDL-01} \> $n$ \>:= taille de la matrice $B$\\
+                    \line{CLDL-02} \> $L$ \>:= matrice de zéros de taille $n\times n$\\
+                    \line{CLDL-03} \> $D$ \>:= matrice de zéros de taille $n\times n$\\
+                    {\bf Itérations :}\\
+                    \line{CLDL-04} \>\> {\bf Pour } $j=1,\dots,n$ {\bf faire :}\\
+                    \line{CLDL-05} \>\>\> $d_{jj} = a_{ij}-\sum_{k+1}^{j-1}l_{jk}^2\cdot d_{kk}$\\
+                    \line{CLDL-06} \>\>\> {\bf Pour } $i=j+1,\dots,n$ {\bf faire :}\\
+                    \line{CLDL-07} \>\>\>\> $l_{ij} = \frac{1}{d_{jj}}\left(a_{ij}-\sum_{k+1}^{j-1}l_{ik}l_{jk}d_{kk}\right)$\\
+                    %------------------
+                \end{tabbing}
+                \normalsize
+            \end{minipage}
+        }
+        \medbreak
+        \caption{Algorithme de la factorisation modifiée de Cholesky}
+        \label{algo:cldlt}
+    }
+\end{algorithm}
 \subsubsection{Conditions d'arrêts et précision}
+L'algorithme (\ref{algo:cldlt}) n'explicite pas de conditions d'arrêts. Il est destiné ici à factoriser symétrique définie positive provenant de la méthode de quasi-Newton avec la formule de BFGS, qui préserve la positivité de sa matrice $B_k$ au cours des itérations.
+
+Néanmoins, les erreurs éventuelles peuvent provenir de deux sources différentes : la matrice $B$, variable d'entrée; et le calcul de $d_{jj}$. Si la matrice d'entrée $B$ n'est pas définie positive, l'algorithme ne fonctionnera pas. Aussi, si lors du calcul de $d_{jj}$, le coefficient venait à devenir nul, alors le calcul de $l_{ij}$ en serait impacté, et l'algorithme s'arrête. Cette deuxième source d'erreur est en réalité identique à la première. En effet, le coefficient $d_{jj}$ s'annule uniquement si la matrice $B$ n'est pas définie positive. La factorisation de Cholesky peut mettre à profit cette caractéristique, et servir d'algorithme de vérification de la positivité d'une matrice \cite{art:McSweeney_2017}.
+
 \subsubsection{Difficultées techniques}
+La factorisaiton de Cholesky n'est pas algorithmiquement complexe à implémenter. Les difficultées techniques proviennent de l'utilisation optimale des opérateurs vectoriels (e.g. \texttt{.*}, \texttt{'}) de Scilab dans le but d'améliorer les performances.
+
 \subsection{Méthode de Newton-Raphson}
 \subsubsection{Algorithme}
 \begin{algorithm}[ht]
@@ -520,22 +595,24 @@ Toutes les implémentations des algorithmes suivants ont été réalisés sur SC
                 \renewcommand{\baselinestretch}{2.5}
                 \resetline
                 \begin{tabbing}
-                    aaaA\=aaaA\=aaA\=aaA\=aaA\=aaA\kill
-
+                    aaaA\=aaaaA\=aaA\=aaA\=aaA\=aaA\kill
+                    {\bf  Entrée :} \\
+                    \> $g$ \>:= la fonction dont on cherche les racines\\
+                    \> $\nabla g$ \>:= l'expression analytique du gradient de $g$\\
+                    \> $x_0 \in \Omega$ \>:= la valeur initiale de recherche\\
+                    \> $\varepsilon \in \mathbb{R}^+_*$ \>:= la marge d'erreur acceptable,\\ \>\>le critère d'arrêt\\
+                    \> $N\in \mathbb{N}$ \>:= le nombre d'itérations maximales\\
+                    {\bf  Sortie :}\\
+                    \> $x_*$ \>:= la racine de $g$ trouvée, si la méthode\\\>\> converge\\
                     {\bf  Initialisation :}\\
-                    \line{NR-01} \> $g$ := la fonction dont on cherche les racines\\
-                    \line{NR-02} \> $\nabla g$ := l'expression analytique du gradient de $g$\\
-                    \line{NR-03} \> $k = 0$ := le nombre d'itérations actuels\\
-                    \line{NR-04} \> $x_0 \in \Omega$ := la valeur initiale de recherche\\
-                    \line{NR-05} \> $t_k \in \Omega$ := le pas de l'itération $k$,\\
+                    \line{NR-01} \> $k = 0$ \>:= le nombre d'itérations actuels\\
+                    \line{NR-02} \> $t_0 = 1$ \>:= le pas initial de l'itération $k$, puis \\
                     déterminé par une méthode de recherche linéaire\\
-                    \line{NR-06} \> $\varepsilon \in \mathbb{R}^+_*$ := la marge d'erreur acceptable,\\ le critère d'arrêt\\
-                    \line{NR-07} \> $N\in \mathbb{N}$ := le nombre d'itérations maximales\\
                     {\bf Itérations :}\\
-                    \line{NR-08} \> {\bf Tant que} $g(x_k) > \varepsilon$ {\bf ET} $k < N$ {\bf faire :}\\
-                    \line{NR-09} \>\> $x_{k+1} = x_k - t_k\nabla f^{2}(x_k)^{-2}\cdot \nabla f(x_k)$\\
-                    \line{NR-10} \>\> $N = N+1$\\
-                    \line{NR-11} \>\> $k = k+1$\\
+                    \line{NR-03} \> {\bf Tant que} $g(x_k) > \varepsilon$ {\bf ET} $k < N$ {\bf faire :}\\
+                    \line{NR-04} \>\> $x_{k+1} = x_k - t_k\nabla f^{2}(x_k)^{-2}\cdot \nabla f(x_k)$\\
+                    \line{NR-05} \>\> $N = N+1$\\
+                    \line{NR-06} \>\> $k = k+1$\\
                     %------------------
                 \end{tabbing}
                 \normalsize
