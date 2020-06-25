@@ -493,7 +493,7 @@ Soit une valeur initiale $x_0$, une matrice symétrique définie positive $H_0$,
 
 La matrice $H_{k}$ étant symétrique définie positive, elle peut être décomposée en deux matrices triangulaires par la décomposition de Chloesky. Ainsi, en posant $H_{k}=C_{k}C_{k}^{T}$, la mise à jour de la matrice $H_{k}$ devient moins coûteuse, plus précisement de même complexité que pour la formule de DFP.
 
-PLus loin, on propose d'autres méthodes de factorisation de Cholesky. Ces techniques permettent d'éviter des erreurs d'arrondis, grâce à un contrôle plus précis du caractère défini positif de la matrice $H_{k}$.
+Plus loin, on propose d'autres méthodes de factorisation de Cholesky. Ces techniques permettent d'éviter des erreurs d'arrondis, grâce à un contrôle plus précis du caractère défini positif de la matrice $H_{k}$.
 
 \begin{rmk}
     \textbf{Convergence de $(B_k)_{k\in \mathbb{N}}$} - La formule de BFGS est qualifiée de formule de moindres changements (\textit{least changes update formula}), c'est-à-dire qu'on cherche à effectuer le moins de changements possibles sur la matrice $B_k$. Pour les formules de moindres changements, la suite $(B_k)_{k\in \mathbb{N}}$ converge vers l'inverse de la hessienne. Ce n'est pas forcément le cas pour toutes les formules de mise à jour.
