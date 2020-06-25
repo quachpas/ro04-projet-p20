@@ -1,4 +1,4 @@
-function [xk,k]=newton_raphson(f, gradf, hessf, x0)
+function [xk,k,iterations]=newton_raphson(f, gradf, hessf, x0)
     // Paramètres de Newton-Raphson
     epsilon = input("epsilon ? Press Enter to default to 10^(-10): ")
     if isempty(epsilon) then
@@ -11,6 +11,7 @@ function [xk,k]=newton_raphson(f, gradf, hessf, x0)
     end
 
     xk = x0
+    iterations = [x0]
     tk = 1
     k = 0
     // Recherche d'un optimum
@@ -19,7 +20,7 @@ function [xk,k]=newton_raphson(f, gradf, hessf, x0)
         dk = - hessf(xk)\gradf(xk)
         tk = line_search(f, gradf, xk, dk, tk, regle, dicho, m1, m2, c)
         xk = xk + tk * dk
+        iterations = [iterations, xk]
         k = k +1;
     end
-    disp(k)
 endfunction
