@@ -1,3 +1,5 @@
+first_time = %T;
+
 function [t_petit, t_grand]=armijo(phi, phi0, dphi, dphi0, m1, m2, t)
     t_grand = phi > phi0 + m1 * dphi0 *t
     t_petit = %F // false, jamais trop petit
@@ -24,7 +26,7 @@ function [t, interp_fail]=interpolation_c(t, a, b, f, gradf, xk, dk)
     if s >= 0 & s <= 1 then
         t = t + tau*s
         interp_fail = %F
-    else 
+    else
         interp_fail = %T
     end
 endfunction
@@ -62,20 +64,13 @@ function [regle, dicho, m1, m2, c]=line_search_parameters()
     end
 endfunction
 
-function [t]=line_search(f, gradf, xk, dk, t)
-    
-    first_time = %T
-    if first_time then
-        [regle, dicho, m1, m2, c]=line_search_parameters()
-        first_time = %F
-    end
-
+function [t]=line_search(f, gradf, xk, dk, t, regle, dicho, m1, m2, c)
     // Recherche intervalle de départ
     a = 0
     [t_petit, t_grand] = regle(f(xk+t*dk), f(xk), gradf(xk+t*dk)'*dk, gradf(xk)'*dk, m1, m2, t)
     if ~t_petit & ~t_grand  then
         // t convient
-        return t
+        t = t
     elseif t_grand then
         // t trop grand
         b = t
@@ -97,7 +92,11 @@ function [t]=line_search(f, gradf, xk, dk, t)
         interp_fail = %F
         if ~dicho then
             [t, interp_fail] = interpolation_c(t, a, b, f, gradf, xk, dk)
-        elseif dicho | interp_fail then
+            if interp_fail then
+                dicho = %T
+            end
+        end
+        if dicho | interp_fail then
             t = (a + b)/2
         end
         [t_petit, t_grand] = regle(f(xk+t*dk), f(xk), gradf(xk+t*dk)'*dk, gradf(xk)'*dk, m1, m2, t)
@@ -105,6 +104,10 @@ function [t]=line_search(f, gradf, xk, dk, t)
             a = t
         elseif t_grand then
             b = t
+        end
+        if (a-b) < %eps then
+            t_petit = %F
+            t_grand = %F
         end
     end
 endfunction

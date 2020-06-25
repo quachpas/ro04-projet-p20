@@ -708,7 +708,7 @@ La factorisation de Cholesky n'est pas algorithmiquement complexe à implémente
                     \line{NR-01} \> $k = 0$ \>:= le nombre d'itérations actuels\\
                     \line{NR-02} \> $t_0 = 1$ \>:= le pas initial de l'itération $k$, puis \\
                     déterminé par une méthode de recherche linéaire\\
-                    \line{NR-03} \> $\varepsilon = 2^{-52}$, si une précision n'est pas précisée.\\
+                    \line{NR-03} \> $\varepsilon = 10^{-10}$, si une précision n'est pas précisée.\\
                     {\bf Itérations :}\\
                     \line{NR-04} \> {\bf Tant que} $\lVert \nabla f(x_k) \rVert > \varepsilon$ {\bf ET} $k < N$ {\bf faire :}\\
                     \line{NR-05} \>\> $d_k = -\nabla^2 f(x_k)^{-1}\cdot \nabla f(x_k)$\\ 
@@ -761,7 +761,7 @@ L'algorithme de la méthode de BFGS qu'on décrit ici, ne fait pas usage de la f
                     \line{BFGS-02} \> $t_0 = 1$ \>:= le pas initial de l'itération $k$, puis \\
                     déterminé par une méthode de recherche linéaire\\
                     \line{BFGS-03} \> $H_0 = I$ \>:= si elle n'est pas définie \\
-                    \line{BFGS-04} \> $\varepsilon = 10^{-3}$, si une précision n'est pas précisée.\\
+                    \line{BFGS-04} \> $\varepsilon = 10^{-10}$, si une précision n'est pas précisée.\\
                     {\bf Itérations :}\\
                     \line{BFGS-05} \> {\bf Tant que} $\lVert f(x_k) \rVert> \varepsilon$ {\bf ET} $k < N$ {\bf faire :}\\
                     \line{BFGS-06} \>\> $d_k = - H_{k}\cdot \nabla f(x_k)$\\
