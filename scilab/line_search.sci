@@ -22,10 +22,12 @@ function [t, interp_fail]=interpolation_c(t, a, b, f, gradf, xk, dk)
     c3 = tau*(gradf(xk+a*dk)'*dk)
     if c2^2-3*c1*c3 >= 0 then
         s = (-c2*+sqrt(c2^2-3*c1*c3))/(3*c1)
-    end
-    if s >= 0 & s <= 1 then
-        t = t + tau*s
-        interp_fail = %F
+        if s >= 0 & s <= 1 then
+            t = t + tau*s
+            interp_fail = %F
+        else 
+            interp_fail = %T
+        end
     else
         interp_fail = %T
     end
@@ -37,12 +39,12 @@ function [regle, dicho, m1, m2, c]=line_search_parameters()
     if isempty(m1) then
         m1 = 0.1
     end
-    
+
     m2 = input("m2 ? Press Enter to to 0.7: ")
     if isempty(m2) then
         m2 = 0.7
     end
-    
+
     c = input("c ? c > 1! Press Enter to default to 2: ")
     if isempty(c) | c < 1 then
         c = 2
