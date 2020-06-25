@@ -19,47 +19,55 @@ function [t, interp_fail]=interpolation_c(t, a, b, f, gradf, xk, dk)
     c2 = 3*(f(xk+b*dk)-f(xk+a*dk))-tau*(2*gradf(xk+a*dk)'*dk+gradf(xk+b*dk)'*dk)
     c3 = tau*(gradf(xk+a*dk)'*dk)
     if c2^2-3*c1*c3 >= 0 then
-        return [t + (tau/3*c1)*(-c2*+sqrt(c2^2-3*c1*c2)), %F]
+        s = (-c2*+sqrt(c2^2-3*c1*c3))/(3*c1)
+    end
+    if s >= 0 & s <= 1 then
+        t = t + tau*s
+        interp_fail = %F
     else 
-        return [t, %T]
+        interp_fail = %T
     end
 endfunction
 
-function [t]=line_search(f, gradf, xk, dk, t)
+function [regle, dicho, m1, m2, c]=line_search_parameters()
     // Paramètres de la recherche linéaire
     m1 = input("m1 ? Press Enter to default to 0.1: ")
     if isempty(m1) then
         m1 = 0.1
     end
-    disp("m1 = " + string(m1))
+    
     m2 = input("m2 ? Press Enter to to 0.7: ")
     if isempty(m2) then
         m2 = 0.7
     end
-    disp("m2 = " + string(m2))
+    
     c = input("c ? c > 1! Press Enter to default to 2: ")
     if isempty(c) | c < 1 then
         c = 2
     end
-    disp("c = " + string(c))
     // Choix règle
     select input("Armijo (0), Goldstein (1), Wolfe-Powell (2) ? Defaults to Wolfe-Powell: ")
     case 0 then
         regle = armijo
         dicho = %T
-        disp("Armijo choisie")
     case 1 then
         regle = goldstein
         dicho = %T
-        disp("Goldstein choisie")
     case 2 then
         regle = wolfePowell
         dicho = %F
-        disp("Wolfe-Powell choisie")
     else
         regle = wolfePowell
         dicho = %F
-        disp("Wolfe-Powell choisie")
+    end
+endfunction
+
+function [t]=line_search(f, gradf, xk, dk, t)
+    
+    first_time = %T
+    if first_time then
+        [regle, dicho, m1, m2, c]=line_search_parameters()
+        first_time = %F
     end
 
     // Recherche intervalle de départ
@@ -84,9 +92,8 @@ function [t]=line_search(f, gradf, xk, dk, t)
             b = t
         end
     end
-
     // Réduction de l'intervalle
-    while ~t_petit & ~t_grand then
+    while t_petit | t_grand then
         interp_fail = %F
         if ~dicho then
             [t, interp_fail] = interpolation_c(t, a, b, f, gradf, xk, dk)
