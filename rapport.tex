@@ -269,7 +269,7 @@ Ce problème peut être résolu en ajoutant une phase de recherche linéaire dan
 telle que la suite $(x_k)_{k\in \mathbb{N}}$ soit définie par
 \begin{equation}
     x_{k+1}=x_k+t_k\cdot d_k
-    \label{eq:nr-opt-mono}
+    \label{eq:nr-opt-mono-avec-line-search}
 \end{equation}
 avec $t_k$ le pas résultant d'une recherche linéaire.
 Compte tenu des propriétés choisies pour $f$, $d_k$ est une direction de descente en $x_k$. En effet, la stricte convexité de $f$ implique que la hessienne soit strictement définie positive.
@@ -779,7 +779,7 @@ L'algorithme de la méthode de BFGS qu'on décrit ici, ne fait pas usage de la f
         }
         \medbreak
         \caption{Algorithme de la méthode de quasi-Newton avec la formule de BFGS et recherche linéaire inexacte}
-        \label{algo:newton_raphson}
+        \label{algo:BFGS}
     }
 \end{algorithm}
 
