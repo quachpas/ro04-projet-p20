@@ -664,9 +664,9 @@ L'implémentation d'une méthode de quasi-Newton requiert la mise à jour d'une 
                     \line{CLDL-03} \> $D$ \>:= matrice de zéros de taille $n\times n$\\
                     {\bf Itérations :}\\
                     \line{CLDL-04} \> {\bf Pour } $j=1,\dots,n$ {\bf faire :}\\
-                    \line{CLDL-05} \>\> $d_{jj} = a_{ij}-\sum_{k+1}^{j-1}l_{jk}^2\cdot d_{kk}$\\
+                    \line{CLDL-05} \>\> $d_{jj} = a_{jj}-\sum_{k=1}^{j-1}l_{jk}^2\cdot d_{kk}$\\
                     \line{CLDL-06} \>\> {\bf Pour } $i=j+1,\dots,n$ {\bf faire :}\\
-                    \line{CLDL-07} \>\>\> $l_{ij} = \frac{1}{d_{jj}}\left(a_{ij}-\sum_{k+1}^{j-1}l_{ik}l_{jk}d_{kk}\right)$\\
+                    \line{CLDL-07} \>\>\> $l_{ij} = \frac{1}{d_{jj}}\left(a_{ij}-\sum_{k=1}^{j-1}l_{ik}l_{jk}d_{kk}\right)$\\
                     %------------------
                 \end{tabbing}
                 \normalsize
