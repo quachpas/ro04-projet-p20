@@ -1,13 +1,16 @@
-function [t_grand]=armijo()
-    disp("Armijo")
+function [t_petit, t_grand]=armijo(phi, phi0, dphi0, m1, m2, t)
+    t_grand = phi > phi0 + m1 * dphi0 *t
+    t_petit = %F // false, jamais trop petit
 endfunction
 
-function [t_petit, t_grand]=goldstein()
-    disp("Goldstein")
+function [t_petit, t_grand]=goldstein(phi, phi0, dphi0, m1, m2, t)
+    t_grand = phi > phi0 + m1 * dphi0 * t 
+    t_petit = phi < phi0 + m2 * dphi0 * t
 endfunction
 
-function [t_petit, t_grand]=wolfePowell()
-    disp("Wolfe-Powell")
+function [t_petit, t_grand]=wolfePowell(phi, phi0, dphi0, m1, m2, t)
+    t_grand = 
+    t_petit = 
 endfunction
 
 
@@ -44,4 +47,5 @@ function [t]=line_search(f, gradf, xk, dk, t0)
         disp("Wolfe-Powell choisie")
     end
     
+    [t_petit, t_grand] = regle()
 endfunction
