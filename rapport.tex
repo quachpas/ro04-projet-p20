@@ -428,7 +428,7 @@ La condition de quasi-Newton nous montre qu'il existe une infinité de matrices 
 \begin{definition}
     La formule de mise à jour de Broyden, Fletcher, Goldfarb et Shanno, formule de correction de rang 2, est définie dans sa forme développée par
     \begin{align}
-        H_{k+1} = H_k & + \left(I + \frac{y_k H_k y_k}{s_k^T y_k}\right)\frac{s_k s_k^T}{s_k^T y_k}\nonumber \\
+        H_{k+1} = H_k & + \left(I + \frac{y_k^T H_k y_k}{s_k^T y_k}\right)\frac{s_k s_k^T}{s_k^T y_k}\nonumber \\
                       & -\left(\frac{s_k y_k^T H+ H y_k s_k^T}{s_k^T y_k}\right)
         \label{eq:bfgs-hk-developed}
     \end{align}
@@ -770,7 +770,7 @@ L'algorithme de la méthode de BFGS qu'on décrit ici, ne fait pas usage de la f
                     \line{BFGS-09} \>\> $s_k = t_k d_k$\\
                     \line{BFGS-10} \>\> $y_k = \nabla f(x_{k+1}) - \nabla f(x_k)$\\
                     \line{BFGS-11} \>\> $H_{k+1} = \left(I - \frac{y_k s_k^T}{s_k^T y_k}\right) H_k \left(I - \frac{s_k y_k^T}{s_k^Ty_k}\right) + \frac{y_k y_k^T}{s_k^T y_k}$\\
-                    \line{BFGS-12} \>\> {\bf Si} $H_{k+1}$ ne se décompose pas selon l'algorithme \\
+                    \line{BFGS-12} \>\> {\bf Si} $H_{k+1}$ ne se décompose pas \\\>\>selon l'algorithme \\
                     \>\>(\ref{algo:cldlt}) {\bf alors} $H_{K+1} = I$\\
                     \line{BFGS-13} \>\> $k = k+1$\\
                     %------------------
