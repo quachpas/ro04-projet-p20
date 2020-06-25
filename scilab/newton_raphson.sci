@@ -13,7 +13,7 @@ function [xk,k,iterations]=newton_raphson(f, gradf, hessf, x0)
     xk = x0
     iterations = [x0]
     tk = 1
-    k = 0
+    k = 1
     // Recherche d'un optimum
     [regle, dicho, m1, m2, c]=line_search_parameters()
     while norm(gradf(xk), 2) > epsilon & k < N
