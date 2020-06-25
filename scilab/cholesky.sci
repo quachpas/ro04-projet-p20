@@ -20,6 +20,6 @@ function [L, D, dp]=AlternativeCholesky(A)
     if dp then
        disp("La matrice est définie positive.") 
     else
-        disp("La matrice est définie négative. La factorisation de Cholesky ne fonctionne pas.")
+        disp("La factorisation de Cholesky ne fonctionne pas.")
     end
 endfunction
