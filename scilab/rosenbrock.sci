@@ -1,4 +1,4 @@
-p = 100
+p = 100;
 
 function [r]=rosenbrock(x,y)
     r = p*(x^2-y)^2+(x-1)^2
