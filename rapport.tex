@@ -428,8 +428,8 @@ La condition de quasi-Newton nous montre qu'il existe une infinité de matrices 
 \begin{definition}
     La formule de mise à jour de Broyden, Fletcher, Goldfarb et Shanno, formule de correction de rang 2, est définie dans sa forme développée par
     \begin{align}
-        H_{k+1} = H_k & + \left(I + \frac{y_k^T H_k y_k}{s_k^T y_k}\right)\frac{s_k s_k^T}{s_k^T y_k}\nonumber \\
-                      & -\left(\frac{s_k y_k^T H+ H y_k s_k^T}{s_k^T y_k}\right)
+        H_{k+1} = H_k & + \left(\frac{(s_ks_k^T + y_k^T H_k y_k)(s_k s_k^T)}{(s_k^T y_k)^2}\right)\nonumber \\
+                      & -\left(\frac{s_k y_k^T H_k+ H_k y_k s_k^T}{s_k^T y_k}\right)
         \label{eq:bfgs-hk-developed}
     \end{align}
     On peut factoriser cette expression comme suit
@@ -599,7 +599,7 @@ L'algorithme de recherche linéaire inexacte est découpée en plusieurs phases 
                     {\bf Réduction de l'intervalle $I$ :}\\
                     \line{LINE-15} \> {\bf Tant que } $t$ ne convient pas {\bf faire :}\\
                     \line{LINE-16} \>\> $t=\frac{\alpha+\beta}{2}$ ou\\
-                    \>\> $t_{\texttt{WP}} = \underset{t}\min$ {\texttt{INTERPOLATION$^3$}$_{\varphi}$}($t$, $\alpha$, $\beta$, $f$, $\nabla f$, $x_k$, $d_k$)\\
+                    \>\> $t_{\texttt{WP}} = \underset{t}\min$ {\texttt{IP$^3$}$_{\varphi}$}($t$, $\alpha$, $\beta$, $f$, $\nabla f$, $x_k$, $d_k$)\\
                     \line{LINE-17} \>\> {\bf Si } $t$ est trop petit {\bf alors} $\alpha=t$\\
                     \line{LINE-18} \>\> {\bf Sinon si} $t$ est trop grand {\bf alors} $\beta=t$\\
                     %------------------
@@ -638,6 +638,9 @@ On préfèrera la règle de Wolfe-Powell, pour augmenter la vitesse de réductio
 \subsubsection{Difficultées techniques}
 L'implémentation de l'algorithme (\ref{algo:line-search}) n'est pas difficile. S'il y a un point à souligner lors de l'implémentation, c'est de faire attention à optimiser la vérification de la règle utilisée. Il faut à tout prix éviter de vérifier plusieurs fois de suite la même inégalité, au risque de ralentir la recherche. On pourra à cette fin stocker le résultat d'une comparaison dans une variable booléenne et en faire usage si nécessaire plus loin.
 
+\begin{rmk}
+    L'algorithme de recherche linéaire ainsi énoncé ne clarifie pas totalement le calcul de $t$. En détail, si la règle de Wolfe-Powell est utilisée, on tentera de réduire l'intervalle par interpolation cubique jusqu'à retour d'une erreur. Au quel cas, on basculera sur une réduction par dichotomie.
+\end{rmk}
 \subsection{Factorisation matricielle : factorisation $LDL^T$ de Cholesky}
 L'implémentation d'une méthode de quasi-Newton requiert la mise à jour d'une matrice symétrique définie positive à chaque itération. Il est clair que la mise à jour d'une matrice entière avec de telles propriétés n'est pas une opération entièrement optimisé. Pour des raisons de performance, on préfèrera donc mettre à jour les facteurs d'une décomposition de la matrice $B_{k+1}$, issues de la factorisation alternative de Cholesky. L'algorithme modifié de Cholesky ici décrit est celui défini dans \cite{art:McSweeney_2017}.
 
@@ -685,6 +688,8 @@ Néanmoins, des erreurs éventuelles peuvent provenir de deux sources différent
 \subsubsection{Difficultées techniques}
 La factorisation de Cholesky n'est pas algorithmiquement complexe à implémenter. Les difficultées techniques proviennent de l'utilisation optimale des opérateurs vectoriels (e.g. \texttt{.*}, \texttt{'}) de Scilab dans le but d'améliorer les performances.
 
+Pour profiter pleinement de la performance des opérateurs vectoriels de Scilab, on sépare à l'implémentation la somme $\sum_{k=1}^{j-1}l_{jk}d_{kk}$, qui est utilisée à deux reprises à la ligne (\ref{CLDL-05}) et (\ref{CLDL-07}). On se servira d'un vecteur intermédiaire dont les coefficients sont définis par le produit $l_{jk}\cdot d_{kk}$.
+
 \subsection{Méthode de Newton-Raphson}
 \begin{algorithm}[ht]
     \centering{
@@ -701,19 +706,20 @@ La factorisation de Cholesky n'est pas algorithmiquement complexe à implémente
                     \> $\nabla^2 f$ \>:= l'expression analytique de la hessienne \\\>\>de $f$\\
                     \> $x_0 \in \Omega$ \>:= la valeur initiale de recherche\\
                     \> $\varepsilon \in \mathbb{R}^+_*$ \>:= la marge d'erreur acceptable,\\ \>\>le critère d'arrêt\\
-                    \> $N\in \mathbb{N}$ \>:= le nombre d'itérations maximales\\
+                    \> $N\in \mathbb{N}$ \>:= le nombre d'itérations maximum\\
                     {\bf  Sortie :}\\
                     \> $x_*$ \>:= le minimum de $f$ trouvé, si la méthode\\\>\> converge\\
                     {\bf  Initialisation :}\\
                     \line{NR-01} \> $k = 0$ \>:= le nombre d'itérations actuels\\
-                    \line{NR-02} \> $t_0 = 1$ \>:= le pas initial de l'itération $k$, puis \\
+                    \line{NR-02} \> $N = 10^3$ \>  , s'il n'est pas précisé\\
+                    \line{NR-03} \> $t_0 = 1$ \>:= le pas initial de l'itération $k$, puis \\
                     déterminé par une méthode de recherche linéaire\\
-                    \line{NR-03} \> $\varepsilon = 10^{-10}$, si une précision n'est pas précisée.\\
+                    \line{NR-04} \> $\varepsilon = 10^{-5}$, si une précision n'est pas précisée.\\
                     {\bf Itérations :}\\
-                    \line{NR-04} \> {\bf Tant que} $\lVert \nabla f(x_k) \rVert > \varepsilon$ {\bf ET} $k < N$ {\bf faire :}\\
-                    \line{NR-05} \>\> $d_k = -\nabla^2 f(x_k)^{-1}\cdot \nabla f(x_k)$\\ 
-                    \line{NR-06} \>\> Choisir $t_k$ selon l'algorithme (\ref{algo:line-search})\\ 
-                    \line{NR-07} \>\> $x_{k+1} = x_k + t_k d_k$\\
+                    \line{NR-05} \> {\bf Tant que} $\lVert \nabla f(x_k) \rVert > \varepsilon$ {\bf ET} $k < N$ {\bf faire :}\\
+                    \line{NR-06} \>\> $d_k = -\nabla^2 f(x_k)^{-1}\cdot \nabla f(x_k)$\\ 
+                    \line{NR-07} \>\> Choisir $t_k$ selon l'algorithme (\ref{algo:line-search})\\ 
+                    \line{NR-08} \>\> $x_{k+1} = x_k + t_k d_k$\\
                     \line{NR-09} \>\> $k = k+1$\\
                     %------------------
                 \end{tabbing}
@@ -733,7 +739,7 @@ La précision de l'algorithme de quasi-Newton dépend de l'entrée utilisateur.
 \subsubsection{Difficultées techniques}
 L'implémentation de l'algorithme de Newton-Raphson n'est pas difficile. Il n'y a presque aucune difficulté technique.
 
-On fera néanmoins attention à l'inversion de $\nabla^2 f(x_k)$, qui se réalisera à travers une division matricielle gauche. L'opérateur utilisée sera \texttt{\textbackslash}. Cet opérateur est bien plus efficace que la commande d'inversion \texttt{inv}, qui résout le système d'équations linéaires \cite{doc:scilab-backslash}.
+On fera néanmoins attention à l'inversion de $\nabla^2 f(x_k)$, qui se réalisera à travers une division matricielle gauche. L'opérateur utilisée sera \texttt{\textbackslash}. Cet opérateur est bien plus efficace que la commande d'inversion \texttt{inv}, qui résout le système d'équations linéaires \cite{doc:scilab-backslash}.\footnote{Nous sommes par ailleurs limité par les consignes du sujet, qui refuse l'utilisation de la commande \texttt{inv}.}
 
 \subsection{Méthode de BFGS}
 L'algorithme de la méthode de BFGS qu'on décrit ici, ne fait pas usage de la factorisation alternative de Cholesky décrit dans l'algorithme (\ref{algo:cldlt}) pour des raisons expliquées ci-après. Pour réduire la complexité calculatoire, on fera donc usage de la formule de mise à jour (\ref{eq:bfgs-hk-factorised}).
@@ -746,33 +752,34 @@ L'algorithme de la méthode de BFGS qu'on décrit ici, ne fait pas usage de la f
                 \renewcommand{\baselinestretch}{2.5}
                 \resetline
                 \begin{tabbing}
-                    aaaA\=aaaaA\=aaA\=aaA\=aaA\=aaA\kill
+                    aaaA\=aaaaaA\=aaA\=aaA\=aaA\=aaA\kill
                     {\bf  Entrée :} \\
                     \> $f$ \>:= la fonction qu'on cherche à optimiser\\
                     \> $\nabla f$ \>:= l'expression analytique du gradient de $f$\\
                     \> $x_0 \in \Omega$ \>:= la valeur initiale de recherche\\
                     \> $H_0 \in \Omega$ \>:= la matrice initiale \\
                     \> $\varepsilon \in \mathbb{R}^+_*$ \>:= la marge d'erreur acceptable,\\ \>\>le critère d'arrêt\\
-                    \> $N\in \mathbb{N}$ \>:= le nombre d'itérations maximales\\
+                    \> $N\in \mathbb{N}$ \>:= le nombre d'itérations maximum\\
                     {\bf  Sortie :}\\
                     \> $x_*$ \>:= le minimum de $f$ trouvé, si la méthode\\\>\> converge\\
                     {\bf  Initialisation :}\\
                     \line{BFGS-01} \> $k = 0$ \>:= le nombre d'itérations actuels\\
-                    \line{BFGS-02} \> $t_0 = 1$ \>:= le pas initial de l'itération $k$, puis \\
+                    \line{BFGS-02} \> $N = 10^3$ \>, s'il n'est pas précisé\\
+                    \line{BFGS-03} \> $t_0 = 1$ \>:= le pas initial de l'itération $k$, puis \\
                     déterminé par une méthode de recherche linéaire\\
-                    \line{BFGS-03} \> $H_0 = I$ \>:= si elle n'est pas définie \\
-                    \line{BFGS-04} \> $\varepsilon = 10^{-10}$, si une précision n'est pas précisée.\\
+                    \line{BFGS-04} \> $H_0 = I$ \>:= si elle n'est pas définie \\
+                    \line{BFGS-05} \> $\varepsilon = 10^{-5}$, si une précision n'est pas précisée.\\
                     {\bf Itérations :}\\
-                    \line{BFGS-05} \> {\bf Tant que} $\lVert f(x_k) \rVert> \varepsilon$ {\bf ET} $k < N$ {\bf faire :}\\
-                    \line{BFGS-06} \>\> $d_k = - H_{k}\cdot \nabla f(x_k)$\\
-                    \line{BFGS-07} \>\> Choisir $t_k$ selon l'algorithme (\ref{algo:line-search})\\
-                    \line{BFGS-08} \>\> $x_{k+1} = x_k + t_k d_k$\\
-                    \line{BFGS-09} \>\> $s_k = t_k d_k$\\
-                    \line{BFGS-10} \>\> $y_k = \nabla f(x_{k+1}) - \nabla f(x_k)$\\
-                    \line{BFGS-11} \>\> $H_{k+1} = \left(I - \frac{y_k s_k^T}{s_k^T y_k}\right) H_k \left(I - \frac{s_k y_k^T}{s_k^Ty_k}\right) + \frac{y_k y_k^T}{s_k^T y_k}$\\
-                    \line{BFGS-12} \>\> {\bf Si} $H_{k+1}$ ne se décompose pas \\\>\>selon l'algorithme \\
-                    \>\>(\ref{algo:cldlt}) {\bf alors} $H_{K+1} = I$\\
-                    \line{BFGS-13} \>\> $k = k+1$\\
+                    \line{BFGS-06} \> {\bf Tant que} $\lVert f(x_k) \rVert> \varepsilon$ {\bf ET} $k < N$ {\bf faire :}\\
+                    \line{BFGS-07} \>\> $d_k = - H_{k}\cdot \nabla f(x_k)$\\
+                    \line{BFGS-08} \>\> Choisir $t_k$ selon l'algorithme (\ref{algo:line-search})\\
+                    \line{BFGS-09} \>\> $x_{k+1} = x_k + t_k d_k$\\
+                    \line{BFGS-10} \>\> $s_k = t_k d_k$\\
+                    \line{BFGS-11} \>\> $y_k = \nabla f(x_{k+1}) - \nabla f(x_k)$\\
+                    \line{BFGS-12} \>\> $H_{k+1} = \left(I - \frac{y_k s_k^T}{s_k^T y_k}\right) H_k \left(I - \frac{s_k y_k^T}{s_k^Ty_k}\right) + \frac{y_k y_k^T}{s_k^T y_k}$\\
+                    \line{BFGS-13} \>\> {\bf Si} $H_{k+1}$ ne se décompose pas selon \\
+                    \>\>l'algorithme (\ref{algo:cldlt}) {\bf alors} $H_{K+1} = I$\\
+                    \line{BFGS-14} \>\> $k = k+1$\\
                     %------------------
                 \end{tabbing}
                 \normalsize
@@ -788,25 +795,25 @@ On a proposé précédemment avec l'algorithme (\ref{algo:cldlt}) une technique 
 
 Dans notre implémentation, on se servira de la formule de mise à jour de $H_{k+1}$. Malgré son grand défaut, elle a l'avantage par rapport aux méthodes citées d'être beaucoup plus simple à implémenter...
 
-On prête une attention particulière dans les simulations à la positivité de la matrice $H_k$, pour laquelle on vérifie sa positivité en essayant de la décomposer selon l'algorithme (\ref{algo:cldlt}). Ainsi, à la ligne (\ref{BFGS-12}), si la matrice n'est plus définie positive, alors on réinitialise $H_{k+1}$ à $I$. La complexité de l'algorithme (\ref{algo:cldlt}) étant de l'ordre de $O(n^3)$, on tentera d'observer l'impact calculatoire de cette vérification.
+On prête une attention particulière dans les simulations à la positivité de la matrice $H_k$, pour laquelle on vérifie sa positivité en essayant de la décomposer selon l'algorithme (\ref{algo:cldlt}). Ainsi, à la ligne (\ref{BFGS-12}), si la matrice n'est plus définie positive, alors on réinitialise $H_{k+1}$ à $I$. La complexité de l'algorithme (\ref{algo:cldlt}) étant de l'ordre de $O(n^3)$.
 
 \subsubsection{Conditions d'arrêts et précision}
 Les conditions d'arrêts sont sensiblement les mêmes que pour l'algorithme (\ref{algo:newton_raphson}).
 
 \subsubsection{Difficultées techniques}
-La difficulté technique majeure se situe dans la formule de mise à jour, où il faut prêter un oeil attentif à l'optimalité des opérateurs vectoriels utilisés.
+La difficulté technique majeure se situe dans la formule de mise à jour, où il faut prêter un oeil attentif à l'optimalité des opérateurs vectoriels utilisés. Certains facteurs sont scalaires, et on peut préférer la formule développée (\ref{eq:bfgs-hk-developed})
 
 \subsection{Alternatives à Scilab}
 
 L'utilisation de Scilab pour implémenter manuellement les algorithmes précédemment détaillés a été limitée à l'utilisation d'opérateurs et méthodes standards. Certains des algorithmes sont déjà implémentés dans les librairies de Scilab, notamment la factorisation de Cholesky. L'utilisation des outils des librairies serait plus juste, car ils sont déjà optimisés pour les cas d'usage. On pense également à la fonction \texttt{optim}.
 
-Une alternative à l'utilisation de l'expression analytique de la dérivée est la différentiation automatique. Sur des fonctions complexes dont l'expression analytique est difficile à calculer, les résultats obtenus sont possiblements convaincants. L'optimisation de programmes utilisant ces techniques est cependant complexe, car elle nécessite une compréhension poussée de la différentiation automatique, notamment de la construction du graphe de calcul. Scilab possède quelques librairies de différentiation automatique (sciad, diffcode). 
+Une alternative à l'utilisation de l'expression analytique de la dérivée est la différentiation automatique. Sur des fonctions complexes dont l'expression analytique est difficile à calculer, les résultats obtenus sont possiblements convaincants. L'optimisation de programmes utilisant ces techniques est cependant complexe, car elle nécessite une compréhension poussée de la différentiation automatique, notamment de la construction du graphe de calcul. Scilab possède quelques librairies de différentiation automatique (sciad, diffcode).
 
 Eventuellement, l'implémentation des algorithmes aurait pu se détacher de l'interpréteur de Scilab, et préférer compiler le code en C (en utilisant une librairie de conversion, e.g. Scilab2C) en espérant que le code compilé ait une meilleure performance d'exécution que le code interprété.
 
 Concernant les logiciels d'analyse numérique, la première alternative qui surgit à l'esprit est Matlab. L'interpréteur de Matlab est sans équivoque supérieur à celui de Scilab, moyennant son aspect propriétaire et commercial.
 
-Egalement, on peut reprocher à Scilab et Matlab de restreindre les utilisateurs à un langage de programmation spécifique. Le concurrent populaire sur ce point est l'utilisation du Python, notamment les librairies SciPy et NumPy qui offrent un panel très complet d'outils. La popularité du Python est due en grande partie à la facilité d'apprendre le langage. La présence d'une communauté active et impliquée est aussi l'un de ses points forts. La présence dominante de framework/librairies (PyTorch, NumPy, CuPy, ...) en Python en fait l'un des langages de programmations majeurs.
+\'Egalement, on peut reprocher à Scilab et Matlab de restreindre les utilisateurs à un langage de programmation spécifique. Le concurrent populaire sur ce point est l'utilisation du Python, notamment les librairies SciPy et NumPy qui offrent un panel très complet d'outils. La popularité du Python est due en grande partie à la facilité d'apprendre le langage. La présence d'une communauté active et impliquée est aussi l'un de ses points forts. La présence dominante de framework/librairies (PyTorch, NumPy, CuPy, ...) en Python en fait l'un des langages de programmations majeurs.
 
 \section{Simulations}
 \subsection{Fonction de Rosenbrock}
@@ -814,7 +821,7 @@ Egalement, on peut reprocher à Scilab et Matlab de restreindre les utilisateurs
     r(x,y)=p(x^2-y)^2+(x-1)^2
     \label{eq:rosenbrock-function}
 \end{equation}
-On souhaite minimiser la fonction de Rosenbrock $r$, avec pour paramètre $p=100$.
+On souhaite minimiser la fonction de Rosenbrock $r$, avec pour paramètre $p=100$. 
 
 \subsubsection{Minimum global}
     $r$ est une fonction deux fois continûment différentiable. On donne les expressions de son gradient, et de sa hessienne.
@@ -833,10 +840,30 @@ On souhaite minimiser la fonction de Rosenbrock $r$, avec pour paramètre $p=100
     L'unique point stationnaire de la fonction est le point $(1,1)$ dans l'annexe \ref{ap:calcul-mini-rosenbrock}.
 
     On examine les valeurs propres la hessienne au point $(1,1)$. Pour montrer que $(1,1)$ est un minimum local, il faut que les deux valeurs propres $\lambda_1$ et $\lambda_2$ soient strictement positives. Cette condition est vérifiée dans l'annexe \ref{ap:calcul-vp-rosenbrock}, donc $(1,1)$ est un minimum local. Comme ce point est le seul point stationnaire de $r$, il est donc son minimum global.
-\subsubsection{Application de BFGS}
-% Initialisation x_0, y_0
-% Comparaisons différentes recherches linéaires
-% indicateurs : nombre d'itérations, convergence, contours/isolignes
+
+\subsubsection{Application de Newton-Raphson et BFGS}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width = 0.45\textwidth]{NR_c1.63.png}
+    \caption{Résultats de l'application de la méthode de Newton-Raphson à la recherche du minimum de $r(x,y)_{p=100}$ avec $c = 1.63$}
+    \label{fig:rosenbrock-newton-raphson}
+\end{figure}
+
+On fait apparaître successivement dans la figure (\ref{fig:rosenbrock-newton-raphson}) les contours et le chemin des itérations successives $x_k$ de la méthode de Newton-Raphson, $\lVert \grad f(x_k) \rVert_2$ en fonction de l'itération $k$, l'ordre de convergence calculée selon $\frac{\lvert \lVert \nabla f(x_{k+1}) \rVert_2 - \lVert \nabla f(x_*) \rVert_2 \rvert}{\lvert \lVert \nabla f(x_{k}) \rVert_2 - \lVert \nabla f(x_*) \rVert_2 \rvert}$ en fonction de l'itération $k$, la moyenne du temps écoulé à chaque itération $k$ pour 5 exécutions de la méthode de Newton-Raphson.
+
+Les résultats affichés sont donnés pour chacune des méthodes de recherche linéaire inexacte qui ont été présentées précédemment. En l'occurence, on a choisi les paramètres de la recherche linéaire par défaut, à l'exception de $c$, le facteur multiplicatif de la ligne (\ref{LINE-10}) de l'algorithme (\ref{algo:line-search}). La raison de ce choix se trouve dans l'ordre de convergence instable de la méthode de Newton-Raphson lors de l'application de la règle de Goldstein. 
+
+Bien qu'elle semble converger plus rapidement avec la règle de Goldstein (plus grands pas\footnote{losanges noirs sur la figure des contours}, moins d'itérations au total), l'instabilité de l'ordre de convergence, et l'irrégularité du temps par itération laisse à penser que la recherche linéaire demande plus de temps. 
+
+Par ailleurs, l'ordre de convergence est momentanément très grand pour les règles d'Armijo, et de Wolfe-Powell, et n'apparaît pas sur la figure. La similitude des résultats entre les règles d'Armijo et de Wolfe-Powell nous laisse penser que l'intervalle de sécurité aura plus tendance à se réduire par la borne supérieure.
+
+La variation du paramètre $c$ influe principalement sur la règle de Golstein, dont les résultats deviennent similaires à ceux des deux autres règles pour une majorité d'autres valeurs.
+
+On constante que l'ordre de convergence global de la méthode de Newton-Raphson n'est pas quadratique, comme on pouvait l'espérer. La forme particulière de la fonction de Rosenbrock est ici la raison d'une vitesse de convergence très faible, à mi-chemin entre superlinéaire et sous-linéaire.
+
+\begin{rmk}
+    L'application de la méthode de BFGS à la fonction de Rosenbrock ne donne que des résultats très divergents. Aucun résultat n'a pu être obtenu.
+\end{rmk}
 
 \subsection{Reconstitutions d'un signal à partir d'observations}
 \subsection{Conformation atomique}
