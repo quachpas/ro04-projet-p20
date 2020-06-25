@@ -94,5 +94,10 @@ function [t]=line_search(f, gradf, xk, dk, t)
             t = (a + b)/2
         end
         [t_petit, t_grand] = regle(f(xk+t*dk), f(xk), gradf(xk+t*dk)'*dk, gradf(xk)'*dk, m1, m2, t)
+        if t_petit then
+            a = t
+        elseif t_grand then
+            b = t
+        end
     end
 endfunction
