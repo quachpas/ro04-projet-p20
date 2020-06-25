@@ -83,7 +83,7 @@ function [t]=line_search(f, gradf, xk, dk, t, regle, dicho, m1, m2, c)
         end
         if ~t_petit & ~t_grand  then
             // t convient
-            return t
+            t = t
         end
         if t_grand then
             b = t
