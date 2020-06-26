@@ -648,8 +648,6 @@ On préfèrera la règle de Wolfe-Powell, pour augmenter la vitesse de réductio
 L'implémentation de l'algorithme (\ref{algo:line-search}) n'est pas difficile. S'il y a un point à souligner lors de l'implémentation, c'est de faire attention à optimiser la vérification de la règle utilisée. Il faut à tout prix éviter de vérifier plusieurs fois de suite la même inégalité, au risque de ralentir la recherche. On pourra à cette fin stocker le résultat d'une comparaison dans une variable booléenne et en faire usage si nécessaire plus loin.
 
 
-
-
 \subsection{Factorisation matricielle : factorisation $LDL^T$ de Cholesky}
 L'implémentation d'une méthode de quasi-Newton requiert la mise à jour d'une matrice symétrique définie positive à chaque itération. Il est clair que la mise à jour d'une matrice entière avec de telles propriétés n'est pas une opération entièrement optimisé. Pour des raisons de performance, on préfèrera donc mettre à jour les facteurs d'une décomposition de la matrice $B_{k+1}$, issues de la factorisation alternative de Cholesky. L'algorithme modifié de Cholesky ici décrit est celui défini dans \cite{art:McSweeney_2017}.
 
@@ -720,7 +718,7 @@ Pour profiter pleinement de la performance des opérateurs vectoriels de Scilab,
                     \> $x_*$ \>:= le minimum de $f$ trouvé, si la méthode\\\>\> converge\\
                     {\bf  Initialisation :}\\
                     \line{NR-01} \> $k = 0$ \>:= le nombre d'itérations actuels\\
-                    \line{NR-02} \> $N = 10^3$ \>  , s'il n'est pas précisé\\
+                    \line{NR-02} \> $N = 10^3$ \>:= s'il n'est pas précisé\\
                     \line{NR-03} \> $t_0 = 1$ \>:= le pas initial de l'itération $k$, puis \\
                     déterminé par une méthode de recherche linéaire\\
                     \line{NR-04} \> $\varepsilon = 10^{-5}$, si une précision n'est pas précisée.\\
@@ -848,7 +846,7 @@ On souhaite minimiser la fonction de Rosenbrock $r$, avec pour paramètre $p=100
     \end{align*}
     L'unique point stationnaire de la fonction est le point $(1,1)$ dans l'annexe \ref{ap:calcul-mini-rosenbrock}.
 
-    On examine les valeurs propres la hessienne au point $(1,1)$. Pour montrer que $(1,1)$ est un minimum local, il faut que les deux valeurs propres $\lambda_1$ et $\lambda_2$ soient strictement positives. Cette condition est vérifiée dans l'annexe \ref{ap:calcul-vp-rosenbrock}, donc $(1,1)$ est un minimum local. Comme ce point est le seul point stationnaire de $r$, il est donc son minimum global.
+    On examine les valeurs propres de la hessienne au point $(1,1)$. Pour montrer que $(1,1)$ est un minimum local, il faut que les deux valeurs propres $\lambda_1$ et $\lambda_2$ soient strictement positives. Cette condition est vérifiée dans l'annexe \ref{ap:calcul-vp-rosenbrock}, donc $(1,1)$ est un minimum local. Comme ce point est le seul point stationnaire de $r$, il est donc son minimum global.
 
 \subsubsection{Application de Newton-Raphson et BFGS}
 \begin{figure}[htbp]
