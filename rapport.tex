@@ -105,9 +105,9 @@
         La méthode de Newton est une méthode itérative de recherche d'un zéro d'une fonction $g$, qui se repose sur la méthode du point fixe. Elle requiert cependant le calcul coûteux de la dérivée ou matrice jacobienne de $g$ dans le cas d'une fonction à plusieurs variables, et également son inversion. Les méthodes sont qualifiées de quasi-Newton lorsque la matrice jacobienne - généralement son inverse - sont remplacées par une approximation. Appliquée à un problème d'optimisation mono-objectif libre, où l'on cherche l'optimum d'une fonction $f:\mathbb{R}^n\rightarrow \mathbb{R}$, la méthode de Newton force le calcul de la matrice hessienne de $f$, car on cherche les zéros du gradient de $f$. La méthode de Broyden-Fletcher-Goldfarb-Shanno (BFGS) est une méthode quasi-Newton qui se repose sur l'approximation de la matrice hessienne - ou son inverse - par analyse des gradients successifs. La matrice hessienne n'est pas calculée à chaque itération de la méthode, mais mise à jour itérativement en prenant une estimation de la matrice hessienne initiale.
     \end{abstract}
 \end{frontmatter}
-
+\cleardoublepage
 \tableofcontents
-
+\cleardoublepage
 \section{Notations}
 \begin{enumerate}
     \item $\Jacobian_{f}(x)$ désigne la matrice jacobienne de la fonction $f$ évaluée en $x$.
@@ -873,8 +873,13 @@ On constante que l'ordre de convergence global de la méthode de Newton-Raphson 
 \end{rmk}
 
 \subsection{Reconstitutions d'un signal à partir d'observations}
-\subsection{Conformation atomique}
 
+L'exercice n'a pas été traité par manque de temps.
+
+\subsection{Conformation atomique}
+\begin{rmk}
+    La partie ici rédigée est incomplète. Le code fourni est également incomplet.
+\end{rmk}
 Pour résoudre le problème d’optimisation pour N = 4, on définit une fonction \verb conformation \space qui prend en paramètre un vecteur de taille 12 (4 points dans l'espace). On définit $$ x_0=(0,0,0,1,0,0,0,1,0,0,0,1)$$ puis on lance la simulation. On obtient une minimisation de la fonction \verb conformation \space égale à -1.8172164 avec $$ x^*=
 \begin{pmatrix}
 0 \\
@@ -919,7 +924,7 @@ C'est une géométrie moléculaire dite tétrahèdrique (polyèdre à 4 faces).
 
 
 % \paragraph{Indicateur 1 : courbe de convergence (exemple)}
-
+\cleardoublepage
 \begin{appendices}
     \section{Détails de calcul de l'exemple \ref{ex:newton-raphson-non-differentiable}}
     \label{ap:calcul-exemple-nr}
@@ -978,6 +983,7 @@ C'est une géométrie moléculaire dite tétrahèdrique (polyèdre à 4 faces).
 
 % Bibliographie
 % http://merkel.texture.rocks/Latex/natbib.php?lang=f
+\cleardoublepage
 \nocite{*}
 \biboptions{numbers}
 \bibliographystyle{elsarticle-num}
