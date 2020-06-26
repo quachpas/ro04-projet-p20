@@ -874,6 +874,50 @@ On constante que l'ordre de convergence global de la méthode de Newton-Raphson 
 
 \subsection{Reconstitutions d'un signal à partir d'observations}
 \subsection{Conformation atomique}
+
+Pour résoudre le problème d’optimisation pour N = 4, on définit une fonction \verb conformation \space qui prend en paramètre un vecteur de taille 12 (4 points dans l'espace). On définit $$ x_0=(0,0,0,1,0,0,0,1,0,0,0,1)$$ puis on lance la simulation. On obtient une minimisation de la fonction \verb conformation \space égale à -1.8172164 avec $$ x^*=
+\begin{pmatrix}
+0 \\
+-0.1663029 \\
+0 \\
+1.0583173 \\
+0 \\
+0 \\
+0 \\
+0.9625985 \\
+0 \\
+0 \\
+0 \\
+0.9779698 \\
+
+\end{pmatrix}
+$$
+
+Or la valeur théorique construite à partir du minimum de V est de seulement $\frac{-7}{8}$, ou -0.85, soit une différence légèrement inférieure à 1.
+
+Nous avons pu exporter au format CSV les valeurs qui ont été converties en points dans \verb ParaView \space dans \textit{Filtre->Alphabetical->TabletoPoints}.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width = 0.30\textwidth]{table.png}
+  \caption{Données CSV importées et converties en points}
+  \label{fig:table}
+\end{figure}
+
+Après quelques modifications de l'affichage nous obtenons la représentation suivante
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width = 0.45\textwidth]{conformation.eps}
+  \caption{Représentation de la conformation atomique}
+  \label{fig:conformation}
+\end{figure}
+
+
+C'est une géométrie moléculaire dite tétrahèdrique (polyèdre à 4 faces).
+
+
+
 % \paragraph{Indicateur 1 : courbe de convergence (exemple)}
 
 \begin{appendices}
