@@ -630,17 +630,26 @@ Si $b^2-3ac \geq 0$, alors il existe un minimum tel que
     t_{\min} = t_0 + \tau\frac{-b+\sqrt{b^2-3ac}}{3a}
     \label{eq:min-interp-3}
 \end{equation}
+
+\begin{rmk}
+    L'algorithme de recherche linéaire ainsi énoncé ne clarifie pas totalement le calcul de $t$. En détail, si la règle de Wolfe-Powell est utilisée, on tentera de réduire l'intervalle par interpolation cubique jusqu'à retour d'une erreur. Au quel cas, on basculera sur une réduction par dichotomie.
+\end{rmk}
+
 \subsubsection{Conditions d'arrêts et précision}
 La recherche linéaire ne s'arrête pas tant qu'elle n'a pas trouvé de pas $t$ qui convienne. Cette méthode de recherche est inexacte, et le pas n'est pas optimal, mais on gagne en complexité calculatoire. Au lieu de calculer le pas optimal, on se contente de l'approcher, et cette approximation est suffisante pour que la méthode de quasi-Newton avec la formule de BFGS converge, ce qui n'est pas le cas pour la formule de DFP.
 
 On préfèrera la règle de Wolfe-Powell, pour augmenter la vitesse de réduction de l'intervalle, qui n'est pas suffisante en utilisant une dichotomie simple. Cependant, si l'interpolation cubique ne donne n'est pas utilisable (soit car elle ne renvoie pas de minimum, soit car on n'utilise pas la règle de Wolfe-Powell), on peut se retrancher sur la dichotomie.
 
+\begin{rmk}
+    Spécifiquement au niveau de l'implémentation, une condition d'arrêt sur l'égalité des deux bornes de l'intervalle est rajoutée. Dans certaines situations, lorsque les paramètres sont spécialement mal choisis, l'intervalle se réduit par dichotomie de façon alternée.
+\end{rmk}
+
 \subsubsection{Difficultées techniques}
 L'implémentation de l'algorithme (\ref{algo:line-search}) n'est pas difficile. S'il y a un point à souligner lors de l'implémentation, c'est de faire attention à optimiser la vérification de la règle utilisée. Il faut à tout prix éviter de vérifier plusieurs fois de suite la même inégalité, au risque de ralentir la recherche. On pourra à cette fin stocker le résultat d'une comparaison dans une variable booléenne et en faire usage si nécessaire plus loin.
 
-\begin{rmk}
-    L'algorithme de recherche linéaire ainsi énoncé ne clarifie pas totalement le calcul de $t$. En détail, si la règle de Wolfe-Powell est utilisée, on tentera de réduire l'intervalle par interpolation cubique jusqu'à retour d'une erreur. Au quel cas, on basculera sur une réduction par dichotomie.
-\end{rmk}
+
+
+
 \subsection{Factorisation matricielle : factorisation $LDL^T$ de Cholesky}
 L'implémentation d'une méthode de quasi-Newton requiert la mise à jour d'une matrice symétrique définie positive à chaque itération. Il est clair que la mise à jour d'une matrice entière avec de telles propriétés n'est pas une opération entièrement optimisé. Pour des raisons de performance, on préfèrera donc mettre à jour les facteurs d'une décomposition de la matrice $B_{k+1}$, issues de la factorisation alternative de Cholesky. L'algorithme modifié de Cholesky ici décrit est celui défini dans \cite{art:McSweeney_2017}.
 
